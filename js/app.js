@@ -26,7 +26,7 @@ const app = createApp({
       img: '',
       form: {
         paint: 0,
-        wear: 0.0,
+        wear: 0.001,
         seed: 0
       }
     })
@@ -58,8 +58,8 @@ const app = createApp({
       modalSkin.value.weapon_defindex = weaponsFiltered.value[i].weapon_defindex
       modalSkin.value.weapon_name = weaponsFiltered.value[i].name
       modalSkin.value.form.paint = session.value.selected_skins?.[defIndex]?.weapon_paint_id.toString() || "0"
-      modalSkin.value.form.wear = session.value.selected_skins?.[defIndex]?.weapon_seed || 0.0
-      modalSkin.value.form.seed = session.value.selected_skins?.[defIndex]?.weapon_wear || 0
+      modalSkin.value.form.wear = session.value.selected_skins?.[defIndex]?.weapon_wear || 0.001
+      modalSkin.value.form.seed = session.value.selected_skins?.[defIndex]?.weapon_seed || 0
       modalSkin.value.open = true
     }
     const closeModalSkin = () => {

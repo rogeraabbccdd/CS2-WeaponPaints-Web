@@ -116,7 +116,7 @@
         );
         if ($rows == 0) {
           $db->query("INSERT INTO `wp_player_skins` (`steamid`, `weapon_defindex`, `weapon_paint_id`, `weapon_wear`, `weapon_seed`) 
-                    VALUES (:steamid, :defIndex, :paint, 0, 0)",
+                    VALUES (:steamid, :defIndex, :paint, 0.001, 0)",
                     ["steamid" => $_SESSION["steamid"], "paint" => $_POST["paint"], "defIndex" => $_POST["defIndex"]]
                   );
         }
