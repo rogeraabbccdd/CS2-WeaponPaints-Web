@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.6.10/dist/vuetify.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <!-- Navbar -->
+      <v-app-bar color="primary">
+        <v-container class="d-flex align-center">
+          <v-app-bar-title>CS2 Weapon Paints</v-app-bar-title>
+          <v-spacer></v-spacer>
+          <template v-if="session.steamid">
+            <v-avatar>
+              <v-img :src="session.steam_avatar"></v-img>
+            </v-avatar>
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-btn icon="mdi-dots-vertical" v-bind="props"></v-btn>
+              </template>
+              <v-list>
+                <v-list-item href="./logout.php">
+                  <v-list-item-title>Logout</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
+          <template v-else>
+            <a href="./login.php"><img src='https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png'></a>
+          </template>
+        </v-container>
+      </v-app-bar>
+      <!-- Sidebar -->
+      <v-navigation-drawer v-if="session.steamid.length !== 0">
+        <v-list density="compact" nav v-model:selected="page">
+          <v-list-item prepend-icon="mdi-knife-military" title="Knifes" value="knifes"></v-list-item>
+          <v-list-item prepend-icon="mdi-palette" title="Skins" value="skins"></v-list-item>
+          <v-list-item prepend-icon="mdi-boxing-glove" title="Gloves" value="gloves"></v-list-item>
+          <v-list-item prepend-icon="mdi-account" title="Agents" value="agents"></v-list-item>
+          <v-list-item prepend-icon="mdi-music" title="Musics" value="musics"></v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      <v-main class="mt-5" v-if="!loaded">
+        <h1 class="text-center">Loading...</h1>
+      </v-main>
+      <v-main class="mt-5" v-else-if="session.steamid.length === 0">
+        <h1 class="text-center">Please login first.</h1>
+      </v-main>
+      <v-main class="mt-5" v-else>
+        <!-- Knifes Page -->
+        <v-container v-if="page[0] === 'knifes'">
+          <v-text-field label="Search" v-model="knifeSearchInput"></v-text-field>
+          <v-row>
+            <v-col cols="6" md="3" lg="2">
+              <v-card @click="setKnife('weapon_knife')">
+                <v-img src="https://placehold.co/256x198?text=Default">
+                  <v-overlay :model-value="session.selected_knife == 'weapon_knife'" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>Default</v-card-title>
+              </v-card>
+            </v-col>
+            <v-col cols="6" md="3" lg="2" v-for="knife in knifesFiltered" :key="knife.weapon_name">
+              <v-card @click="setKnife(knife.weapon_name)">
+                <v-img :src="knife.image">
+                  <v-overlay :model-value="session.selected_knife == knife.weapon_name" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>{{ knife.name }}</v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+        <!-- Skins Page -->
+        <v-container v-if="page[0] === 'skins'">
+          <v-text-field label="Search" v-model="weaponSearchInput"></v-text-field>
+          <v-row>
+            <v-col cols="6" md="3" lg="2" v-for="(weapon, i) in weaponsFiltered" :key="weapon.weapon_name">
+              <v-card @click="openModalSkin(i)">
+                <v-img :src="weapon.image"></v-img>
+                <v-card-title>{{ weapon.name }}</v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-dialog v-model="modalSkin.open" persistent style="max-width: 400px;">
+            <v-card>
+              <v-card-title>
+                {{ modalSkin.weapon_name }}
+              </v-card-title>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12">
+                    <v-img :src="modalSkinImage" height="200"></v-img>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-autocomplete 
+                      label="Skin" v-model="modalSkin.form.paint" @update:model-value="validateWear(); validateSeed()"
+                      :items="skinsPaints " item-title="paint_name" item-value="paint"
+                    ></v-autocomplete>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Wear" v-model="modalSkin.form.wear" @change="validateWear" hint="0.0 ~ 1.0"></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Seed" v-model="modalSkin.form.seed" @change="validateSeed" hint="0 ~ 1000"></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn text="Close" variant="plain" @click="closeModalSkin"></v-btn>
+                <v-btn color="primary" text="Save" variant="tonal" @click="setSkin"></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-container>
+        <!-- Gloves Page -->
+        <v-container v-if="page[0] === 'gloves'">
+          <v-text-field label="Search" v-model="glovesSearchInput"></v-text-field>
+          <v-row>
+            <v-col cols="6" md="3" lg="2">
+              <v-card @click="setGlove(-1, -1)">
+                <v-img src="https://placehold.co/256x198?text=Default">
+                  <v-overlay :model-value="session.selected_glove == -1" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>Default</v-card-title>
+              </v-card>
+            </v-col>
+            <v-col cols="6" md="3" lg="2" v-for="glove in glovesFiltered" :key="glove.paint">
+              <v-card @click="setGlove(glove.weapon_defindex, glove.paint)">
+                <v-img :src="glove.image">
+                  <v-overlay :model-value="session.selected_glove == glove.paint" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>{{ glove.name }}</v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+        <!-- Agents Page -->
+        <v-container v-if="page[0] === 'agents'">
+          <v-tabs v-model="tabAgentsTeam" fixed-tabs class="my-5">
+            <v-tab :value="2">T</v-tab>
+            <v-tab :value="3">CT</v-tab>
+          </v-tabs>
+          <v-text-field label="Search" v-model="agentsSearchInput"></v-text-field>
+          <v-row>
+            <v-col cols="6" md="3" lg="2">
+              <v-card @click="setAgent('null')">
+                <v-img src="https://placehold.co/256x198?text=Default">
+                  <v-overlay :model-value="tabAgentsTeam == 2 ? session.selected_agents.t == '' : session.selected_agents.ct == ''" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>Default</v-card-title>
+              </v-card>
+            </v-col>
+            <v-col cols="6" md="3" lg="2" v-for="agent in agentsFiltered" :key="agent.agent_name">
+              <v-card @click="setAgent(agent.model)">
+                <v-img :src="agent.image">
+                  <v-overlay :model-value="tabAgentsTeam == 2 ? session.selected_agents.t == agent.model : session.selected_agents.ct == agent.model" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>{{ agent.agent_name }}</v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+        <!-- Music Kits Page -->
+        <v-container v-if="page[0] === 'musics'">
+          <v-text-field label="Search" v-model="musicsSearchInput"></v-text-field>
+          <v-row>
+            <v-col cols="6" md="3" lg="2">
+              <v-card @click="setMusic('-1')">
+                <v-img src="https://placehold.co/256x198?text=Default">
+                  <v-overlay :model-value="session.selected_music == -1" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>Default</v-card-title>
+              </v-card>
+            </v-col>
+            <v-col cols="6" md="3" lg="2" v-for="music in musicsFiltered" :key="music.id">
+              <v-card @click="setMusic(music.id)">
+                <v-img :src="music.image">
+                  <v-overlay :model-value="session.selected_music == music.id" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>{{ music.name }}</v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+      <v-bottom-navigation v-if="mobile" :model-value="page[0]" @update:model-value="v => page[0] = v">
+        <v-btn value="knifes">
+          <v-icon>mdi-knife-military</v-icon>
+          <span>Knifes</span>
+        </v-btn>
+        <v-btn value="skins">
+          <v-icon>mdi-palette</v-icon>
+          <span>Skins</span>
+        </v-btn>
+        <v-btn value="gloves">
+          <v-icon>mdi-boxing-glove</v-icon>
+          <span>Gloves</span>
+        </v-btn>
+        <v-btn value="agents">
+          <v-icon>mdi-account</v-icon>
+          <span>Agents</span>
+        </v-btn>
+        <v-btn value="musics">
+          <v-icon>mdi-music</v-icon>
+          <span>Musics</span>
+        </v-btn>
+      </v-bottom-navigation>
+    </v-app>
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.6.10/dist/vuetify.min.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js' integrity='sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==' crossorigin='anonymous'></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
