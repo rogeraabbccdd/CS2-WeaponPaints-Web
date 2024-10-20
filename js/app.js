@@ -23,7 +23,15 @@ const app = createApp({
       open: false,
       weapon_defindex: '',
       weapon_name: '',
-      img: '',
+      skinImage: '',
+      skinName: '',
+      search: {
+        page: 1,
+        pages: 1,
+        input: '',
+        itemsPerPage: 12,
+        results: []
+      },
       form: {
         paint: 0,
         wear: 0.001,
@@ -37,13 +45,17 @@ const app = createApp({
       0.38: 'Well-Worn',
       0.45: 'Battle-Scarred'
     }
-    const modalSkinImage = computed(() => {
+    const updateModalSkin = () => {
       if (modalSkin.value.form.paint != 0) {
-        return skins.value.find(skin => skin.paint == modalSkin.value.form.paint).image
+        const result = skins.value.find(skin => skin.paint == modalSkin.value.form.paint)
+        modalSkin.value.skinImage = result.image
+        modalSkin.value.skinName = result.paint_name
       } else {
-        return skins.value.find(skin => skin.weapon_defindex == modalSkin.value.weapon_defindex && skin.paint == '0').image
+        const result = skins.value.find(skin => skin.weapon_defindex == modalSkin.value.weapon_defindex && skin.paint == '0')
+        modalSkin.value.skinImage = result.image
+        modalSkin.value.skinName = result.paint_name
       }
-    })
+    }
     const validateWear = () => {
       const value = parseFloat(modalSkin.value.form.wear)
       if (isNaN(value) || value < 0 || value > 1 || modalSkin.value.form.paint == '0') modalSkin.value.form.wear = 0
@@ -57,13 +69,43 @@ const app = createApp({
       const defIndex = weaponsFiltered.value[i].weapon_defindex
       modalSkin.value.weapon_defindex = weaponsFiltered.value[i].weapon_defindex
       modalSkin.value.weapon_name = weaponsFiltered.value[i].name
-      modalSkin.value.form.paint = session.value.selected_skins?.[defIndex]?.weapon_paint_id.toString() || "0"
+      modalSkin.value.form.paint = parseInt(session.value.selected_skins?.[defIndex]?.weapon_paint_id || '0')
       modalSkin.value.form.wear = session.value.selected_skins?.[defIndex]?.weapon_wear || 0.001
       modalSkin.value.form.seed = session.value.selected_skins?.[defIndex]?.weapon_seed || 0
       modalSkin.value.open = true
+      modalSkin.value.search.page = 1
+      modalSkin.value.search.pages = 1
+      modalSkin.value.search.input = ''
+      modalSkin.value.search.results = []
+      modalSkin.value.search.input = modalSkin.value.weapon_name
+      updateModalSkin()
+      onModalSkinSearch()
     }
     const closeModalSkin = () => {
       modalSkin.value.open = false
+    }
+    const onModalSkinSearch = () => {
+      modalSkin.value.search.page = 1
+      modalSkin.value.search.results = skinsPaints.value.filter(skin => modalSkin.value.search.input === '' ? true : skin.paint_name.toUpperCase().includes(modalSkin.value.search.input.toUpperCase()))
+      const defaultSkin = weapons.value.find(weapon => weapon.name === modalSkin.value.weapon_name)
+      modalSkin.value.search.results.unshift({
+        weapon_defindex: -1,
+        weapon_name: defaultSkin.paint_name,
+        paint: 0,
+        image: defaultSkin.image,
+        paint_name: "Default"
+      })
+      modalSkin.value.search.pages = Math.ceil(modalSkin.value.search.results.length / modalSkin.value.search.itemsPerPage);
+    }
+    const modalSkinSearchResultItems = computed(() => {
+      const start = (modalSkin.value.search.page - 1) * modalSkin.value.search.itemsPerPage
+      const end = start + modalSkin.value.search.itemsPerPage
+      return modalSkin.value.search.results.slice(start, end)
+    })
+    const onModalSkinSelect = (skin) => {
+      modalSkin.value.form.paint = skin.paint
+      modalSkin.value.skinImage = skin.image
+      modalSkin.value.skinName = skin.paint_name
     }
 
     // Session
@@ -220,13 +262,6 @@ const app = createApp({
       skinsPaints.value = skins.value.filter(skin => {
         return skin.paint != '0'
       })
-      skinsPaints.value.unshift({
-        weapon_defindex: -1,
-        weapon_name: '',
-        paint: "0",
-        image: "",
-        paint_name: "Default"
-      })
 
       const query = new URLSearchParams(document.location.search).get('page')
       if (['knifes', 'glove', 'skins', 'agents', 'musics', 'gloves'].includes(query)) {
@@ -248,11 +283,14 @@ const app = createApp({
       page,
       modalSkin,
       modalSkinWearsLabel,
-      modalSkinImage,
+      updateModalSkin,
       validateSeed,
       validateWear,
       openModalSkin,
       closeModalSkin,
+      onModalSkinSearch,
+      onModalSkinSelect,
+      modalSkinSearchResultItems,
       tabAgentsTeam,
       session,
       knifeSearchInput,

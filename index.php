@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>CS2 Weapon Paints</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.6.10/dist/vuetify.min.css">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
 </head>
@@ -89,28 +89,52 @@
               </v-card>
             </v-col>
           </v-row>
-          <v-dialog v-model="modalSkin.open" persistent style="max-width: 400px;">
+          <v-dialog v-model="modalSkin.open" persistent style="max-width: 1200px;">
             <v-card>
-              <v-card-title>
-                {{ modalSkin.weapon_name }}
-              </v-card-title>
+              <v-toolbar color="secondary">
+                <v-toolbar-title>{{ modalSkin.weapon_name }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon="mdi-close" @click="closeModalSkin"></v-btn>
+              </v-toolbar>
               <v-card-text>
                 <v-row>
-                  <v-col cols="12">
-                    <v-img :src="modalSkinImage" height="200"></v-img>
+                  <v-col cols="12" md="6">
+                    <v-img :src="modalSkin.skinImage" height="200"></v-img>
+                    <p class="text-center">{{ modalSkin.skinName }}</p>
                   </v-col>
-                  <v-col cols="12">
-                    <v-autocomplete 
-                      label="Skin" v-model="modalSkin.form.paint" @update:model-value="validateWear(); validateSeed()"
-                      :items="skinsPaints " item-title="paint_name" item-value="paint"
-                    ></v-autocomplete>
-                  </v-col>
-                  <v-col cols="12">
+                  <v-col cols="12" md="6" align-self="center">
                     <v-text-field label="Wear" v-model="modalSkin.form.wear" @change="validateWear" hint="0.0 ~ 1.0"></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
                     <v-text-field label="Seed" v-model="modalSkin.form.seed" @change="validateSeed" hint="0 ~ 1000"></v-text-field>
                   </v-col>
+                </v-row>
+                <v-divider class="my-5"></v-divider>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field label="Search" v-model="modalSkin.search.input" @update:model-value="onModalSkinSearch"></v-text-field>
+                  </v-col>
+                  <v-col cols="6" lg="2" v-for="skin in modalSkinSearchResultItems">
+                    <v-tooltip :text="skin.paint_name" location="top">
+                      <template v-slot:activator="{ props }">
+                        <v-card v-bind="props" @click="onModalSkinSelect(skin)" variant="text">
+                          <v-img :src="skin.image" height="110">
+                            <v-overlay :model-value="skin.paint == modalSkin.form.paint" contained class="align-center justify-center">
+                              <v-icon size="110" color="green">mdi-check-circle-outline</v-icon>
+                            </v-overlay>
+                          </v-img>
+                        </v-card>
+                      </template>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-pagination 
+                      v-model="modalSkin.search.page"
+                      :length="Math.ceil(modalSkin.search.results.length / modalSkin.search.itemsPerPage)"
+                      :disabled="modalSkin.search.loading"
+                      :total-visible="7"
+                    ></v-pagination>
+                  </v-col>
+                </v-row>
+                <v-row>
                 </v-row>
               </v-card-text>
               <v-card-actions>
@@ -229,8 +253,8 @@
     </v-app>
   </div>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.6.10/dist/vuetify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.2/dist/vuetify.min.js"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js' integrity='sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==' crossorigin='anonymous'></script>
-  <script src="./js/app.js"></script>
+  <script src="./js/app.js?upd=202410041627"></script>
 </body>
 </html>
