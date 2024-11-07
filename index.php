@@ -43,6 +43,7 @@
           <v-list-item prepend-icon="mdi-boxing-glove" title="Gloves" value="gloves"></v-list-item>
           <v-list-item prepend-icon="mdi-account" title="Agents" value="agents"></v-list-item>
           <v-list-item prepend-icon="mdi-music" title="Musics" value="musics"></v-list-item>
+          <v-list-item prepend-icon="mdi-police-badge" title="Pins" value="pins"></v-list-item>
         </v-list>
       </v-navigation-drawer>
       <v-main class="mt-5" v-if="!loaded">
@@ -66,7 +67,7 @@
                 <v-card-title>Default</v-card-title>
               </v-card>
             </v-col>
-            <v-col cols="6" md="3" lg="2" v-for="knife in knifesFiltered" :key="knife.weapon_name">
+            <v-col cols="6" md="3" lg="2" v-for="knife in knivesFiltered" :key="knife.weapon_name">
               <v-card @click="setKnife(knife.weapon_name)">
                 <v-img :src="knife.image">
                   <v-overlay :model-value="session.selected_knife == knife.weapon_name" contained class="align-center justify-center">
@@ -89,6 +90,7 @@
               </v-card>
             </v-col>
           </v-row>
+          <!-- Skin Dialog -->
           <v-dialog v-model="modalSkin.open" persistent style="max-width: 1200px;">
             <v-card>
               <v-toolbar color="secondary">
@@ -98,27 +100,61 @@
               </v-toolbar>
               <v-card-text>
                 <v-row>
-                  <v-col cols="12" md="6">
-                    <v-img :src="modalSkin.skinImage" height="200"></v-img>
-                    <p class="text-center">{{ modalSkin.skinName }}</p>
+                  <v-col cols="12" md="6" align-self="center">
+                    <v-img :src="modalSkin.skin.image" height="150" :style="{filter: `drop-shadow(0px 0px 10px ${modalSkin.skin.color})` }"></v-img>
+                    <p class="text-center">{{ modalSkin.skin.name }}</p>
+                    <v-row class="my-1" v-if="!modalSkin.isKnife">
+                      <v-col style="width: 20%">
+                        <v-card class="text-center" variant="text" @click="openModalSticker(0)">
+                          <v-img v-if="modalSkin.form.stickers0.image.length > 0" :src="modalSkin.form.stickers0.image" height="50"></v-img>
+                          <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
+                        </v-card>
+                      </v-col>
+                      <v-col style="width: 20%">
+                        <v-card class="text-center" variant="text" @click="openModalSticker(1)">
+                          <v-img v-if="modalSkin.form.stickers1.image.length > 0" :src="modalSkin.form.stickers1.image" height="50"></v-img>
+                          <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
+                        </v-card>
+                      </v-col>
+                      <v-col style="width: 20%">
+                        <v-card class="text-center" variant="text" @click="openModalSticker(2)">
+                          <v-img v-if="modalSkin.form.stickers2.image.length > 0" :src="modalSkin.form.stickers2.image" height="50"></v-img>
+                          <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
+                        </v-card>
+                      </v-col>
+                      <v-col style="width: 20%">
+                        <v-card class="text-center" variant="text" @click="openModalSticker(3)">
+                          <v-img v-if="modalSkin.form.stickers3.image.length > 0" :src="modalSkin.form.stickers3.image" height="50"></v-img>
+                          <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
+                        </v-card>
+                      </v-col>
+                      <v-col style="width: 20%">
+                        <v-card class="text-center" variant="text" @click="openModalKeychain">
+                          <v-img v-if="modalSkin.form.keychain.image.length > 0" :src="modalSkin.form.keychain.image" height="50"></v-img>
+                          <v-icon v-else size="50" icon="mdi-key-chain" color="grey-darken-3"></v-icon>
+                        </v-card>
+                      </v-col>
+                    </v-row>
                   </v-col>
                   <v-col cols="12" md="6" align-self="center">
-                    <v-text-field label="Wear" v-model="modalSkin.form.wear" @change="validateWear" hint="0.0 ~ 1.0"></v-text-field>
-                    <v-text-field label="Seed" v-model="modalSkin.form.seed" @change="validateSeed" hint="0 ~ 1000"></v-text-field>
+                    <v-text-field label="Wear" v-model="modalSkin.form.wear" @change="validateWear('skin')" hint="0.0 ~ 1.0"></v-text-field>
+                    <v-text-field label="Seed" v-model="modalSkin.form.seed" @change="validateSeed('skin')" hint="0 ~ 1000"></v-text-field>
+                    <v-text-field label="Name Tag" v-model="modalSkin.form.name"></v-text-field>
+                    <v-checkbox label="StatTrack" :true-value="1" :false-value="0" v-model="modalSkin.form.stattrack"></v-checkbox>
                   </v-col>
                 </v-row>
-                <v-divider class="my-5"></v-divider>
+                <v-divider class="mb-3"></v-divider>
                 <v-row>
                   <v-col cols="12">
                     <v-text-field label="Search" v-model="modalSkin.search.input" @update:model-value="onModalSkinSearch"></v-text-field>
                   </v-col>
-                  <v-col cols="6" lg="2" v-for="skin in modalSkinSearchResultItems">
-                    <v-tooltip :text="skin.paint_name" location="top">
+                  <v-col cols="6" md="3" lg="2" xl="1" v-for="skin in modalSkinSearchResultItems">
+                    <v-tooltip :text="skin.name" location="top">
                       <template v-slot:activator="{ props }">
                         <v-card v-bind="props" @click="onModalSkinSelect(skin)" variant="text">
-                          <v-img :src="skin.image" height="110">
-                            <v-overlay :model-value="skin.paint == modalSkin.form.paint" contained class="align-center justify-center">
-                              <v-icon size="110" color="green">mdi-check-circle-outline</v-icon>
+                          <v-img :src="skin.image" height="90" :style="{filter: `drop-shadow(0px 0px 5px ${skin.rarity.color})` }">
+                            <v-overlay :model-value="skin.paint_index == modalSkin.form.paint" contained class="align-center justify-center">
+                              <v-icon size="50" color="green">mdi-check-circle-outline</v-icon>
                             </v-overlay>
                           </v-img>
                         </v-card>
@@ -134,13 +170,117 @@
                     ></v-pagination>
                   </v-col>
                 </v-row>
-                <v-row>
-                </v-row>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text="Close" variant="plain" @click="closeModalSkin"></v-btn>
                 <v-btn color="primary" text="Save" variant="tonal" @click="setSkin"></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- Sticker Dialog -->
+          <v-dialog v-model="modalSticker.open" persistent style="max-width: 1200px;">
+            <v-card>
+              <v-toolbar color="secondary">
+                <v-toolbar-title>Edit Sticker</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon="mdi-close" @click="closeModalSticker"></v-btn>
+              </v-toolbar>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12" md="6" align-self="center">
+                    <v-img :src="modalSticker.sticker.image" height="100" :style="{filter: `drop-shadow(0px 0px 10px ${modalSticker.sticker.color})` }"></v-img>
+                    <p class="text-center">{{ modalSticker.sticker.name }}</p>
+                  </v-col>
+                  <v-col cols="12" md="6" align-self="center">
+                    <v-text-field label="Wear" v-model="modalSticker.form.wear" @change="validateWear('sticker')" hint="0.0 ~ 1.0"></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-divider class="mb-3"></v-divider>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field label="Search" v-model="modalSticker.search.input" @update:model-value="onModalStickerSearch"></v-text-field>
+                  </v-col>
+                  <v-col cols="3" md="2" xl="1" v-for="sticker in modalStickerSearchResultItems">
+                    <v-tooltip :text="sticker.name" location="top">
+                      <template v-slot:activator="{ props }">
+                        <v-card v-bind="props" @click="onModalStickerSelect(sticker)" variant="text">
+                          <v-img :src="sticker.image" height="90"  :style="{filter: `drop-shadow(0px 0px 5px ${sticker.rarity.color})` }">
+                            <v-overlay :model-value="sticker.id == modalSticker.form.id" contained class="align-center justify-center">
+                              <v-icon size="50" color="green">mdi-check-circle-outline</v-icon>
+                            </v-overlay>
+                          </v-img>
+                        </v-card>
+                      </template>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-pagination 
+                      v-model="modalSticker.search.page"
+                      :length="Math.ceil(modalSticker.search.results.length / modalSticker.search.itemsPerPage)"
+                      :disabled="modalSticker.search.loading"
+                      :total-visible="7"
+                    ></v-pagination>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn text="Close" variant="plain" @click="closeModalSticker"></v-btn>
+                <v-btn color="primary" text="Save" variant="tonal" @click="setSticker"></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- Keychain Dialog -->
+          <v-dialog v-model="modalKeychain.open" persistent style="max-width: 1200px;">
+            <v-card>
+              <v-toolbar color="secondary">
+                <v-toolbar-title>Edit Keychain</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon="mdi-close" @click="closeModalKeychain"></v-btn>
+              </v-toolbar>
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12" md="6" align-self="center">
+                    <v-img :src="modalKeychain.keychain.image" height="100" :style="{filter: `drop-shadow(0px 0px 10px ${modalKeychain.keychain.color})` }"></v-img>
+                    <p class="text-center">{{ modalKeychain.keychain.name }}</p>
+                  </v-col>
+                  <v-col cols="12" md="6" align-self="center">
+                    <v-text-field label="Seed" v-model="modalKeychain.form.seed" @change="validateSeed('keychain')" hint="0 ~ 1000"></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-divider class="mb-3"></v-divider>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field label="Search" v-model="modalKeychain.search.input" @update:model-value="onModalKeychainSearch"></v-text-field>
+                  </v-col>
+                  <v-col cols="3" md="2" xl="1" v-for="keychain in modalKeychainSearchResultItems">
+                    <v-tooltip :text="keychain.name" location="top">
+                      <template v-slot:activator="{ props }">
+                        <v-card v-bind="props" @click="onModalKeychainSelect(keychain)" variant="text">
+                          <v-img :src="keychain.image" height="90"  :style="{filter: `drop-shadow(0px 0px 5px ${keychain.rarity.color})` }">
+                            <v-overlay :model-value="keychain.id == modalKeychain.form.id" contained class="align-center justify-center">
+                              <v-icon size="50" color="green">mdi-check-circle-outline</v-icon>
+                            </v-overlay>
+                          </v-img>
+                        </v-card>
+                      </template>
+                    </v-tooltip>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-pagination 
+                      v-model="modalKeychain.search.page"
+                      :length="Math.ceil(modalKeychain.search.results.length / modalKeychain.search.itemsPerPage)"
+                      :disabled="modalKeychain.search.loading"
+                      :total-visible="7"
+                    ></v-pagination>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn text="Close" variant="plain" @click="closeModalKeychain"></v-btn>
+                <v-btn color="primary" text="Save" variant="tonal" @click="setKeychain"></v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -159,10 +299,10 @@
                 <v-card-title>Default</v-card-title>
               </v-card>
             </v-col>
-            <v-col cols="6" md="3" lg="2" v-for="glove in glovesFiltered" :key="glove.paint">
-              <v-card @click="setGlove(glove.weapon_defindex, glove.paint)">
+            <v-col cols="6" md="3" lg="2" v-for="glove in glovesFiltered" :key="glove.paint_index">
+              <v-card @click="setGlove(defIndexes[glove.weapon.id], glove.paint_index)">
                 <v-img :src="glove.image">
-                  <v-overlay :model-value="session.selected_glove == glove.paint" contained class="align-center justify-center">
+                  <v-overlay :model-value="session.selected_glove == glove.paint_index" contained class="align-center justify-center">
                     <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
@@ -174,15 +314,19 @@
         <!-- Agents Page -->
         <v-container v-if="page[0] === 'agents'">
           <v-tabs v-model="tabAgentsTeam" fixed-tabs class="my-5">
-            <v-tab :value="2">T</v-tab>
-            <v-tab :value="3">CT</v-tab>
+            <v-tab value="terrorists">
+              T
+            </v-tab>
+            <v-tab value="counter-terrorists">
+              CT
+            </v-tab>
           </v-tabs>
           <v-text-field label="Search" v-model="agentsSearchInput"></v-text-field>
           <v-row>
             <v-col cols="6" md="3" lg="2">
               <v-card @click="setAgent('null')">
                 <v-img src="https://placehold.co/256x198?text=Default">
-                  <v-overlay :model-value="tabAgentsTeam == 2 ? session.selected_agents.t == '' : session.selected_agents.ct == ''" contained class="align-center justify-center">
+                  <v-overlay :model-value="tabAgentsTeam == 'terrorists' ? session.selected_agents.t == '' : session.selected_agents.ct == ''" contained class="align-center justify-center">
                     <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
@@ -190,13 +334,13 @@
               </v-card>
             </v-col>
             <v-col cols="6" md="3" lg="2" v-for="agent in agentsFiltered" :key="agent.agent_name">
-              <v-card @click="setAgent(agent.model)">
+              <v-card @click="setAgent(agent.model_player)">
                 <v-img :src="agent.image">
-                  <v-overlay :model-value="tabAgentsTeam == 2 ? session.selected_agents.t == agent.model : session.selected_agents.ct == agent.model" contained class="align-center justify-center">
+                  <v-overlay :model-value="tabAgentsTeam == 'terrorists' ? session.selected_agents.t == agent.model_player : session.selected_agents.ct == agent.model_player" contained class="align-center justify-center">
                     <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
-                <v-card-title>{{ agent.agent_name }}</v-card-title>
+                <v-card-title>{{ agent.name }}</v-card-title>
               </v-card>
             </v-col>
           </v-row>
@@ -227,6 +371,31 @@
             </v-col>
           </v-row>
         </v-container>
+        <v-container v-if="page[0] === 'pins'">
+          <v-text-field label="Search" v-model="pinsSearchInput"></v-text-field>
+          <v-row>
+            <v-col cols="6" md="3" lg="2">
+              <v-card @click="setPin('-1')">
+                <v-img src="https://placehold.co/256x198?text=Default">
+                  <v-overlay :model-value="session.selected_pin == -1" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>Default</v-card-title>
+              </v-card>
+            </v-col>
+            <v-col cols="6" md="3" lg="2" v-for="pin in pinsFiltered" :key="pin.id">
+              <v-card @click="setPin(pin.id)">
+                <v-img :src="pin.image">
+                  <v-overlay :model-value="session.selected_pin == pin.id" contained class="align-center justify-center">
+                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  </v-overlay>
+                </v-img>
+                <v-card-title>{{ pin.name }}</v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-main>
       <v-bottom-navigation v-if="mobile" :model-value="page[0]" @update:model-value="v => page[0] = v">
         <v-btn value="knifes">
@@ -249,12 +418,17 @@
           <v-icon>mdi-music</v-icon>
           <span>Musics</span>
         </v-btn>
+        <v-btn value="pins">
+          <v-icon>mdi-police-badge</v-icon>
+          <span>Pins</span>
+        </v-btn>
       </v-bottom-navigation>
     </v-app>
   </div>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.2/dist/vuetify.min.js"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js' integrity='sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==' crossorigin='anonymous'></script>
-  <script src="./js/app.js?upd=202410041627"></script>
+  <script src="./js/weapons.js"></script>
+  <script src="./js/app.js?upd=202410251621"></script>
 </body>
 </html>
