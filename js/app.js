@@ -521,7 +521,10 @@ const app = createApp({
           }
         }
         musics.value = results[1].status === 'fulfilled' ? results[1].value.data : []
-        agents.value = results[2].status === 'fulfilled' ? results[2].value.data : []
+        agents.value = results[2].status === 'fulfilled' ? results[2].value.data.map(agent => {
+          agent.model_player = agent.model_player.replace('characters/models/', '').replace('.vmdl', '')
+          return agent
+        }) : []
         stickers.value = results[3].status === 'fulfilled' ? results[3].value.data.map(sticker => {
           sticker.name = sticker.name.replace('Sticker | ', '')
           sticker.id = sticker.id.replace('sticker-', '')
