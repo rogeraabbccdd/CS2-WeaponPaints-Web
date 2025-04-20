@@ -219,6 +219,7 @@
       $url = curl_init();
       curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/skins.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
+      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
       curl_close($url);
       header('Content-Type: application/json');
@@ -230,6 +231,7 @@
       $url = curl_init();
       curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/music_kits.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
+      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
       curl_close($url);
       header('Content-Type: application/json');
@@ -241,6 +243,7 @@
       $url = curl_init();
       curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/agents.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
+      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
       curl_close($url);
       header('Content-Type: application/json');
@@ -252,6 +255,7 @@
       $url = curl_init();
       curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/stickers.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
+      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
       curl_close($url);
       header('Content-Type: application/json');
@@ -263,6 +267,7 @@
       $url = curl_init();
       curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/keychains.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
+      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
       curl_close($url);
       header('Content-Type: application/json');
@@ -274,6 +279,7 @@
       $url = curl_init();
       curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/collectibles.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
+      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
       curl_close($url);
       header('Content-Type: application/json');
