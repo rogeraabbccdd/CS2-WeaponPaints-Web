@@ -18,9 +18,9 @@
       $personname = "";
       $selectedSkins = [];
       $selectedKnife[0] = "weapon_knife";
-      $selectedGlove = "";
+      $selectedGlove = 0;
       $selectedMusic[0] = 0;
-      $selectedAgent = array(2 => 0, 3 => 0);
+      $selectedAgent = array(0 => 0);
       $selectedPin[0] = 0;
       if (isset($_SESSION["steamid"])) {
         require_once "../steamauth/userInfo.php";
