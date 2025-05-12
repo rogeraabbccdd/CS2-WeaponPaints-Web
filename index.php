@@ -106,7 +106,7 @@
             </v-col>
           </v-row>
           <!-- Skin Dialog -->
-          <v-dialog v-model="modalSkin.open" persistent style="max-width: 1200px;">
+          <v-dialog fullscreen v-model="modalSkin.open" persistent>
             <v-card>
               <v-toolbar color="secondary">
                 <v-toolbar-title>{{ modalSkin.weapon_name }}</v-toolbar-title>
@@ -194,7 +194,7 @@
             </v-card>
           </v-dialog>
           <!-- Sticker Dialog -->
-          <v-dialog v-model="modalSticker.open" persistent style="max-width: 1200px;">
+          <v-dialog fullscreen v-model="modalSticker.open" persistent>
             <v-card>
               <v-toolbar color="secondary">
                 <v-toolbar-title>Edit Sticker</v-toolbar-title>
@@ -247,7 +247,7 @@
             </v-card>
           </v-dialog>
           <!-- Keychain Dialog -->
-          <v-dialog v-model="modalKeychain.open" persistent style="max-width: 1200px;">
+          <v-dialog fullscreen v-model="modalKeychain.open" persistent>
             <v-card>
               <v-toolbar color="secondary">
                 <v-toolbar-title>Edit Keychain</v-toolbar-title>
