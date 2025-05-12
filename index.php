@@ -48,7 +48,11 @@
         </v-list>
       </v-navigation-drawer>
       <v-main class="mt-5" v-if="!loaded">
-        <h1 class="text-center">Loading...</h1>
+        <h1 class="text-center">
+          <v-progress-circular color="primary" :size="75" indeterminate class="my-5"></v-progress-circular>
+          <br>
+          Loading...
+        </h1>
       </v-main>
       <v-main class="mt-5" v-else-if="session.steamid.length === 0">
         <h1 class="text-center">Please login first.</h1>
