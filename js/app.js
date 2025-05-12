@@ -342,7 +342,10 @@ const app = createApp({
         [TEAM_T]: 0,
         [TEAM_CT]: 0
       },
-      selected_pin: -1,
+      selected_pin: {
+        [TEAM_T]: 0,
+        [TEAM_CT]: 0
+      },
       selected_glove: -1,
       selected_agents: {
         t: '',
@@ -421,10 +424,10 @@ const app = createApp({
         console.log(error)
       }
     }
-    const setPin = async (pin_id) => {
+    const setPin = async (pin_id, team) => {
       try {
-        await axios.post('./api/?action=set-pin', { pin_id })
-        session.value.selected_pin = pin_id
+        await axios.post('./api/?action=set-pin', { pin_id, team })
+        session.value.selected_pin[team] = pin_id
       } catch (error) {
         console.log(error)
       }
@@ -566,7 +569,8 @@ const app = createApp({
         session.value.selected_glove = data.selected_glove
         session.value.selected_agents.t = data.selected_agents.t
         session.value.selected_agents.ct = data.selected_agents.ct
-        session.value.selected_pin = data.selected_pin
+        session.value.selected_pin[TEAM_T] = data.selected_pin[TEAM_T] || data.selected_pin[TEAM_DEFAULT] || 0
+        session.value.selected_pin[TEAM_CT] = data.selected_pin[TEAM_CT] || data.selected_pin[TEAM_DEFAULT] || 0
       } catch (error) {
         console.log(error)
       }

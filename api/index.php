@@ -21,7 +21,7 @@
       $selectedGlove = "";
       $selectedMusic[0] = 0;
       $selectedAgent = "";
-      $selectedPin = "";
+      $selectedPin[0] = 0;
       if (isset($_SESSION["steamid"])) {
         require_once "../steamauth/userInfo.php";
         $steamid = $steamprofile['steamid'];
@@ -68,7 +68,15 @@
           $selectedMusic[0] = 0;
         }
         
-        $selectedPin = $db->select("SELECT * FROM `wp_player_pins` WHERE `wp_player_pins`.`steamid` = :steamid", ["steamid" => $steamid]);
+        $selectedPinRows = $db->select("SELECT * FROM `wp_player_pins` WHERE `wp_player_pins`.`steamid` = :steamid", ["steamid" => $steamid]);
+        $selectedPin = [];
+        foreach ($selectedPinRows as $row) {
+          $selectedPin[$row['weapon_team']] = $row['id'];
+        }
+
+        if (empty($selectedPin)) {
+          $selectedPin[0] = 0;
+        }
 
         $selectedAgent = $db->select("SELECT * FROM `wp_player_agents` WHERE `wp_player_agents`.`steamid` = :steamid", ["steamid" => $steamid]);
         
@@ -92,7 +100,7 @@
         "selected_knife" => $selectedKnife,
         "selected_glove" => $selectedGlove,
         "selected_music" => $selectedMusic,
-        "selected_pin" => $selectedPin[0]["id"] ?? -1,
+        "selected_pin" => $selectedPin,
         "selected_agents" => array("t" => $selectedAgent[0]["agent_t"] ?? "", "ct" => $selectedAgent[0]["agent_ct"] ?? ""),
       ));
       break;
@@ -108,11 +116,7 @@
       if (!isset($_SESSION["steamid"]))   exit;
       if (!isset($_POST["pin_id"]))     exit;
     
-      if ($_POST["pin_id"] == "-1") {
-        $db->query("DELETE FROM `wp_player_pins` WHERE steamid = :steamid", ["steamid" => $_SESSION["steamid"] ]);
-      } else {
-        $db->query("INSERT INTO `wp_player_pins` VALUES(:steamid, 0, :pin_id) ON DUPLICATE KEY UPDATE `id` = :pin_id", ["steamid" => $_SESSION["steamid"], "pin_id" => $_POST["pin_id"]]);
-      }
+      $db->query("INSERT INTO `wp_player_pins` VALUES(:steamid, :team, :pin_id) ON DUPLICATE KEY UPDATE `id` = :pin_id", ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "pin_id" => $_POST["pin_id"]]);
       break;
 
     case "set-knife":

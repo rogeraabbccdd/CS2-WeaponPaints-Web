@@ -400,24 +400,39 @@
             </v-col>
           </v-row>
         </v-container>
+        <!-- Pins Page -->
         <v-container v-if="page[0] === 'pins'">
           <v-text-field label="Search" v-model="pinsSearchInput"></v-text-field>
           <v-row>
             <v-col cols="6" md="3" lg="2">
-              <v-card @click="setPin('-1')">
+              <v-card class="cursor-pointer">
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item @click="setPin(0, TEAM_T)">T</v-list-item>
+                    <v-list-item @click="setPin(0, TEAM_CT)">CT</v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-img src="https://placehold.co/256x198?text=Default">
-                  <v-overlay :model-value="session.selected_pin == -1" contained class="align-center justify-center">
-                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
+                    <v-icon size="30" color="orange" v-if="session.selected_pin[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
+                    <v-icon size="30" color="blue" v-if="session.selected_pin[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
                 <v-card-title>Default</v-card-title>
               </v-card>
             </v-col>
             <v-col cols="6" md="3" lg="2" v-for="pin in pinsFiltered" :key="pin.id">
-              <v-card @click="setPin(pin.id)">
+              <v-card class="cursor-pointer">
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item @click="setPin(pin.id, TEAM_T)">T</v-list-item>
+                    <v-list-item @click="setPin(pin.id, TEAM_CT)">CT</v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-img :src="pin.image">
-                  <v-overlay :model-value="session.selected_pin == pin.id" contained class="align-center justify-center">
-                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
+                    <v-icon size="30" color="orange" v-if="session.selected_pin[TEAM_T] == pin.id">mdi-check-circle-outline</v-icon>
+                    <v-icon size="30" color="blue" v-if="session.selected_pin[TEAM_CT] == pin.id">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
                 <v-card-title>{{ pin.name }}</v-card-title>
