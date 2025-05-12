@@ -31,7 +31,7 @@
         $querySelected = $db->select("SELECT * FROM `wp_player_skins` WHERE `wp_player_skins`.`steamid` = :steamid", ["steamid" => $steamid]);
         $selectedSkins = [];
         foreach ($querySelected as $weapon) {
-            $selectedSkins[$weapon['weapon_defindex']] =  [
+            $selectedSkins[$weapon['weapon_defindex']][$weapon['weapon_team']] = [
                 'weapon_paint_id' => $weapon['weapon_paint_id'],
                 'weapon_seed' => $weapon['weapon_seed'],
                 'weapon_wear' => $weapon['weapon_wear'],
@@ -63,7 +63,6 @@
         foreach ($selectedMusicRows as $row) {
           $selectedMusic[$row['weapon_team']] = $row['music_id'];
         }
-
         if (empty($selectedMusic)) {
           $selectedMusic[0] = 0;
         }
@@ -73,7 +72,6 @@
         foreach ($selectedPinRows as $row) {
           $selectedPin[$row['weapon_team']] = $row['id'];
         }
-
         if (empty($selectedPin)) {
           $selectedPin[0] = 0;
         }
@@ -168,69 +166,99 @@
       break;
 
     case "set-skin":
-      if (!isset($_SESSION["steamid"]))   exit;
-      if (!isset($_POST["defIndex"]))     exit;
-      if (!isset($_POST["paint"]))        exit;
-      if (!isset($_POST["wear"]))         exit;
-      if (!isset($_POST["seed"]))         exit;
-      if (!isset($_POST["nametag"]))      exit;
-      if (!isset($_POST["stattrack"]))    exit;
-      if (!isset($_POST["sticker0"]))     exit;
-      if (!isset($_POST["sticker1"]))     exit;
-      if (!isset($_POST["sticker2"]))     exit;
-      if (!isset($_POST["sticker3"]))     exit;
-      if (!isset($_POST["keychain"]))     exit;
+      if (!isset($_SESSION["steamid"]))        exit;
+      if (!isset($_POST["2"]))                 exit;
+      if (!isset($_POST["2"]["defIndex"]))     exit;
+      if (!isset($_POST["2"]["paint"]))        exit;
+      if (!isset($_POST["2"]["wear"]))         exit;
+      if (!isset($_POST["2"]["seed"]))         exit;
+      if (!isset($_POST["2"]["nametag"]))      exit;
+      if (!isset($_POST["2"]["stattrack"]))    exit;
+      if (!isset($_POST["2"]["sticker0"]))     exit;
+      if (!isset($_POST["2"]["sticker1"]))     exit;
+      if (!isset($_POST["2"]["sticker2"]))     exit;
+      if (!isset($_POST["2"]["sticker3"]))     exit;
+      if (!isset($_POST["2"]["keychain"]))     exit;
+      if (!isset($_POST["3"]))                 exit;
+      if (!isset($_POST["3"]["defIndex"]))     exit;
+      if (!isset($_POST["3"]["paint"]))        exit;
+      if (!isset($_POST["3"]["wear"]))         exit;
+      if (!isset($_POST["3"]["seed"]))         exit;
+      if (!isset($_POST["3"]["nametag"]))      exit;
+      if (!isset($_POST["3"]["stattrack"]))    exit;
+      if (!isset($_POST["3"]["sticker0"]))     exit;
+      if (!isset($_POST["3"]["sticker1"]))     exit;
+      if (!isset($_POST["3"]["sticker2"]))     exit;
+      if (!isset($_POST["3"]["sticker3"]))     exit;
+      if (!isset($_POST["3"]["keychain"]))     exit;
 
-      if ($_POST["nametag"] == "")  $_POST["nametag"] = null;
+      if ($_POST["2"]["nametag"] == "")  $_POST["2"]["nametag"] = null;
+      if ($_POST["3"]["nametag"] == "")  $_POST["3"]["nametag"] = null;
 
-      $rows = $db->query("UPDATE `wp_player_skins`
-                            SET
-                              `weapon_paint_id` = :paint, `weapon_wear` = :wear, `weapon_seed` = :seed, `weapon_nametag` = :nametag,
-                              `weapon_stattrak` = :stattrack,
-                              `weapon_sticker_0` = :sticker0,
-                              `weapon_sticker_1` = :sticker1,
-                              `weapon_sticker_2` = :sticker2,
-                              `weapon_sticker_3` = :sticker3,
-                              `weapon_keychain` = :keychain
-                            WHERE steamid = :steamid AND weapon_defindex = :defIndex",
-                            [
-                              "steamid" => $_SESSION["steamid"],
-                              "defIndex" => $_POST["defIndex"],
-                              "paint" => $_POST["paint"],
-                              "wear" => $_POST["wear"],
-                              "seed" => $_POST["seed"],
-                              "nametag" => $_POST["nametag"],
-                              "stattrack" => $_POST["stattrack"],
-                              "sticker0" => $_POST["sticker0"],
-                              "sticker1" => $_POST["sticker1"],
-                              "sticker2" => $_POST["sticker2"],
-                              "sticker3" => $_POST["sticker3"],
-                              "keychain" => $_POST["keychain"],
-                            ]
-      );
-      if ($rows == 0) {
-        $db->query("INSERT INTO `wp_player_skins` ()
-                  VALUES (
-                  :steamid, 0, :defIndex, :paint, :wear, :seed, :nametag, :stattrack, 0, 
+      $db->query("INSERT INTO `wp_player_skins`
+                VALUES (
+                  :steamid, :team, :defIndex, :paint, :wear, :seed, :nametag, :stattrack, 0, 
                   :sticker0, :sticker1, :sticker2, :sticker3, '0;0;0;0;0;0;0',
                   :keychain
-                  )",
-                  [
-                    "steamid" => $_SESSION["steamid"],
-                    "defIndex" => $_POST["defIndex"],
-                    "paint" => $_POST["paint"],
-                    "wear" => $_POST["wear"],
-                    "seed" => $_POST["seed"],
-                    "nametag" => $_POST["nametag"],
-                    "stattrack" => $_POST["stattrack"],
-                    "sticker0" => $_POST["sticker0"],
-                    "sticker1" => $_POST["sticker1"],
-                    "sticker2" => $_POST["sticker2"],
-                    "sticker3" => $_POST["sticker3"],
-                    "keychain" => $_POST["keychain"],
-                  ]
-                );
-      }
+                )
+                ON DUPLICATE KEY UPDATE 
+                `weapon_paint_id` = :paint, `weapon_wear` = :wear, `weapon_seed` = :seed, `weapon_nametag` = :nametag,
+                `weapon_stattrak` = :stattrack,
+                `weapon_sticker_0` = :sticker0,
+                `weapon_sticker_1` = :sticker1,
+                `weapon_sticker_2` = :sticker2,
+                `weapon_sticker_3` = :sticker3,
+                `weapon_keychain` = :keychain
+                ",
+                [
+                  "steamid" => $_SESSION["steamid"],
+                  "team" => 2,
+                  "defIndex" => $_POST["2"]["defIndex"],
+                  "paint" => $_POST["2"]["paint"],
+                  "wear" => $_POST["2"]["wear"],
+                  "seed" => $_POST["2"]["seed"],
+                  "nametag" => $_POST["2"]["nametag"],
+                  "stattrack" => $_POST["2"]["stattrack"],
+                  "sticker0" => $_POST["2"]["sticker0"],
+                  "sticker1" => $_POST["2"]["sticker1"],
+                  "sticker2" => $_POST["2"]["sticker2"],
+                  "sticker3" => $_POST["2"]["sticker3"],
+                  "keychain" => $_POST["2"]["keychain"],
+                ]
+              );
+
+      
+      $db->query("INSERT INTO `wp_player_skins`
+                VALUES (
+                  :steamid, :team, :defIndex, :paint, :wear, :seed, :nametag, :stattrack, 0, 
+                  :sticker0, :sticker1, :sticker2, :sticker3, '0;0;0;0;0;0;0',
+                  :keychain
+                )
+                ON DUPLICATE KEY UPDATE 
+                `weapon_paint_id` = :paint, `weapon_wear` = :wear, `weapon_seed` = :seed, `weapon_nametag` = :nametag,
+                `weapon_stattrak` = :stattrack,
+                `weapon_sticker_0` = :sticker0,
+                `weapon_sticker_1` = :sticker1,
+                `weapon_sticker_2` = :sticker2,
+                `weapon_sticker_3` = :sticker3,
+                `weapon_keychain` = :keychain
+                ",
+                [
+                  "steamid" => $_SESSION["steamid"],
+                  "team" => 3,
+                  "defIndex" => $_POST["3"]["defIndex"],
+                  "paint" => $_POST["3"]["paint"],
+                  "wear" => $_POST["3"]["wear"],
+                  "seed" => $_POST["3"]["seed"],
+                  "nametag" => $_POST["3"]["nametag"],
+                  "stattrack" => $_POST["3"]["stattrack"],
+                  "sticker0" => $_POST["3"]["sticker0"],
+                  "sticker1" => $_POST["3"]["sticker1"],
+                  "sticker2" => $_POST["3"]["sticker2"],
+                  "sticker3" => $_POST["3"]["sticker3"],
+                  "keychain" => $_POST["3"]["keychain"],
+                ]
+              );
       break;
     
     case "get-skins":

@@ -101,6 +101,7 @@
         <!-- Skins Page -->
         <v-container v-if="page[0] === 'skins'">
           <v-text-field label="Search" v-model="weaponSearchInput"></v-text-field>
+          <!-- Weapons -->
           <v-row>
             <v-col cols="6" md="3" lg="2" v-for="(weapon, i) in weaponsFiltered" :key="weapon.weapon_name">
               <v-card @click="openModalSkin(i)">
@@ -118,48 +119,56 @@
                 <v-btn icon="mdi-close" @click="closeModalSkin"></v-btn>
               </v-toolbar>
               <v-card-text>
+                <v-tabs v-model="tabSkinsTeam" fixed-tabs class="my-5">
+                  <v-tab :value="TEAM_T">
+                    T
+                  </v-tab>
+                  <v-tab :value="TEAM_CT">
+                    CT
+                  </v-tab>
+                </v-tabs>
                 <v-row>
                   <v-col cols="12" md="6" align-self="center">
-                    <v-img :src="modalSkin.skin.image" height="150" :style="{filter: `drop-shadow(0px 0px 10px ${modalSkin.skin.color})` }"></v-img>
-                    <p class="text-center">{{ modalSkin.skin.name }}</p>
+                    <v-img :src="modalSkin.skin[tabSkinsTeam].image" height="150" :style="{filter: `drop-shadow(0px 0px 10px ${modalSkin.skin[tabSkinsTeam].color})` }"></v-img>
+                    <p class="text-center">{{ modalSkin.skin[tabSkinsTeam].name }}</p>
                     <v-row class="my-1" v-if="!modalSkin.isKnife">
                       <v-col style="width: 20%">
                         <v-card class="text-center" variant="text" @click="openModalSticker(0)">
-                          <v-img v-if="modalSkin.form.stickers0.image.length > 0" :src="modalSkin.form.stickers0.image" height="50"></v-img>
+                          <v-img v-if="modalSkin.form[tabSkinsTeam].stickers0.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers0.image" height="50"></v-img>
                           <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
                         </v-card>
                       </v-col>
                       <v-col style="width: 20%">
                         <v-card class="text-center" variant="text" @click="openModalSticker(1)">
-                          <v-img v-if="modalSkin.form.stickers1.image.length > 0" :src="modalSkin.form.stickers1.image" height="50"></v-img>
+                          <v-img v-if="modalSkin.form[tabSkinsTeam].stickers1.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers1.image" height="50"></v-img>
                           <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
                         </v-card>
                       </v-col>
                       <v-col style="width: 20%">
                         <v-card class="text-center" variant="text" @click="openModalSticker(2)">
-                          <v-img v-if="modalSkin.form.stickers2.image.length > 0" :src="modalSkin.form.stickers2.image" height="50"></v-img>
+                          <v-img v-if="modalSkin.form[tabSkinsTeam].stickers2.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers2.image" height="50"></v-img>
                           <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
                         </v-card>
                       </v-col>
                       <v-col style="width: 20%">
                         <v-card class="text-center" variant="text" @click="openModalSticker(3)">
-                          <v-img v-if="modalSkin.form.stickers3.image.length > 0" :src="modalSkin.form.stickers3.image" height="50"></v-img>
+                          <v-img v-if="modalSkin.form[tabSkinsTeam].stickers3.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers3.image" height="50"></v-img>
                           <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
                         </v-card>
                       </v-col>
                       <v-col style="width: 20%">
                         <v-card class="text-center" variant="text" @click="openModalKeychain">
-                          <v-img v-if="modalSkin.form.keychain.image.length > 0" :src="modalSkin.form.keychain.image" height="50"></v-img>
+                          <v-img v-if="modalSkin.form[tabSkinsTeam].keychain.image.length > 0" :src="modalSkin.form[tabSkinsTeam].keychain.image" height="50"></v-img>
                           <v-icon v-else size="50" icon="mdi-key-chain" color="grey-darken-3"></v-icon>
                         </v-card>
                       </v-col>
                     </v-row>
                   </v-col>
                   <v-col cols="12" md="6" align-self="center">
-                    <v-text-field label="Wear" v-model="modalSkin.form.wear" @change="validateWear('skin')" hint="0.0 ~ 1.0"></v-text-field>
-                    <v-text-field label="Seed" v-model="modalSkin.form.seed" @change="validateSeed('skin')" hint="0 ~ 1000"></v-text-field>
-                    <v-text-field label="Name Tag" v-model="modalSkin.form.name"></v-text-field>
-                    <v-checkbox label="StatTrack" :true-value="1" :false-value="0" v-model="modalSkin.form.stattrack"></v-checkbox>
+                    <v-text-field label="Wear" v-model="modalSkin.form[tabSkinsTeam].wear" @change="validateWear('skin')" hint="0.001 ~ 1.0"></v-text-field>
+                    <v-text-field label="Seed" v-model="modalSkin.form[tabSkinsTeam].seed" @change="validateSeed('skin')" hint="0 ~ 1000"></v-text-field>
+                    <v-text-field label="Name Tag" v-model="modalSkin.form[tabSkinsTeam].name"></v-text-field>
+                    <v-checkbox label="StatTrack" :true-value="1" :false-value="0" v-model="modalSkin.form[tabSkinsTeam].stattrack"></v-checkbox>
                   </v-col>
                 </v-row>
                 <v-divider class="mb-3"></v-divider>
@@ -167,18 +176,14 @@
                   <v-col cols="12">
                     <v-text-field label="Search" v-model="modalSkin.search.input" @update:model-value="onModalSkinSearch"></v-text-field>
                   </v-col>
-                  <v-col cols="6" md="3" lg="2" xl="1" v-for="skin in modalSkinSearchResultItems">
-                    <v-tooltip :text="skin.name" location="top">
-                      <template v-slot:activator="{ props }">
-                        <v-card v-bind="props" @click="onModalSkinSelect(skin)" variant="text">
-                          <v-img :src="skin.image" height="90" :style="{filter: `drop-shadow(0px 0px 5px ${skin.rarity.color})` }">
-                            <v-overlay :model-value="skin.paint_index == modalSkin.form.paint" contained class="align-center justify-center">
-                              <v-icon size="50" color="green">mdi-check-circle-outline</v-icon>
-                            </v-overlay>
-                          </v-img>
-                        </v-card>
-                      </template>
-                    </v-tooltip>
+                  <v-col cols="6" md="3" lg="2" xl="1" v-for="skin in modalSkinSearchResultItems" :key="skin.id">
+                    <v-card @click="onModalSkinSelect(skin)" variant="text" v-tooltip:top="skin.name">
+                      <v-overlay :model-value="true" :scrim="false" contained class="justify-end" persistent>
+                        <v-icon size="25" color="orange" v-if="modalSkin.form[TEAM_T].paint == skin.paint_index">mdi-check-circle-outline</v-icon>
+                        <v-icon size="25" color="blue" v-if="modalSkin.form[TEAM_CT].paint == skin.paint_index">mdi-check-circle-outline</v-icon>
+                      </v-overlay>
+                      <v-img :src="skin.image" height="90" :style="{filter: `drop-shadow(0px 0px 5px ${skin.rarity.color})` }"></v-img>
+                    </v-card>
                   </v-col>
                   <v-col cols="12">
                     <v-pagination 
@@ -212,7 +217,7 @@
                     <p class="text-center">{{ modalSticker.sticker.name }}</p>
                   </v-col>
                   <v-col cols="12" md="6" align-self="center">
-                    <v-text-field label="Wear" v-model="modalSticker.form.wear" @change="validateWear('sticker')" hint="0.0 ~ 1.0"></v-text-field>
+                    <v-text-field label="Wear" v-model="modalSticker.form.wear" @change="validateWear('sticker')" hint="0.001 ~ 1.0"></v-text-field>
                   </v-col>
                 </v-row>
                 <v-divider class="mb-3"></v-divider>
