@@ -20,7 +20,7 @@
       $selectedKnife[0] = "weapon_knife";
       $selectedGlove = "";
       $selectedMusic[0] = 0;
-      $selectedAgent = "";
+      $selectedAgent = array(2 => "", 3 => "");
       $selectedPin[0] = 0;
       if (isset($_SESSION["steamid"])) {
         require_once "../steamauth/userInfo.php";
@@ -101,7 +101,7 @@
         "selected_glove" => $selectedGlove,
         "selected_music" => $selectedMusic,
         "selected_pin" => $selectedPin,
-        "selected_agents" => array("t" => $selectedAgent[0]["agent_t"] ?? "", "ct" => $selectedAgent[0]["agent_ct"] ?? ""),
+        "selected_agents" => array(2 => $selectedAgent[0]["agent_t"] ?? "", 3 => $selectedAgent[0]["agent_ct"] ?? ""),
       ));
       break;
     
@@ -132,9 +132,9 @@
 
       if ($_POST["model"] == "null")      $_POST["model"] = null;
 
-      if ($_POST["team"] == "terrorists") {
+      if ($_POST["team"] == "2") {
         $db->query("INSERT INTO `wp_player_agents` (`steamid`, `agent_ct`, `agent_t`) VALUES(:steamid, NULL, :model) ON DUPLICATE KEY UPDATE `agent_t` = :model", ["steamid" => $_SESSION["steamid"], "model" => $_POST["model"]]);
-      } else if ($_POST["team"] == "counter-terrorists") {
+      } else if ($_POST["team"] == "3") {
         $db->query("INSERT INTO `wp_player_agents` (`steamid`, `agent_ct`, `agent_t`) VALUES(:steamid, :model, NULL) ON DUPLICATE KEY UPDATE `agent_ct` = :model", ["steamid" => $_SESSION["steamid"], "model" => $_POST["model"]]);
       }
       break;

@@ -333,10 +333,10 @@
         <!-- Agents Page -->
         <v-container v-if="page[0] === 'agents'">
           <v-tabs v-model="tabAgentsTeam" fixed-tabs class="my-5">
-            <v-tab value="terrorists">
+            <v-tab :value="TEAM_T">
               T
             </v-tab>
-            <v-tab value="counter-terrorists">
+            <v-tab :value="TEAM_CT">
               CT
             </v-tab>
           </v-tabs>
@@ -345,7 +345,7 @@
             <v-col cols="6" md="3" lg="2">
               <v-card @click="setAgent('null')">
                 <v-img src="https://placehold.co/256x198?text=Default">
-                  <v-overlay :model-value="tabAgentsTeam == 'terrorists' ? session.selected_agents.t == '' : session.selected_agents.ct == ''" contained class="align-center justify-center">
+                  <v-overlay :model-value="tabAgentsTeam == TEAM_T ? session.selected_agents[TEAM_T] == '' : session.selected_agents[TEAM_CT] == ''" contained class="align-center justify-center">
                     <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
@@ -355,7 +355,7 @@
             <v-col cols="6" md="3" lg="2" v-for="agent in agentsFiltered" :key="agent.agent_name">
               <v-card @click="setAgent(agent.model_player)">
                 <v-img :src="agent.image">
-                  <v-overlay :model-value="tabAgentsTeam == 'terrorists' ? session.selected_agents.t == agent.model_player : session.selected_agents.ct == agent.model_player" contained class="align-center justify-center">
+                  <v-overlay :model-value="tabAgentsTeam == TEAM_T ? session.selected_agents[TEAM_T] == agent.model_player : session.selected_agents[TEAM_CT] == agent.model_player" contained class="align-center justify-center">
                     <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>

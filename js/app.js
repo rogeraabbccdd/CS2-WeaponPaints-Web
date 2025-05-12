@@ -11,6 +11,15 @@ const vuetify = createVuetify({
 
 const app = createApp({
   setup () {
+    // Consts
+    const TEAM_T = 2
+    const TEAM_CT = 3
+    const TEAM_DEFAULT = 0
+    const TEAM_NAME = {
+      [TEAM_T]: 'terrorists',
+      [TEAM_CT]: 'counter-terrorists'
+    }
+
     const lang = ref('en')
 
     const loaded = ref(false)
@@ -18,12 +27,7 @@ const app = createApp({
 
     // Tab
     const page = ref(['skins'])
-    const tabAgentsTeam = ref('terrorists')
-
-    // Consts
-    const TEAM_T = 2
-    const TEAM_CT = 3
-    const TEAM_DEFAULT = 0
+    const tabAgentsTeam = ref(TEAM_T)
 
     // Weapon Modal
     const modalSkin = ref({
@@ -348,8 +352,8 @@ const app = createApp({
       },
       selected_glove: -1,
       selected_agents: {
-        t: '',
-        ct: ''
+        [TEAM_T]: '',
+        [TEAM_CT]: ''
       }
     })
 
@@ -411,7 +415,7 @@ const app = createApp({
       return agents.value
         .filter(agent => 
           agent.name.toUpperCase().includes(agentsSearchInput.value.toUpperCase()) &&
-          agent.team.id == tabAgentsTeam.value && agent.model != "null"
+          agent.team.id == TEAM_NAME[tabAgentsTeam.value] && agent.model != "null"
         )
     })
 
@@ -442,13 +446,10 @@ const app = createApp({
     }
     const setAgent = async (model) => {
       try {
-        await axios.post('./api/?action=set-agent', { model, team: tabAgentsTeam.value })
+        const team = tabAgentsTeam.value
+        await axios.post('./api/?action=set-agent', { model, team })
         const newValue = model == 'null' ? '' : model
-        if (tabAgentsTeam.value === 'terrorists') {
-          session.value.selected_agents.t = newValue
-        } else if (tabAgentsTeam.value === 'counter-terrorists') {
-          session.value.selected_agents.ct = newValue
-        }
+        session.value.selected_agents[team] = newValue
       } catch (error) {
         console.log(error)
       }
@@ -567,8 +568,8 @@ const app = createApp({
         session.value.selected_music[TEAM_T] = data.selected_music[TEAM_T] || data.selected_music[TEAM_DEFAULT] || 0
         session.value.selected_music[TEAM_CT] = data.selected_music[TEAM_CT] || data.selected_music[TEAM_DEFAULT] || 0
         session.value.selected_glove = data.selected_glove
-        session.value.selected_agents.t = data.selected_agents.t
-        session.value.selected_agents.ct = data.selected_agents.ct
+        session.value.selected_agents[TEAM_T] = data.selected_agents[TEAM_T]
+        session.value.selected_agents[TEAM_CT] = data.selected_agents[TEAM_CT]
         session.value.selected_pin[TEAM_T] = data.selected_pin[TEAM_T] || data.selected_pin[TEAM_DEFAULT] || 0
         session.value.selected_pin[TEAM_CT] = data.selected_pin[TEAM_CT] || data.selected_pin[TEAM_DEFAULT] || 0
       } catch (error) {
