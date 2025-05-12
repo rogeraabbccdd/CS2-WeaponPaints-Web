@@ -314,20 +314,44 @@
           <v-text-field label="Search" v-model="glovesSearchInput"></v-text-field>
           <v-row>
             <v-col cols="6" md="3" lg="2">
-              <v-card @click="setGlove(-1, -1)">
+              <v-card class="cursor-pointer">
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item @click="setGlove(0, 0, TEAM_T)">T</v-list-item>
+                    <v-list-item @click="setGlove(0, 0, TEAM_CT)">CT</v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-img src="https://placehold.co/256x198?text=Default">
-                  <v-overlay :model-value="session.selected_glove == -1" contained class="align-center justify-center">
-                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
+                    <v-icon size="30" color="orange" v-if="session.selected_glove[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
+                    <v-icon size="30" color="blue" v-if="session.selected_glove[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
                 <v-card-title>Default</v-card-title>
               </v-card>
             </v-col>
             <v-col cols="6" md="3" lg="2" v-for="glove in glovesFiltered" :key="glove.paint_index">
-              <v-card @click="setGlove(defIndexes[glove.weapon.id], glove.paint_index)">
+              <v-card @click="">
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item @click="setGlove(defIndexes[glove.weapon.id], glove.paint_index, TEAM_T)">T</v-list-item>
+                    <v-list-item @click="setGlove(defIndexes[glove.weapon.id], glove.paint_index, TEAM_CT)">CT</v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-img :src="glove.image">
-                  <v-overlay :model-value="session.selected_glove == glove.paint_index" contained class="align-center justify-center">
-                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
+                    <v-icon 
+                      size="30" color="orange"
+                      v-if="session.selected_glove[TEAM_T] == glove.weapon.weapon_id && session.selected_skins[glove.weapon.weapon_id][TEAM_T].weapon_paint_id == glove.paint_index"
+                    >
+                      mdi-check-circle-outline
+                    </v-icon>
+                    <v-icon 
+                      size="30" color="blue"
+                      v-if="session.selected_glove[TEAM_CT] == glove.weapon.weapon_id && session.selected_skins[glove.weapon.weapon_id][TEAM_CT].weapon_paint_id == glove.paint_index"
+                    >
+                      mdi-check-circle-outline
+                    </v-icon>
                   </v-overlay>
                 </v-img>
                 <v-card-title>{{ glove.name }}</v-card-title>

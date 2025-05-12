@@ -20,7 +20,7 @@
       $selectedKnife[0] = "weapon_knife";
       $selectedGlove = "";
       $selectedMusic[0] = 0;
-      $selectedAgent = array(2 => "", 3 => "");
+      $selectedAgent = array(2 => 0, 3 => 0);
       $selectedPin[0] = 0;
       if (isset($_SESSION["steamid"])) {
         require_once "../steamauth/userInfo.php";
@@ -55,8 +55,14 @@
           $selectedKnife[0] = "weapon_knife";
         }
 
-        $selectedGloveDefIndex = $db->select("SELECT * FROM `wp_player_gloves` WHERE `wp_player_gloves`.`steamid` = :steamid", ["steamid" => $steamid]);
-        $selectedGlove = -1;
+        $selectedGloveDefIndexRows = $db->select("SELECT * FROM `wp_player_gloves` WHERE `wp_player_gloves`.`steamid` = :steamid", ["steamid" => $steamid]);
+        $selectedGlove = [];
+        foreach ($selectedGloveDefIndexRows as $row) {
+          $selectedGlove[$row['weapon_team']] = $row['weapon_defindex'];
+        }
+        if (empty($selectedGlove)) {
+          $selectedGlove[0] = 0;
+        }
 
         $selectedMusicRows = $db->select("SELECT * FROM `wp_player_music` WHERE `wp_player_music`.`steamid` = :steamid", ["steamid" => $steamid]);
         $selectedMusic = [];
@@ -139,30 +145,22 @@
 
     case "set-glove":
       if (!isset($_SESSION["steamid"]))   exit;
-      if (!isset($_POST["paint"]))        exit;
+      if (!isset($_POST["team"]))         exit;
     
-      if ($_POST["paint"] == "-1") {
-        $db->query("DELETE FROM `wp_player_skins` WHERE 
-                    `wp_player_skins`.steamid = :steamid AND `wp_player_skins`.weapon_defindex IN (
-                      SELECT * FROM (
-                          SELECT weapon_defindex FROM wp_player_gloves WHERE `wp_player_gloves`.steamid = :steamid
-                      ) A
-                    )",
-                    ["steamid" => $_SESSION["steamid"] ]);
-        $db->query("DELETE FROM `wp_player_gloves` WHERE steamid = :steamid", ["steamid" => $_SESSION["steamid"] ]);
-      } else {
-        $db->query("INSERT INTO `wp_player_gloves` VALUES(:steamid, 0, :defIndex) ON DUPLICATE KEY UPDATE `weapon_defindex` = :defIndex", ["steamid" => $_SESSION["steamid"], "defIndex" => $_POST["defIndex"]]);
-        $rows = $db->query("UPDATE `wp_player_skins`
-                            SET `weapon_paint_id` = :paint WHERE steamid = :steamid AND weapon_defindex = :defIndex",
-                            ["steamid" => $_SESSION["steamid"], "defIndex" => $_POST["defIndex"], "paint" => $_POST["paint"]]
-        );
-        if ($rows == 0) {
-          $db->query("INSERT INTO `wp_player_skins` (`steamid`, `weapon_team`, `weapon_defindex`, `weapon_paint_id`, `weapon_wear`, `weapon_seed`) 
-                    VALUES (:steamid, 0, :defIndex, :paint, 0.001, 0)",
-                    ["steamid" => $_SESSION["steamid"], "paint" => $_POST["paint"], "defIndex" => $_POST["defIndex"]]
-                  );
-        }
-      }
+      $db->query("INSERT INTO `wp_player_gloves` 
+                  VALUES(:steamid, :team, :defIndex)
+                  ON DUPLICATE KEY UPDATE
+                  `weapon_defindex` = :defIndex",
+                  ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "defIndex" => $_POST["defIndex"]]
+                );
+      $db->query("INSERT INTO `wp_player_skins` (`steamid`, `weapon_team`, `weapon_defindex`, `weapon_paint_id`, `weapon_wear`, `weapon_seed`) 
+                  VALUES (:steamid, :team, :defIndex, :paint, 0.001, 0)
+                  ON DUPLICATE KEY UPDATE
+                  `weapon_paint_id` = :paint
+                  ",
+                  ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "paint" => $_POST["paint"], "defIndex" => $_POST["defIndex"]]
+                );
+
       break;
 
     case "set-skin":

@@ -242,7 +242,7 @@ const app = createApp({
       modalSkin.value.search.input = modalSkin.value.weapon_name
 
       tabSkinsTeam.value = TEAM_T
-      
+
       modalSkin.value.open = true
 
       onModalSkinSearch()
@@ -439,7 +439,10 @@ const app = createApp({
         [TEAM_T]: 0,
         [TEAM_CT]: 0
       },
-      selected_glove: -1,
+      selected_glove: {
+        [TEAM_T]: 0,
+        [TEAM_CT]: 0
+      },
       selected_agents: {
         [TEAM_T]: '',
         [TEAM_CT]: ''
@@ -543,10 +546,17 @@ const app = createApp({
         console.log(error)
       }
     }
-    const setGlove = async (defIndex, paint) => {
+    const setGlove = async (defIndex, paint, team) => {
       try {
-        await axios.post('./api/?action=set-glove', { defIndex, paint })
-        session.value.selected_glove = paint
+        await axios.post('./api/?action=set-glove', { defIndex, paint, team })
+        session.value.selected_glove[team] = defIndex
+        if (!session.value.selected_skins[defIndex]) {
+          session.value.selected_skins[defIndex] = {}
+        }
+        if (!session.value.selected_skins[defIndex][team]) {
+          session.value.selected_skins[defIndex][team] = {}
+        }
+        session.value.selected_skins[defIndex][team].weapon_paint_id = paint
       } catch (error) {
         console.log(error)
       }
@@ -690,7 +700,8 @@ const app = createApp({
         session.value.selected_knife[TEAM_CT] = data.selected_knife[TEAM_CT] || data.selected_knife[TEAM_DEFAULT] || "weapon_knife"
         session.value.selected_music[TEAM_T] = data.selected_music[TEAM_T] || data.selected_music[TEAM_DEFAULT] || 0
         session.value.selected_music[TEAM_CT] = data.selected_music[TEAM_CT] || data.selected_music[TEAM_DEFAULT] || 0
-        session.value.selected_glove = data.selected_glove
+        session.value.selected_glove[TEAM_T] = data.selected_glove[TEAM_T] || data.selected_glove[TEAM_DEFAULT] || 0
+        session.value.selected_glove[TEAM_CT] = data.selected_glove[TEAM_CT] || data.selected_glove[TEAM_DEFAULT] || 0
         session.value.selected_agents[TEAM_T] = data.selected_agents[TEAM_T]
         session.value.selected_agents[TEAM_CT] = data.selected_agents[TEAM_CT]
         session.value.selected_pin[TEAM_T] = data.selected_pin[TEAM_T] || data.selected_pin[TEAM_DEFAULT] || 0
