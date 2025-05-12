@@ -338,7 +338,10 @@ const app = createApp({
         [TEAM_T]: 'weapon_knife',
         [TEAM_CT]: 'weapon_knife'
       },
-      selected_music: -1,
+      selected_music: {
+        [TEAM_T]: 0,
+        [TEAM_CT]: 0
+      },
       selected_pin: -1,
       selected_glove: -1,
       selected_agents: {
@@ -410,10 +413,10 @@ const app = createApp({
     })
 
     // Item Actions
-    const setMusic = async (music_id) => {
+    const setMusic = async (music_id, team) => {
       try {
-        await axios.post('./api/?action=set-music', { music_id })
-        session.value.selected_music = music_id
+        await axios.post('./api/?action=set-music', { music_id, team })
+        session.value.selected_music[team] = music_id
       } catch (error) {
         console.log(error)
       }
@@ -558,7 +561,8 @@ const app = createApp({
         session.value.selected_skins = data.selected_skins
         session.value.selected_knife[TEAM_T] = data.selected_knife[TEAM_T] || data.selected_knife[TEAM_DEFAULT] || "weapon_knife"
         session.value.selected_knife[TEAM_CT] = data.selected_knife[TEAM_CT] || data.selected_knife[TEAM_DEFAULT] || "weapon_knife"
-        session.value.selected_music = data.selected_music
+        session.value.selected_music[TEAM_T] = data.selected_music[TEAM_T] || data.selected_music[TEAM_DEFAULT] || 0
+        session.value.selected_music[TEAM_CT] = data.selected_music[TEAM_CT] || data.selected_music[TEAM_DEFAULT] || 0
         session.value.selected_glove = data.selected_glove
         session.value.selected_agents.t = data.selected_agents.t
         session.value.selected_agents.ct = data.selected_agents.ct

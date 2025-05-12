@@ -365,20 +365,34 @@
           <v-text-field label="Search" v-model="musicsSearchInput"></v-text-field>
           <v-row>
             <v-col cols="6" md="3" lg="2">
-              <v-card @click="setMusic('-1')">
+              <v-card class="cursor-pointer">
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item @click="setMusic(0, TEAM_T)">T</v-list-item>
+                    <v-list-item @click="setMusic(0, TEAM_CT)">CT</v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-img src="https://placehold.co/256x198?text=Default">
-                  <v-overlay :model-value="session.selected_music == -1" contained class="align-center justify-center">
-                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
+                    <v-icon size="30" color="orange" v-if="session.selected_music[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
+                    <v-icon size="30" color="blue" v-if="session.selected_music[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
                 <v-card-title>Default</v-card-title>
               </v-card>
             </v-col>
             <v-col cols="6" md="3" lg="2" v-for="music in musicsFiltered" :key="music.id">
-              <v-card @click="setMusic(music.id)">
+              <v-card class="cursor-pointer">
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item @click="setMusic(music.id, TEAM_T)">T</v-list-item>
+                    <v-list-item @click="setMusic(music.id, TEAM_CT)">CT</v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-img :src="music.image">
-                  <v-overlay :model-value="session.selected_music == music.id" contained class="align-center justify-center">
-                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
+                    <v-icon size="30" color="orange" v-if="session.selected_music[TEAM_T] == music.id">mdi-check-circle-outline</v-icon>
+                    <v-icon size="30" color="blue" v-if="session.selected_music[TEAM_CT] == music.id">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
                 <v-card-title>{{ music.name }}</v-card-title>

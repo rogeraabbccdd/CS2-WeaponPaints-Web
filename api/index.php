@@ -19,7 +19,7 @@
       $selectedSkins = [];
       $selectedKnife[0] = "weapon_knife";
       $selectedGlove = "";
-      $selectedMusic = "";
+      $selectedMusic[0] = 0;
       $selectedAgent = "";
       $selectedPin = "";
       if (isset($_SESSION["steamid"])) {
@@ -57,9 +57,21 @@
 
         $selectedGloveDefIndex = $db->select("SELECT * FROM `wp_player_gloves` WHERE `wp_player_gloves`.`steamid` = :steamid", ["steamid" => $steamid]);
         $selectedGlove = -1;
-        $selectedMusic = $db->select("SELECT * FROM `wp_player_music` WHERE `wp_player_music`.`steamid` = :steamid", ["steamid" => $steamid]);
+
+        $selectedMusicRows = $db->select("SELECT * FROM `wp_player_music` WHERE `wp_player_music`.`steamid` = :steamid", ["steamid" => $steamid]);
+        $selectedMusic = [];
+        foreach ($selectedMusicRows as $row) {
+          $selectedMusic[$row['weapon_team']] = $row['music_id'];
+        }
+
+        if (empty($selectedMusic)) {
+          $selectedMusic[0] = 0;
+        }
+        
         $selectedPin = $db->select("SELECT * FROM `wp_player_pins` WHERE `wp_player_pins`.`steamid` = :steamid", ["steamid" => $steamid]);
+
         $selectedAgent = $db->select("SELECT * FROM `wp_player_agents` WHERE `wp_player_agents`.`steamid` = :steamid", ["steamid" => $steamid]);
+        
         if (isset($selectedGloveDefIndex) && count($selectedGloveDefIndex) > 0) {
           $selectedGlovePaint = $db->select("SELECT weapon_paint_id FROM `wp_player_skins`
                                         WHERE
@@ -79,7 +91,7 @@
         "selected_skins" => $selectedSkins,
         "selected_knife" => $selectedKnife,
         "selected_glove" => $selectedGlove,
-        "selected_music" => $selectedMusic[0]["music_id"] ?? -1,
+        "selected_music" => $selectedMusic,
         "selected_pin" => $selectedPin[0]["id"] ?? -1,
         "selected_agents" => array("t" => $selectedAgent[0]["agent_t"] ?? "", "ct" => $selectedAgent[0]["agent_ct"] ?? ""),
       ));
@@ -89,11 +101,7 @@
       if (!isset($_SESSION["steamid"]))   exit;
       if (!isset($_POST["music_id"]))     exit;
     
-      if ($_POST["music_id"] == "-1") {
-        $db->query("DELETE FROM `wp_player_music` WHERE steamid = :steamid", ["steamid" => $_SESSION["steamid"] ]);
-      } else {
-        $db->query("INSERT INTO `wp_player_music` VALUES(:steamid, 0, :music_id) ON DUPLICATE KEY UPDATE `music_id` = :music_id", ["steamid" => $_SESSION["steamid"], "music_id" => $_POST["music_id"]]);
-      }
+      $db->query("INSERT INTO `wp_player_music` VALUES(:steamid, :team, :music_id) ON DUPLICATE KEY UPDATE `music_id` = :music_id", ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "music_id" => $_POST["music_id"]]);
       break;
 
     case "set-pin":
