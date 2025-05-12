@@ -6,6 +6,7 @@
   <title>CS2 Weapon Paints</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.6.10/dist/vuetify.min.css">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
   <div id="app">
@@ -58,20 +59,34 @@
           <v-text-field label="Search" v-model="knifeSearchInput"></v-text-field>
           <v-row>
             <v-col cols="6" md="3" lg="2">
-              <v-card @click="setKnife('weapon_knife')">
+              <v-card class="cursor-pointer">
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item @click="setKnife('weapon_knife', TEAM_T)">T</v-list-item>
+                    <v-list-item @click="setKnife('weapon_knife', TEAM_CT)">CT</v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-img src="https://placehold.co/256x198?text=Default">
-                  <v-overlay :model-value="session.selected_knife == 'weapon_knife'" contained class="align-center justify-center">
-                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
+                    <v-icon size="30" color="orange" v-if="session.selected_knife[TEAM_T] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
+                    <v-icon size="30" color="blue" v-if="session.selected_knife[TEAM_CT] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
                 <v-card-title>Default</v-card-title>
               </v-card>
             </v-col>
             <v-col cols="6" md="3" lg="2" v-for="knife in knivesFiltered" :key="knife.weapon_name">
-              <v-card @click="setKnife(knife.weapon_name)">
+              <v-card class="cursor-pointer">
+                <v-menu activator="parent">
+                  <v-list>
+                    <v-list-item @click="setKnife(knife.weapon_name, TEAM_T)">T</v-list-item>
+                    <v-list-item @click="setKnife(knife.weapon_name, TEAM_CT)">CT</v-list-item>
+                  </v-list>
+                </v-menu>
                 <v-img :src="knife.image">
-                  <v-overlay :model-value="session.selected_knife == knife.weapon_name" contained class="align-center justify-center">
-                    <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
+                  <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
+                    <v-icon size="30" color="orange" v-if="session.selected_knife[TEAM_T] == knife.weapon_name">mdi-check-circle-outline</v-icon>
+                    <v-icon size="30" color="blue" v-if="session.selected_knife[TEAM_CT] == knife.weapon_name">mdi-check-circle-outline</v-icon>
                   </v-overlay>
                 </v-img>
                 <v-card-title>{{ knife.name }}</v-card-title>

@@ -17,7 +17,7 @@
       $avatar = "";
       $personname = "";
       $selectedSkins = [];
-      $selectedKnife = "";
+      $selectedKnife[0] = "weapon_knife";
       $selectedGlove = "";
       $selectedMusic = "";
       $selectedAgent = "";
@@ -46,7 +46,15 @@
             ];
         }
 
-        $selectedKnife = $db->select("SELECT * FROM `wp_player_knife` WHERE `wp_player_knife`.`steamid` = :steamid", ["steamid" => $steamid]);
+        $selectedKnifeRows = $db->select("SELECT * FROM `wp_player_knife` WHERE `wp_player_knife`.`steamid` = :steamid", ["steamid" => $steamid]);
+        $selectedKnife = [];
+        foreach ($selectedKnifeRows as $row) {
+          $selectedKnife[$row['weapon_team']] = $row['knife'];
+        }
+        if (empty($selectedKnife)) {
+          $selectedKnife[0] = "weapon_knife";
+        }
+
         $selectedGloveDefIndex = $db->select("SELECT * FROM `wp_player_gloves` WHERE `wp_player_gloves`.`steamid` = :steamid", ["steamid" => $steamid]);
         $selectedGlove = -1;
         $selectedMusic = $db->select("SELECT * FROM `wp_player_music` WHERE `wp_player_music`.`steamid` = :steamid", ["steamid" => $steamid]);
@@ -69,7 +77,7 @@
         "steam_avatar" => $avatar,
         "steam_personaname" => $personname,
         "selected_skins" => $selectedSkins,
-        "selected_knife" => $selectedKnife[0]["knife"] ?? "weapon_knife",
+        "selected_knife" => $selectedKnife,
         "selected_glove" => $selectedGlove,
         "selected_music" => $selectedMusic[0]["music_id"] ?? -1,
         "selected_pin" => $selectedPin[0]["id"] ?? -1,
@@ -102,7 +110,7 @@
     case "set-knife":
       if (!isset($_SESSION["steamid"]))   exit;
       if (!isset($_POST["knife"]))        exit;
-      $db->query("INSERT INTO `wp_player_knife` VALUES(:steamid, 0, :knife) ON DUPLICATE KEY UPDATE `knife` = :knife", ["steamid" => $_SESSION["steamid"], "knife" => $_POST["knife"]]);
+      $db->query("INSERT INTO `wp_player_knife` VALUES(:steamid, :team, :knife) ON DUPLICATE KEY UPDATE `knife` = :knife", ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "knife" => $_POST["knife"]]);
       break;
 
     case "set-agent":

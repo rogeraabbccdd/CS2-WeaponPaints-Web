@@ -20,6 +20,11 @@ const app = createApp({
     const page = ref(['skins'])
     const tabAgentsTeam = ref('terrorists')
 
+    // Consts
+    const TEAM_T = 2
+    const TEAM_CT = 3
+    const TEAM_DEFAULT = 0
+
     // Weapon Modal
     const modalSkin = ref({
       open: false,
@@ -329,7 +334,10 @@ const app = createApp({
       steam_avatar: '',
       steam_personaname: '',
       selected_skins: {},
-      selected_knife: 'weapon_knife',
+      selected_knife: {
+        [TEAM_T]: 'weapon_knife',
+        [TEAM_CT]: 'weapon_knife'
+      },
       selected_music: -1,
       selected_pin: -1,
       selected_glove: -1,
@@ -418,10 +426,10 @@ const app = createApp({
         console.log(error)
       }
     }
-    const setKnife = async (knife) => {
+    const setKnife = async (knife, team) => {
       try {
-        await axios.post('./api/?action=set-knife', { knife })
-        session.value.selected_knife = knife
+        await axios.post('./api/?action=set-knife', { knife, team })
+        session.value.selected_knife[team] = knife
       } catch (error) {
         console.log(error)
       }
@@ -548,7 +556,8 @@ const app = createApp({
         session.value.steam_avatar = data.steam_avatar
         session.value.steam_personaname = data.steam_personaname
         session.value.selected_skins = data.selected_skins
-        session.value.selected_knife = data.selected_knife
+        session.value.selected_knife[TEAM_T] = data.selected_knife[TEAM_T] || data.selected_knife[TEAM_DEFAULT] || "weapon_knife"
+        session.value.selected_knife[TEAM_CT] = data.selected_knife[TEAM_CT] || data.selected_knife[TEAM_DEFAULT] || "weapon_knife"
         session.value.selected_music = data.selected_music
         session.value.selected_glove = data.selected_glove
         session.value.selected_agents.t = data.selected_agents.t
@@ -633,7 +642,9 @@ const app = createApp({
       setGlove,
       setSkin,
       setSticker,
-      setKeychain
+      setKeychain,
+      TEAM_T,
+      TEAM_CT
     }
   }
 })
