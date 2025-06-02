@@ -70,7 +70,7 @@
                     <v-list-item @click="setKnife('weapon_knife', TEAM_CT)">CT</v-list-item>
                   </v-list>
                 </v-menu>
-                <v-img src="https://placehold.co/256x198?text=Default">
+                <v-img src="./images/default.svg">
                   <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                     <v-icon size="30" color="orange" v-if="session.selected_knife[TEAM_T] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
                     <v-icon size="30" color="blue" v-if="session.selected_knife[TEAM_CT] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
@@ -321,7 +321,7 @@
                     <v-list-item @click="setGlove(0, 0, TEAM_CT)">CT</v-list-item>
                   </v-list>
                 </v-menu>
-                <v-img src="https://placehold.co/256x198?text=Default">
+                <v-img src="./images/default.svg">
                   <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                     <v-icon size="30" color="orange" v-if="session.selected_glove[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
                     <v-icon size="30" color="blue" v-if="session.selected_glove[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
@@ -373,7 +373,7 @@
           <v-row>
             <v-col cols="6" md="3" lg="2">
               <v-card @click="setAgent('null')">
-                <v-img src="https://placehold.co/256x198?text=Default">
+                <v-img src="./images/default.svg">
                   <v-overlay :model-value="tabAgentsTeam == TEAM_T ? session.selected_agents[TEAM_T] == '' : session.selected_agents[TEAM_CT] == ''" contained class="align-center justify-center">
                     <v-icon size="128" color="green">mdi-check-circle-outline</v-icon>
                   </v-overlay>
@@ -405,7 +405,7 @@
                     <v-list-item @click="setMusic(0, TEAM_CT)">CT</v-list-item>
                   </v-list>
                 </v-menu>
-                <v-img src="https://placehold.co/256x198?text=Default">
+                <v-img src="./images/default.svg">
                   <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                     <v-icon size="30" color="orange" v-if="session.selected_music[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
                     <v-icon size="30" color="blue" v-if="session.selected_music[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
@@ -445,7 +445,7 @@
                     <v-list-item @click="setPin(0, TEAM_CT)">CT</v-list-item>
                   </v-list>
                 </v-menu>
-                <v-img src="https://placehold.co/256x198?text=Default">
+                <v-img src="./images/default.svg">
                   <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                     <v-icon size="30" color="orange" v-if="session.selected_pin[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
                     <v-icon size="30" color="blue" v-if="session.selected_pin[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
