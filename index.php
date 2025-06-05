@@ -175,7 +175,11 @@
                   <v-divider class="mb-3"></v-divider>
                   <v-row>
                     <v-col cols="12">
-                      <v-text-field label="Search" v-model="modalSkin.search.input" @update:model-value="onModalSkinSearch"></v-text-field>
+                      <v-text-field label="Search" v-model="modalSkin.search.input" @update:model-value="onModalSkinSearch">
+                        <template #append>
+                          <v-checkbox label="All Weapons" v-model="modalSkin.search.all" hide-details @input="onModalSkinSearch"></v-checkbox>
+                        </template>
+                      </v-text-field>
                     </v-col>
                     <v-col cols="6" md="3" lg="2" xl="1" v-for="skin in modalSkinSearchResultItems" :key="skin.id">
                       <v-card @click="onModalSkinSelect(skin)" variant="text" v-tooltip:top="skin.name">

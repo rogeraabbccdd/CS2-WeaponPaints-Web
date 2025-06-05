@@ -52,6 +52,7 @@ const app = createApp({
         page: 1,
         pages: 1,
         input: '',
+        all: false,
         itemsPerPage: 24,
         results: []
       },
@@ -237,9 +238,8 @@ const app = createApp({
       // Search form
       modalSkin.value.search.page = 1
       modalSkin.value.search.pages = 1
-      modalSkin.value.search.input = ''
       modalSkin.value.search.results = []
-      modalSkin.value.search.input = modalSkin.value.weapon_name
+      modalSkin.value.search.input = ''
 
       tabSkinsTeam.value = TEAM_T
 
@@ -252,7 +252,11 @@ const app = createApp({
     }
     const onModalSkinSearch = () => {
       modalSkin.value.search.page = 1
-      modalSkin.value.search.results = skins.value.filter(skin => modalSkin.value.search.input === '' ? true : skin.name.toUpperCase().includes(modalSkin.value.search.input.toUpperCase()))
+      modalSkin.value.search.results = skins.value.filter(skin => {
+        if (skin.weapon.weapon_id !== modalSkin.value.weapon_defindex && !modalSkin.value.search.all) return false
+        else if (modalSkin.value.search.input === '') return true
+        else return skin.name.toUpperCase().includes(modalSkin.value.search.input.toUpperCase())
+      })
       const weapon = weapons.find(weapon => weapon.weapon_defindex == modalSkin.value.weapon_defindex)
       modalSkin.value.search.results.unshift({
         id: '-1',
