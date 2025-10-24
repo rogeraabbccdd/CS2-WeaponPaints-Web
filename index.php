@@ -300,7 +300,23 @@
                       <p class="text-center">{{ modalKeychain.keychain.name }}</p>
                     </v-col>
                     <v-col cols="12" md="6" align-self="center">
-                      <v-text-field label="Seed" v-model="modalKeychain.form.seed" @change="validateSeed('keychain')" hint="0 ~ 1000"></v-text-field>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-text-field label="Seed" v-model="modalKeychain.form.seed" @change="validateSeed('keychain')" hint="0 ~ 1000"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <v-text-field label="X" v-model="modalKeychain.form.x" hide-details></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <v-text-field label="Y" v-model="modalKeychain.form.y" hide-details></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="4">
+                          <v-text-field label="Z" v-model="modalKeychain.form.z" hide-details></v-text-field>
+                        </v-col>
+                        <v-col cols="12" class="text-center">
+                          <v-btn variant="outlined" color="primary" append-icon="mdi-open-in-new" href="https://cs2inspects.com/sticker-customizer" target="_blank">Sticker Customizer</v-btn>
+                        </v-col>
+                      </v-row>
                     </v-col>
                   </v-row>
                   <v-divider class="mb-3"></v-divider>
