@@ -178,7 +178,7 @@
                       <v-checkbox label="StatTrack" :true-value="1" :false-value="0" v-model="modalSkin.form[tabSkinsTeam].stattrack" hide-details></v-checkbox>
                     </v-col>
                   </v-row>
-                  <v-divider class="mb-3"></v-divider>
+                  <v-divider class="my-3"></v-divider>
                   <v-row>
                     <v-col cols="12">
                       <v-text-field label="Search" v-model="modalSkin.search.input" @update:model-value="onModalSkinSearch">
@@ -250,7 +250,7 @@
                       </v-row>
                     </v-col>
                   </v-row>
-                  <v-divider class="mb-3"></v-divider>
+                  <v-divider class="my-3"></v-divider>
                   <v-row>
                     <v-col cols="12">
                       <v-text-field label="Search" v-model="modalSticker.search.input" @update:model-value="onModalStickerSearch"></v-text-field>
@@ -319,7 +319,7 @@
                       </v-row>
                     </v-col>
                   </v-row>
-                  <v-divider class="mb-3"></v-divider>
+                  <v-divider class="my-3"></v-divider>
                   <v-row>
                     <v-col cols="12">
                       <v-text-field label="Search" v-model="modalKeychain.search.input" @update:model-value="onModalKeychainSearch"></v-text-field>
