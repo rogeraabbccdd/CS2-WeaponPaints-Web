@@ -263,7 +263,7 @@
       $lang = "en";
       if (isset($_GET["lang"])) $lang = $_GET["lang"];
       $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/skins.json");
+      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/skins.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
       curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
@@ -275,7 +275,7 @@
       $lang = "en";
       if (isset($_GET["lang"])) $lang = $_GET["lang"];
       $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/music_kits.json");
+      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/music_kits.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
       curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
@@ -287,7 +287,7 @@
       $lang = "en";
       if (isset($_GET["lang"])) $lang = $_GET["lang"];
       $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/agents.json");
+      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/agents.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
       curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
@@ -299,7 +299,7 @@
       $lang = "en";
       if (isset($_GET["lang"])) $lang = $_GET["lang"];
       $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/stickers.json");
+      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/stickers.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
       curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
@@ -311,7 +311,7 @@
       $lang = "en";
       if (isset($_GET["lang"])) $lang = $_GET["lang"];
       $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/keychains.json");
+      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/keychains.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
       curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
@@ -323,7 +323,7 @@
       $lang = "en";
       if (isset($_GET["lang"])) $lang = $_GET["lang"];
       $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://bymykel.github.io/CSGO-API/api/".$lang."/collectibles.json");
+      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/collectibles.json");
       curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
       curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($url);
