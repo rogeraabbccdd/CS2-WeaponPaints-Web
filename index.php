@@ -74,7 +74,7 @@
                   <v-img src="./images/default.svg">
                     <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                       <v-icon size="30" color="orange" v-if="session.selected_knife[TEAM_T] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
-                      <v-icon size="30" color="blue" v-if="session.selected_knife[TEAM_CT] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
+                      <v-icon size="30" color="light-blue" v-if="session.selected_knife[TEAM_CT] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
                     </v-overlay>
                   </v-img>
                   <v-card-title>Default</v-card-title>
@@ -91,7 +91,7 @@
                   <v-img :src="knife.image">
                     <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                       <v-icon size="30" color="orange" v-if="session.selected_knife[TEAM_T] == knife.weapon_name">mdi-check-circle-outline</v-icon>
-                      <v-icon size="30" color="blue" v-if="session.selected_knife[TEAM_CT] == knife.weapon_name">mdi-check-circle-outline</v-icon>
+                      <v-icon size="30" color="light-blue" v-if="session.selected_knife[TEAM_CT] == knife.weapon_name">mdi-check-circle-outline</v-icon>
                     </v-overlay>
                   </v-img>
                   <v-card-title>{{ knife.name }}</v-card-title>
@@ -120,7 +120,7 @@
                   <v-btn icon="mdi-close" @click="closeModalSkin"></v-btn>
                 </v-toolbar>
                 <v-card-text>
-                  <v-tabs v-model="tabSkinsTeam" fixed-tabs class="my-5">
+                  <v-tabs v-model="tabSkinsTeam" fixed-tabs class="my-5" :color="tabSkinsTeam == TEAM_T ? 'orange' : 'light-blue'">
                     <v-tab :value="TEAM_T">
                       T
                     </v-tab>
@@ -185,7 +185,7 @@
                       <v-card @click="onModalSkinSelect(skin)" variant="text" v-tooltip:top="skin.name">
                         <v-overlay :model-value="true" :scrim="false" contained class="justify-end" persistent>
                           <v-icon size="25" color="orange" v-if="modalSkin.form[TEAM_T].paint == skin.paint_index">mdi-check-circle-outline</v-icon>
-                          <v-icon size="25" color="blue" v-if="modalSkin.form[TEAM_CT].paint == skin.paint_index">mdi-check-circle-outline</v-icon>
+                          <v-icon size="25" color="light-blue" v-if="modalSkin.form[TEAM_CT].paint == skin.paint_index">mdi-check-circle-outline</v-icon>
                         </v-overlay>
                         <v-img :src="skin.image" height="90" :style="{filter: `drop-shadow(0px 0px 5px ${skin.rarity.color})` }"></v-img>
                       </v-card>
@@ -329,7 +329,7 @@
                   <v-img src="./images/default.svg">
                     <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                       <v-icon size="30" color="orange" v-if="session.selected_glove[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
-                      <v-icon size="30" color="blue" v-if="session.selected_glove[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
+                      <v-icon size="30" color="light-blue" v-if="session.selected_glove[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
                     </v-overlay>
                   </v-img>
                   <v-card-title>Default</v-card-title>
@@ -352,7 +352,7 @@
                         mdi-check-circle-outline
                       </v-icon>
                       <v-icon 
-                        size="30" color="blue"
+                        size="30" color="light-blue"
                         v-if="session.selected_glove[TEAM_CT] == glove.weapon.weapon_id && session.selected_skins[glove.weapon.weapon_id][TEAM_CT].weapon_paint_id == glove.paint_index"
                       >
                         mdi-check-circle-outline
@@ -366,7 +366,7 @@
           </v-container>
           <!-- Agents Page -->
           <v-container v-if="page[0] === 'agents'">
-            <v-tabs v-model="tabAgentsTeam" fixed-tabs class="my-5">
+            <v-tabs v-model="tabAgentsTeam" fixed-tabs class="my-5" :color="tabAgentsTeam == TEAM_T ? 'orange' : 'light-blue'">
               <v-tab :value="TEAM_T">
                 T
               </v-tab>
@@ -413,7 +413,7 @@
                   <v-img src="./images/default.svg">
                     <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                       <v-icon size="30" color="orange" v-if="session.selected_music[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
-                      <v-icon size="30" color="blue" v-if="session.selected_music[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
+                      <v-icon size="30" color="light-blue" v-if="session.selected_music[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
                     </v-overlay>
                   </v-img>
                   <v-card-title>Default</v-card-title>
@@ -430,7 +430,7 @@
                   <v-img :src="music.image">
                     <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                       <v-icon size="30" color="orange" v-if="session.selected_music[TEAM_T] == music.id">mdi-check-circle-outline</v-icon>
-                      <v-icon size="30" color="blue" v-if="session.selected_music[TEAM_CT] == music.id">mdi-check-circle-outline</v-icon>
+                      <v-icon size="30" color="light-blue" v-if="session.selected_music[TEAM_CT] == music.id">mdi-check-circle-outline</v-icon>
                     </v-overlay>
                   </v-img>
                   <v-card-title>{{ music.name }}</v-card-title>
@@ -453,7 +453,7 @@
                   <v-img src="./images/default.svg">
                     <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                       <v-icon size="30" color="orange" v-if="session.selected_pin[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
-                      <v-icon size="30" color="blue" v-if="session.selected_pin[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
+                      <v-icon size="30" color="light-blue" v-if="session.selected_pin[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
                     </v-overlay>
                   </v-img>
                   <v-card-title>Default</v-card-title>
@@ -470,7 +470,7 @@
                   <v-img :src="pin.image">
                     <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
                       <v-icon size="30" color="orange" v-if="session.selected_pin[TEAM_T] == pin.id">mdi-check-circle-outline</v-icon>
-                      <v-icon size="30" color="blue" v-if="session.selected_pin[TEAM_CT] == pin.id">mdi-check-circle-outline</v-icon>
+                      <v-icon size="30" color="light-blue" v-if="session.selected_pin[TEAM_CT] == pin.id">mdi-check-circle-outline</v-icon>
                     </v-overlay>
                   </v-img>
                   <v-card-title>{{ pin.name }}</v-card-title>
