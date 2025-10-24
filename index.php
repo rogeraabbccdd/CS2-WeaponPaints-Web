@@ -120,7 +120,7 @@
                   <v-btn icon="mdi-close" @click="closeModalSkin"></v-btn>
                 </v-toolbar>
                 <v-card-text>
-                  <v-tabs v-model="tabSkinsTeam" fixed-tabs class="my-5" :color="tabSkinsTeam == TEAM_T ? 'orange' : 'light-blue'">
+                  <v-tabs v-model="tabSkinsTeam" fixed-tabs class="mb-5" :color="tabSkinsTeam == TEAM_T ? 'orange' : 'light-blue'">
                     <v-tab :value="TEAM_T">
                       T
                     </v-tab>
@@ -133,31 +133,31 @@
                       <v-img :src="modalSkin.skin[tabSkinsTeam].image" height="150" :style="{filter: `drop-shadow(0px 0px 10px ${modalSkin.skin[tabSkinsTeam].color})` }"></v-img>
                       <p class="text-center">{{ modalSkin.skin[tabSkinsTeam].name }}</p>
                       <v-row class="my-1" v-if="!modalSkin.isKnife">
-                        <v-col style="width: 20%">
+                        <v-col>
                           <v-card class="text-center" variant="text" @click="openModalSticker(0)">
                             <v-img v-if="modalSkin.form[tabSkinsTeam].stickers0.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers0.image" height="50"></v-img>
                             <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
                           </v-card>
                         </v-col>
-                        <v-col style="width: 20%">
+                        <v-col>
                           <v-card class="text-center" variant="text" @click="openModalSticker(1)">
                             <v-img v-if="modalSkin.form[tabSkinsTeam].stickers1.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers1.image" height="50"></v-img>
                             <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
                           </v-card>
                         </v-col>
-                        <v-col style="width: 20%">
+                        <v-col>
                           <v-card class="text-center" variant="text" @click="openModalSticker(2)">
                             <v-img v-if="modalSkin.form[tabSkinsTeam].stickers2.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers2.image" height="50"></v-img>
                             <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
                           </v-card>
                         </v-col>
-                        <v-col style="width: 20%">
+                        <v-col>
                           <v-card class="text-center" variant="text" @click="openModalSticker(3)">
                             <v-img v-if="modalSkin.form[tabSkinsTeam].stickers3.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers3.image" height="50"></v-img>
                             <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
                           </v-card>
                         </v-col>
-                        <v-col style="width: 20%">
+                        <v-col>
                           <v-card class="text-center" variant="text" @click="openModalKeychain">
                             <v-img v-if="modalSkin.form[tabSkinsTeam].keychain.image.length > 0" :src="modalSkin.form[tabSkinsTeam].keychain.image" height="50"></v-img>
                             <v-icon v-else size="50" icon="mdi-key-chain" color="grey-darken-3"></v-icon>
@@ -169,7 +169,7 @@
                       <v-text-field label="Wear" v-model="modalSkin.form[tabSkinsTeam].wear" @change="validateWear('skin')" hint="0.001 ~ 1.0"></v-text-field>
                       <v-text-field label="Seed" v-model="modalSkin.form[tabSkinsTeam].seed" @change="validateSeed('skin')" hint="0 ~ 1000"></v-text-field>
                       <v-text-field label="Name Tag" v-model="modalSkin.form[tabSkinsTeam].name"></v-text-field>
-                      <v-checkbox label="StatTrack" :true-value="1" :false-value="0" v-model="modalSkin.form[tabSkinsTeam].stattrack"></v-checkbox>
+                      <v-checkbox label="StatTrack" :true-value="1" :false-value="0" v-model="modalSkin.form[tabSkinsTeam].stattrack" hide-details></v-checkbox>
                     </v-col>
                   </v-row>
                   <v-divider class="mb-3"></v-divider>
@@ -366,7 +366,7 @@
           </v-container>
           <!-- Agents Page -->
           <v-container v-if="page[0] === 'agents'">
-            <v-tabs v-model="tabAgentsTeam" fixed-tabs class="my-5" :color="tabAgentsTeam == TEAM_T ? 'orange' : 'light-blue'">
+            <v-tabs v-model="tabAgentsTeam" fixed-tabs class="mb-5" :color="tabAgentsTeam == TEAM_T ? 'orange' : 'light-blue'">
               <v-tab :value="TEAM_T">
                 T
               </v-tab>
