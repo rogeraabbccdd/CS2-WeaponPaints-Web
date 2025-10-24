@@ -553,6 +553,6 @@
   <script src="https://cdn.jsdelivr.net/npm/vuetify@3.7.2/dist/vuetify.min.js"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js' integrity='sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==' crossorigin='anonymous'></script>
   <script src="./js/weapons.js"></script>
-  <script src="./js/app.js?upd=202410251621"></script>
+  <script src="./js/app.js?upd=202510241657"></script>
 </body>
 </html>
