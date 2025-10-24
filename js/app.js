@@ -66,27 +66,47 @@ const app = createApp({
           stickers0: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           stickers1: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           stickers2: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           stickers3: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           stickers4: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           keychain: {
             id: 0,
@@ -103,27 +123,47 @@ const app = createApp({
           stickers0: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           stickers1: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           stickers2: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           stickers3: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           stickers4: {
             id: 0,
             wear: 0.001,
-            image: ''
+            image: '',
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotate: 0
           },
           keychain: {
             id: 0,
@@ -170,26 +210,52 @@ const app = createApp({
       modalSkin.value.form[TEAM_T].stattrack = session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_stattrak || 0
       modalSkin.value.form[TEAM_T].name = session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_nametag || ''
 
+      // id;schema;x;y;wear;scale;rotation
       const stickerT0 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_0 || '0;0;0;0;0;0;0').split(';')
       const stickerT1 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_1 || '0;0;0;0;0;0;0').split(';')
       const stickerT2 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_2 || '0;0;0;0;0;0;0').split(';')
       const stickerT3 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_3 || '0;0;0;0;0;0;0').split(';')
       const stickerT4 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_4 || '0;0;0;0;0;0;0').split(';')
+
       modalSkin.value.form[TEAM_T].stickers0.id = stickerT0[0]
-      modalSkin.value.form[TEAM_T].stickers0.wear = stickerT0[4] || 0.001
       modalSkin.value.form[TEAM_T].stickers0.image = stickerT0[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerT0[0])?.image
+      modalSkin.value.form[TEAM_T].stickers0.x = stickerT0[2] || 0
+      modalSkin.value.form[TEAM_T].stickers0.y = stickerT0[3] || 0
+      modalSkin.value.form[TEAM_T].stickers0.wear = stickerT0[4] || 0.001
+      modalSkin.value.form[TEAM_T].stickers0.scale = stickerT0[5] || 1
+      modalSkin.value.form[TEAM_T].stickers0.rotate = stickerT0[6] || 0
+
       modalSkin.value.form[TEAM_T].stickers1.id = stickerT1[0]
-      modalSkin.value.form[TEAM_T].stickers1.wear = stickerT1[4] || 0.001
       modalSkin.value.form[TEAM_T].stickers1.image = stickerT1[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerT1[0])?.image
+      modalSkin.value.form[TEAM_T].stickers1.x = stickerT1[2] || 0
+      modalSkin.value.form[TEAM_T].stickers1.y = stickerT1[3] || 0
+      modalSkin.value.form[TEAM_T].stickers1.wear = stickerT1[4] || 0.001
+      modalSkin.value.form[TEAM_T].stickers1.scale = stickerT1[5] || 1
+      modalSkin.value.form[TEAM_T].stickers1.rotate = stickerT1[6] || 0
+
       modalSkin.value.form[TEAM_T].stickers2.id = stickerT2[0]
-      modalSkin.value.form[TEAM_T].stickers2.wear = stickerT2[4] || 0.001
       modalSkin.value.form[TEAM_T].stickers2.image = stickerT2[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerT2[0])?.image
+      modalSkin.value.form[TEAM_T].stickers2.x = stickerT2[2] || 0
+      modalSkin.value.form[TEAM_T].stickers2.y = stickerT2[3] || 0
+      modalSkin.value.form[TEAM_T].stickers2.wear = stickerT2[4] || 0.001
+      modalSkin.value.form[TEAM_T].stickers2.scale = stickerT2[5] || 1
+      modalSkin.value.form[TEAM_T].stickers2.rotate = stickerT2[6] || 0
+
       modalSkin.value.form[TEAM_T].stickers3.id = stickerT3[0]
-      modalSkin.value.form[TEAM_T].stickers3.wear = stickerT3[4] || 0.001
       modalSkin.value.form[TEAM_T].stickers3.image = stickerT3[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerT3[0])?.image
+      modalSkin.value.form[TEAM_T].stickers3.x = stickerT3[2] || 0
+      modalSkin.value.form[TEAM_T].stickers3.y = stickerT3[3] || 0
+      modalSkin.value.form[TEAM_T].stickers3.wear = stickerT3[4] || 0.001
+      modalSkin.value.form[TEAM_T].stickers3.scale = stickerT3[5] || 1
+      modalSkin.value.form[TEAM_T].stickers3.rotate = stickerT3[6] || 0
+
       modalSkin.value.form[TEAM_T].stickers4.id = stickerT4[0]
-      modalSkin.value.form[TEAM_T].stickers4.wear = stickerT4[4] || 0.001
       modalSkin.value.form[TEAM_T].stickers4.image = stickerT4[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerT4[0])?.image
+      modalSkin.value.form[TEAM_T].stickers4.x = stickerT4[2] || 0
+      modalSkin.value.form[TEAM_T].stickers4.y = stickerT4[3] || 0
+      modalSkin.value.form[TEAM_T].stickers4.wear = stickerT4[4] || 0.001
+      modalSkin.value.form[TEAM_T].stickers4.scale = stickerT4[5] || 1
+      modalSkin.value.form[TEAM_T].stickers4.rotate = stickerT4[6] || 0
       
       const keychainT = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_keychain || '0;0;0;0;0').split(';')
       modalSkin.value.form[TEAM_T].keychain.id = keychainT[0] || 0
@@ -215,26 +281,52 @@ const app = createApp({
       modalSkin.value.form[TEAM_CT].stattrack = session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_stattrak || 0
       modalSkin.value.form[TEAM_CT].name = session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_nametag || ''
 
+      // id;schema;x;y;wear;scale;rotation
       const stickerCT0 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_0 || '0;0;0;0;0;0;0').split(';')
       const stickerCT1 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_1 || '0;0;0;0;0;0;0').split(';')
       const stickerCT2 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_2 || '0;0;0;0;0;0;0').split(';')
       const stickerCT3 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_3 || '0;0;0;0;0;0;0').split(';')
       const stickerCT4 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_4 || '0;0;0;0;0;0;0').split(';')
+
       modalSkin.value.form[TEAM_CT].stickers0.id = stickerCT0[0]
-      modalSkin.value.form[TEAM_CT].stickers0.wear = stickerCT0[4] || 0.001
       modalSkin.value.form[TEAM_CT].stickers0.image = stickerCT0[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerCT0[0])?.image
+      modalSkin.value.form[TEAM_CT].stickers0.x = stickerCT0[2] || 0
+      modalSkin.value.form[TEAM_CT].stickers0.y = stickerCT0[3] || 0
+      modalSkin.value.form[TEAM_CT].stickers0.wear = stickerCT0[4] || 0.001
+      modalSkin.value.form[TEAM_CT].stickers0.scale = stickerCT0[5] || 1
+      modalSkin.value.form[TEAM_CT].stickers0.rotate = stickerCT0[6] || 0
+
       modalSkin.value.form[TEAM_CT].stickers1.id = stickerCT1[0]
-      modalSkin.value.form[TEAM_CT].stickers1.wear = stickerCT1[4] || 0.001
       modalSkin.value.form[TEAM_CT].stickers1.image = stickerCT1[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerCT1[0])?.image
+      modalSkin.value.form[TEAM_CT].stickers1.x = stickerCT1[2] || 0
+      modalSkin.value.form[TEAM_CT].stickers1.y = stickerCT1[3] || 0
+      modalSkin.value.form[TEAM_CT].stickers1.wear = stickerCT1[4] || 0.001
+      modalSkin.value.form[TEAM_CT].stickers1.scale = stickerCT1[5] || 1
+      modalSkin.value.form[TEAM_CT].stickers1.rotate = stickerCT1[6] || 0
+
       modalSkin.value.form[TEAM_CT].stickers2.id = stickerCT2[0]
-      modalSkin.value.form[TEAM_CT].stickers2.wear = stickerCT2[4] || 0.001
       modalSkin.value.form[TEAM_CT].stickers2.image = stickerCT2[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerCT2[0])?.image
+      modalSkin.value.form[TEAM_CT].stickers2.x = stickerCT2[2] || 0
+      modalSkin.value.form[TEAM_CT].stickers2.y = stickerCT2[3] || 0
+      modalSkin.value.form[TEAM_CT].stickers2.wear = stickerCT2[4] || 0.001
+      modalSkin.value.form[TEAM_CT].stickers2.scale = stickerCT2[5] || 1
+      modalSkin.value.form[TEAM_CT].stickers2.rotate = stickerCT2[6] || 0
+
       modalSkin.value.form[TEAM_CT].stickers3.id = stickerCT3[0]
-      modalSkin.value.form[TEAM_CT].stickers3.wear = stickerCT3[4] || 0.001
       modalSkin.value.form[TEAM_CT].stickers3.image = stickerCT3[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerCT3[0])?.image
+      modalSkin.value.form[TEAM_CT].stickers3.x = stickerCT3[2] || 0
+      modalSkin.value.form[TEAM_CT].stickers3.y = stickerCT3[3] || 0
+      modalSkin.value.form[TEAM_CT].stickers3.wear = stickerCT3[4] || 0.001
+      modalSkin.value.form[TEAM_CT].stickers3.scale = stickerCT3[5] || 1
+      modalSkin.value.form[TEAM_CT].stickers3.rotate = stickerCT3[6] || 0
+
       modalSkin.value.form[TEAM_CT].stickers4.id = stickerCT4[0]
-      modalSkin.value.form[TEAM_CT].stickers4.wear = stickerCT4[4] || 0.001
       modalSkin.value.form[TEAM_CT].stickers4.image = stickerCT4[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerCT4[0])?.image
+      modalSkin.value.form[TEAM_CT].stickers4.x = stickerCT4[2] || 0
+      modalSkin.value.form[TEAM_CT].stickers4.y = stickerCT4[3] || 0
+      modalSkin.value.form[TEAM_CT].stickers4.wear = stickerCT4[4] || 0.001
+      modalSkin.value.form[TEAM_CT].stickers4.scale = stickerCT4[5] || 1
+      modalSkin.value.form[TEAM_CT].stickers4.rotate = stickerCT4[6] || 0
       
       const keychain = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_keychain || '0;0;0;0;0').split(';')
       modalSkin.value.form[TEAM_CT].keychain.id = keychain[0] || 0
@@ -316,7 +408,11 @@ const app = createApp({
       },
       form: {
         wear: 0.001,
-        id: 0
+        id: 0,
+        x: 0,
+        y: 0,
+        scale: 1,
+        rotate: 0
       },
       sticker: {
         image: '',
@@ -332,6 +428,11 @@ const app = createApp({
       modalSticker.value.search.results = []
       modalSticker.value.open = true
       modalSticker.value.form.id = modalSkin.value.form[tabSkinsTeam.value]['stickers'+slot].id
+      modalSticker.value.form.wear = modalSkin.value.form[tabSkinsTeam.value]['stickers'+slot].wear
+      modalSticker.value.form.x = modalSkin.value.form[tabSkinsTeam.value]['stickers'+slot].x
+      modalSticker.value.form.y = modalSkin.value.form[tabSkinsTeam.value]['stickers'+slot].y
+      modalSticker.value.form.scale = modalSkin.value.form[tabSkinsTeam.value]['stickers'+slot].scale
+      modalSticker.value.form.rotate = modalSkin.value.form[tabSkinsTeam.value]['stickers'+slot].rotate
       if (modalSticker.value.form.id != 0) {
         const result = stickers.value.find(sticker => sticker.id == modalSticker.value.form.id)
         modalSticker.value.sticker.image = result.image
@@ -593,11 +694,12 @@ const app = createApp({
             seed: modalSkin.value.form[TEAM_T].seed,
             nametag: modalSkin.value.form[TEAM_T].name,
             stattrack: modalSkin.value.form[TEAM_T].stattrack,
-            sticker0: `${modalSkin.value.form[TEAM_T].stickers0.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers0.wear};0;0`,
-            sticker1: `${modalSkin.value.form[TEAM_T].stickers1.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers1.wear};0;0`,
-            sticker2: `${modalSkin.value.form[TEAM_T].stickers2.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers2.wear};0;0`,
-            sticker3: `${modalSkin.value.form[TEAM_T].stickers3.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers3.wear};0;0`,
-            sticker4: `${modalSkin.value.form[TEAM_T].stickers4.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers4.wear};0;0`,
+            // id;schema;x;y;wear;scale;rotation
+            sticker0: `${modalSkin.value.form[TEAM_T].stickers0.id};0;${modalSkin.value.form[TEAM_T].stickers0.x};${modalSkin.value.form[TEAM_T].stickers0.y};${modalSkin.value.form[TEAM_T].stickers0.wear};${modalSkin.value.form[TEAM_T].stickers0.scale};${modalSkin.value.form[TEAM_T].stickers0.rotate}`,
+            sticker1: `${modalSkin.value.form[TEAM_T].stickers1.id};0;${modalSkin.value.form[TEAM_T].stickers1.x};${modalSkin.value.form[TEAM_T].stickers1.y};${modalSkin.value.form[TEAM_T].stickers1.wear};${modalSkin.value.form[TEAM_T].stickers1.scale};${modalSkin.value.form[TEAM_T].stickers1.rotate}`,
+            sticker2: `${modalSkin.value.form[TEAM_T].stickers2.id};0;${modalSkin.value.form[TEAM_T].stickers2.x};${modalSkin.value.form[TEAM_T].stickers2.y};${modalSkin.value.form[TEAM_T].stickers2.wear};${modalSkin.value.form[TEAM_T].stickers2.scale};${modalSkin.value.form[TEAM_T].stickers2.rotate}`,
+            sticker3: `${modalSkin.value.form[TEAM_T].stickers3.id};0;${modalSkin.value.form[TEAM_T].stickers3.x};${modalSkin.value.form[TEAM_T].stickers3.y};${modalSkin.value.form[TEAM_T].stickers3.wear};${modalSkin.value.form[TEAM_T].stickers3.scale};${modalSkin.value.form[TEAM_T].stickers3.rotate}`,
+            sticker4: `${modalSkin.value.form[TEAM_T].stickers4.id};0;${modalSkin.value.form[TEAM_T].stickers4.x};${modalSkin.value.form[TEAM_T].stickers4.y};${modalSkin.value.form[TEAM_T].stickers4.wear};${modalSkin.value.form[TEAM_T].stickers4.scale};${modalSkin.value.form[TEAM_T].stickers4.rotate}`,
             keychain: `${modalSkin.value.form[TEAM_T].keychain.id};0;0;0;${modalSkin.value.form[TEAM_T].keychain.seed}`,
           },
           [TEAM_CT]: {
@@ -607,11 +709,12 @@ const app = createApp({
             seed: modalSkin.value.form[TEAM_CT].seed,
             nametag: modalSkin.value.form[TEAM_CT].name,
             stattrack: modalSkin.value.form[TEAM_CT].stattrack,
-            sticker0: `${modalSkin.value.form[TEAM_CT].stickers0.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers0.wear};0;0`,
-            sticker1: `${modalSkin.value.form[TEAM_CT].stickers1.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers1.wear};0;0`,
-            sticker2: `${modalSkin.value.form[TEAM_CT].stickers2.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers2.wear};0;0`,
-            sticker3: `${modalSkin.value.form[TEAM_CT].stickers3.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers3.wear};0;0`,
-            sticker4: `${modalSkin.value.form[TEAM_CT].stickers4.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers4.wear};0;0`,
+            // id;schema;x;y;wear;scale;rotation
+            sticker0: `${modalSkin.value.form[TEAM_CT].stickers0.id};0;${modalSkin.value.form[TEAM_CT].stickers0.x};${modalSkin.value.form[TEAM_CT].stickers0.y};${modalSkin.value.form[TEAM_CT].stickers0.wear};${modalSkin.value.form[TEAM_CT].stickers0.scale};${modalSkin.value.form[TEAM_CT].stickers0.rotate}`,
+            sticker1: `${modalSkin.value.form[TEAM_CT].stickers1.id};0;${modalSkin.value.form[TEAM_CT].stickers1.x};${modalSkin.value.form[TEAM_CT].stickers1.y};${modalSkin.value.form[TEAM_CT].stickers1.wear};${modalSkin.value.form[TEAM_CT].stickers1.scale};${modalSkin.value.form[TEAM_CT].stickers1.rotate}`,
+            sticker2: `${modalSkin.value.form[TEAM_CT].stickers2.id};0;${modalSkin.value.form[TEAM_CT].stickers2.x};${modalSkin.value.form[TEAM_CT].stickers2.y};${modalSkin.value.form[TEAM_CT].stickers2.wear};${modalSkin.value.form[TEAM_CT].stickers2.scale};${modalSkin.value.form[TEAM_CT].stickers2.rotate}`,
+            sticker3: `${modalSkin.value.form[TEAM_CT].stickers3.id};0;${modalSkin.value.form[TEAM_CT].stickers3.x};${modalSkin.value.form[TEAM_CT].stickers3.y};${modalSkin.value.form[TEAM_CT].stickers3.wear};${modalSkin.value.form[TEAM_CT].stickers3.scale};${modalSkin.value.form[TEAM_CT].stickers3.rotate}`,
+            sticker4: `${modalSkin.value.form[TEAM_CT].stickers4.id};0;${modalSkin.value.form[TEAM_CT].stickers4.x};${modalSkin.value.form[TEAM_CT].stickers4.y};${modalSkin.value.form[TEAM_CT].stickers4.wear};${modalSkin.value.form[TEAM_CT].stickers4.scale};${modalSkin.value.form[TEAM_CT].stickers4.rotate}`,
             keychain: `${modalSkin.value.form[TEAM_CT].keychain.id};0;0;0;${modalSkin.value.form[TEAM_CT].keychain.seed}`,
           }
         })
@@ -622,11 +725,12 @@ const app = createApp({
             weapon_wear: modalSkin.value.form[TEAM_T].wear,
             weapon_nametag: modalSkin.value.form[TEAM_T].name,
             weapon_stattrak: modalSkin.value.form[TEAM_T].stattrack,
-            weapon_sticker_0: `${modalSkin.value.form[TEAM_T].stickers0.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers0.wear};0;0`,
-            weapon_sticker_1: `${modalSkin.value.form[TEAM_T].stickers1.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers1.wear};0;0`,
-            weapon_sticker_2: `${modalSkin.value.form[TEAM_T].stickers2.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers2.wear};0;0`,
-            weapon_sticker_3: `${modalSkin.value.form[TEAM_T].stickers3.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers3.wear};0;0`,
-            weapon_sticker_4: `${modalSkin.value.form[TEAM_T].stickers4.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers4.wear};0;0`,
+            // id;schema;x;y;wear;scale;rotation
+            weapon_sticker_0: `${modalSkin.value.form[TEAM_T].stickers0.id};0;${modalSkin.value.form[TEAM_T].stickers0.x};${modalSkin.value.form[TEAM_T].stickers0.y};${modalSkin.value.form[TEAM_T].stickers0.wear};${modalSkin.value.form[TEAM_T].stickers0.scale};${modalSkin.value.form[TEAM_T].stickers0.rotate}`,
+            weapon_sticker_1: `${modalSkin.value.form[TEAM_T].stickers1.id};0;${modalSkin.value.form[TEAM_T].stickers1.x};${modalSkin.value.form[TEAM_T].stickers1.y};${modalSkin.value.form[TEAM_T].stickers1.wear};${modalSkin.value.form[TEAM_T].stickers1.scale};${modalSkin.value.form[TEAM_T].stickers1.rotate}`,
+            weapon_sticker_2: `${modalSkin.value.form[TEAM_T].stickers2.id};0;${modalSkin.value.form[TEAM_T].stickers2.x};${modalSkin.value.form[TEAM_T].stickers2.y};${modalSkin.value.form[TEAM_T].stickers2.wear};${modalSkin.value.form[TEAM_T].stickers2.scale};${modalSkin.value.form[TEAM_T].stickers2.rotate}`,
+            weapon_sticker_3: `${modalSkin.value.form[TEAM_T].stickers3.id};0;${modalSkin.value.form[TEAM_T].stickers3.x};${modalSkin.value.form[TEAM_T].stickers3.y};${modalSkin.value.form[TEAM_T].stickers3.wear};${modalSkin.value.form[TEAM_T].stickers3.scale};${modalSkin.value.form[TEAM_T].stickers3.rotate}`,
+            weapon_sticker_4: `${modalSkin.value.form[TEAM_T].stickers4.id};0;${modalSkin.value.form[TEAM_T].stickers4.x};${modalSkin.value.form[TEAM_T].stickers4.y};${modalSkin.value.form[TEAM_T].stickers4.wear};${modalSkin.value.form[TEAM_T].stickers4.scale};${modalSkin.value.form[TEAM_T].stickers4.rotate}`,
             weapon_keychain: `${modalSkin.value.form[TEAM_T].keychain.id};0;0;0;${modalSkin.value.form[TEAM_T].keychain.seed}`,
           },
           [TEAM_CT]: {
@@ -635,11 +739,12 @@ const app = createApp({
             weapon_wear: modalSkin.value.form[TEAM_CT].wear,
             weapon_nametag: modalSkin.value.form[TEAM_CT].name,
             weapon_stattrak: modalSkin.value.form[TEAM_CT].stattrack,
-            weapon_sticker_0: `${modalSkin.value.form[TEAM_CT].stickers0.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers0.wear};0;0`,
-            weapon_sticker_1: `${modalSkin.value.form[TEAM_CT].stickers1.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers1.wear};0;0`,
-            weapon_sticker_2: `${modalSkin.value.form[TEAM_CT].stickers2.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers2.wear};0;0`,
-            weapon_sticker_3: `${modalSkin.value.form[TEAM_CT].stickers3.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers3.wear};0;0`,
-            weapon_sticker_4: `${modalSkin.value.form[TEAM_CT].stickers4.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers4.wear};0;0`,
+            // id;schema;x;y;wear;scale;rotation
+            weapon_sticker_0: `${modalSkin.value.form[TEAM_CT].stickers0.id};0;${modalSkin.value.form[TEAM_CT].stickers0.x};${modalSkin.value.form[TEAM_CT].stickers0.y};${modalSkin.value.form[TEAM_CT].stickers0.wear};${modalSkin.value.form[TEAM_CT].stickers0.scale};${modalSkin.value.form[TEAM_CT].stickers0.rotate}`,
+            weapon_sticker_1: `${modalSkin.value.form[TEAM_CT].stickers1.id};0;${modalSkin.value.form[TEAM_CT].stickers1.x};${modalSkin.value.form[TEAM_CT].stickers1.y};${modalSkin.value.form[TEAM_CT].stickers1.wear};${modalSkin.value.form[TEAM_CT].stickers1.scale};${modalSkin.value.form[TEAM_CT].stickers1.rotate}`,
+            weapon_sticker_2: `${modalSkin.value.form[TEAM_CT].stickers2.id};0;${modalSkin.value.form[TEAM_CT].stickers2.x};${modalSkin.value.form[TEAM_CT].stickers2.y};${modalSkin.value.form[TEAM_CT].stickers2.wear};${modalSkin.value.form[TEAM_CT].stickers2.scale};${modalSkin.value.form[TEAM_CT].stickers2.rotate}`,
+            weapon_sticker_3: `${modalSkin.value.form[TEAM_CT].stickers3.id};0;${modalSkin.value.form[TEAM_CT].stickers3.x};${modalSkin.value.form[TEAM_CT].stickers3.y};${modalSkin.value.form[TEAM_CT].stickers3.wear};${modalSkin.value.form[TEAM_CT].stickers3.scale};${modalSkin.value.form[TEAM_CT].stickers3.rotate}`,
+            weapon_sticker_4: `${modalSkin.value.form[TEAM_CT].stickers4.id};0;${modalSkin.value.form[TEAM_CT].stickers4.x};${modalSkin.value.form[TEAM_CT].stickers4.y};${modalSkin.value.form[TEAM_CT].stickers4.wear};${modalSkin.value.form[TEAM_CT].stickers4.scale};${modalSkin.value.form[TEAM_CT].stickers4.rotate}`,
             weapon_keychain: `${modalSkin.value.form[TEAM_CT].keychain.id};0;0;0;${modalSkin.value.form[TEAM_CT].keychain.seed}`,
           }
         }
@@ -653,9 +758,17 @@ const app = createApp({
       if (modalSticker.value.form.id != 0) {
         modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].wear = modalSticker.value.form.wear
         modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].image = modalSticker.value.sticker.image
+        modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].x = modalSticker.value.form.x
+        modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].y = modalSticker.value.form.y
+        modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].scale = modalSticker.value.form.scale
+        modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].rotate = modalSticker.value.form.rotate
       } else {
         modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].wear = 0
         modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].image = ''
+        modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].x = 0
+        modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].y = 0
+        modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].scale = 1
+        modalSkin.value.form[tabSkinsTeam.value]['stickers'+modalSticker.value.slot].rotate = 0
       }
       closeModalSticker()
     }

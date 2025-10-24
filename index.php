@@ -217,7 +217,7 @@
             <v-dialog fullscreen v-model="modalSticker.open" persistent>
               <v-card>
                 <v-toolbar color="secondary">
-                  <v-toolbar-title>Edit Sticker</v-toolbar-title>
+                  <v-toolbar-title>Edit Sticker Slot {{ modalSticker.slot }}</v-toolbar-title>
                   <v-spacer></v-spacer>
                   <v-btn icon="mdi-close" @click="closeModalSticker"></v-btn>
                 </v-toolbar>
@@ -228,7 +228,26 @@
                       <p class="text-center">{{ modalSticker.sticker.name }}</p>
                     </v-col>
                     <v-col cols="12" md="6" align-self="center">
-                      <v-text-field label="Wear" v-model="modalSticker.form.wear" @change="validateWear('sticker')" hint="0.001 ~ 1.0"></v-text-field>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-text-field label="Wear" v-model="modalSticker.form.wear" @change="validateWear('sticker')" hint="0.001 ~ 1.0" hide-details="auto"></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field label="X" v-model="modalSticker.form.x" hide-details></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field label="Y" v-model="modalSticker.form.y" hide-details></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field label="Scale" v-model="modalSticker.form.scale" hide-details></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                          <v-text-field label="Rotate" v-model="modalSticker.form.rotate" hide-details></v-text-field>
+                        </v-col>
+                        <v-col cols="12" class="text-center">
+                          <v-btn variant="outlined" color="primary" append-icon="mdi-open-in-new" href="https://cs2inspects.com/sticker-customizer" target="_blank">Sticker Customizer</v-btn>
+                        </v-col>
+                      </v-row>
                     </v-col>
                   </v-row>
                   <v-divider class="mb-3"></v-divider>
