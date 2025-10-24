@@ -83,6 +83,11 @@ const app = createApp({
             wear: 0.001,
             image: ''
           },
+          stickers4: {
+            id: 0,
+            wear: 0.001,
+            image: ''
+          },
           keychain: {
             id: 0,
             seed: 0,
@@ -111,6 +116,11 @@ const app = createApp({
             image: ''
           },
           stickers3: {
+            id: 0,
+            wear: 0.001,
+            image: ''
+          },
+          stickers4: {
             id: 0,
             wear: 0.001,
             image: ''
@@ -164,6 +174,7 @@ const app = createApp({
       const stickerT1 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_1 || '0;0;0;0;0;0;0').split(';')
       const stickerT2 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_2 || '0;0;0;0;0;0;0').split(';')
       const stickerT3 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_3 || '0;0;0;0;0;0;0').split(';')
+      const stickerT4 = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_sticker_4 || '0;0;0;0;0;0;0').split(';')
       modalSkin.value.form[TEAM_T].stickers0.id = stickerT0[0]
       modalSkin.value.form[TEAM_T].stickers0.wear = stickerT0[4] || 0.001
       modalSkin.value.form[TEAM_T].stickers0.image = stickerT0[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerT0[0])?.image
@@ -176,6 +187,9 @@ const app = createApp({
       modalSkin.value.form[TEAM_T].stickers3.id = stickerT3[0]
       modalSkin.value.form[TEAM_T].stickers3.wear = stickerT3[4] || 0.001
       modalSkin.value.form[TEAM_T].stickers3.image = stickerT3[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerT3[0])?.image
+      modalSkin.value.form[TEAM_T].stickers4.id = stickerT4[0]
+      modalSkin.value.form[TEAM_T].stickers4.wear = stickerT4[4] || 0.001
+      modalSkin.value.form[TEAM_T].stickers4.image = stickerT4[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerT4[0])?.image
       
       const keychainT = (session.value.selected_skins?.[defIndex]?.[TEAM_T]?.weapon_keychain || '0;0;0;0;0').split(';')
       modalSkin.value.form[TEAM_T].keychain.id = keychainT[0] || 0
@@ -205,6 +219,7 @@ const app = createApp({
       const stickerCT1 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_1 || '0;0;0;0;0;0;0').split(';')
       const stickerCT2 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_2 || '0;0;0;0;0;0;0').split(';')
       const stickerCT3 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_3 || '0;0;0;0;0;0;0').split(';')
+      const stickerCT4 = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_sticker_4 || '0;0;0;0;0;0;0').split(';')
       modalSkin.value.form[TEAM_CT].stickers0.id = stickerCT0[0]
       modalSkin.value.form[TEAM_CT].stickers0.wear = stickerCT0[4] || 0.001
       modalSkin.value.form[TEAM_CT].stickers0.image = stickerCT0[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerCT0[0])?.image
@@ -217,6 +232,9 @@ const app = createApp({
       modalSkin.value.form[TEAM_CT].stickers3.id = stickerCT3[0]
       modalSkin.value.form[TEAM_CT].stickers3.wear = stickerCT3[4] || 0.001
       modalSkin.value.form[TEAM_CT].stickers3.image = stickerCT3[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerCT3[0])?.image
+      modalSkin.value.form[TEAM_CT].stickers4.id = stickerCT4[0]
+      modalSkin.value.form[TEAM_CT].stickers4.wear = stickerCT4[4] || 0.001
+      modalSkin.value.form[TEAM_CT].stickers4.image = stickerCT4[0] == '0' ? '' : stickers.value.find(sticker => sticker.id == stickerCT4[0])?.image
       
       const keychain = (session.value.selected_skins?.[defIndex]?.[TEAM_CT]?.weapon_keychain || '0;0;0;0;0').split(';')
       modalSkin.value.form[TEAM_CT].keychain.id = keychain[0] || 0
@@ -579,6 +597,7 @@ const app = createApp({
             sticker1: `${modalSkin.value.form[TEAM_T].stickers1.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers1.wear};0;0`,
             sticker2: `${modalSkin.value.form[TEAM_T].stickers2.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers2.wear};0;0`,
             sticker3: `${modalSkin.value.form[TEAM_T].stickers3.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers3.wear};0;0`,
+            sticker4: `${modalSkin.value.form[TEAM_T].stickers4.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers4.wear};0;0`,
             keychain: `${modalSkin.value.form[TEAM_T].keychain.id};0;0;0;${modalSkin.value.form[TEAM_T].keychain.seed}`,
           },
           [TEAM_CT]: {
@@ -592,6 +611,7 @@ const app = createApp({
             sticker1: `${modalSkin.value.form[TEAM_CT].stickers1.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers1.wear};0;0`,
             sticker2: `${modalSkin.value.form[TEAM_CT].stickers2.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers2.wear};0;0`,
             sticker3: `${modalSkin.value.form[TEAM_CT].stickers3.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers3.wear};0;0`,
+            sticker4: `${modalSkin.value.form[TEAM_CT].stickers4.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers4.wear};0;0`,
             keychain: `${modalSkin.value.form[TEAM_CT].keychain.id};0;0;0;${modalSkin.value.form[TEAM_CT].keychain.seed}`,
           }
         })
@@ -606,6 +626,7 @@ const app = createApp({
             weapon_sticker_1: `${modalSkin.value.form[TEAM_T].stickers1.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers1.wear};0;0`,
             weapon_sticker_2: `${modalSkin.value.form[TEAM_T].stickers2.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers2.wear};0;0`,
             weapon_sticker_3: `${modalSkin.value.form[TEAM_T].stickers3.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers3.wear};0;0`,
+            weapon_sticker_4: `${modalSkin.value.form[TEAM_T].stickers4.id};0;0;0;${modalSkin.value.form[TEAM_T].stickers4.wear};0;0`,
             weapon_keychain: `${modalSkin.value.form[TEAM_T].keychain.id};0;0;0;${modalSkin.value.form[TEAM_T].keychain.seed}`,
           },
           [TEAM_CT]: {
@@ -618,6 +639,7 @@ const app = createApp({
             weapon_sticker_1: `${modalSkin.value.form[TEAM_CT].stickers1.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers1.wear};0;0`,
             weapon_sticker_2: `${modalSkin.value.form[TEAM_CT].stickers2.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers2.wear};0;0`,
             weapon_sticker_3: `${modalSkin.value.form[TEAM_CT].stickers3.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers3.wear};0;0`,
+            weapon_sticker_4: `${modalSkin.value.form[TEAM_CT].stickers4.id};0;0;0;${modalSkin.value.form[TEAM_CT].stickers4.wear};0;0`,
             weapon_keychain: `${modalSkin.value.form[TEAM_CT].keychain.id};0;0;0;${modalSkin.value.form[TEAM_CT].keychain.seed}`,
           }
         }

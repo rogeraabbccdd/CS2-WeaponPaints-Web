@@ -158,6 +158,12 @@
                           </v-card>
                         </v-col>
                         <v-col>
+                          <v-card class="text-center" variant="text" @click="openModalSticker(4)">
+                            <v-img v-if="modalSkin.form[tabSkinsTeam].stickers4.image.length > 0" :src="modalSkin.form[tabSkinsTeam].stickers4.image" height="50"></v-img>
+                            <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
+                          </v-card>
+                        </v-col>
+                        <v-col>
                           <v-card class="text-center" variant="text" @click="openModalKeychain">
                             <v-img v-if="modalSkin.form[tabSkinsTeam].keychain.image.length > 0" :src="modalSkin.form[tabSkinsTeam].keychain.image" height="50"></v-img>
                             <v-icon v-else size="50" icon="mdi-key-chain" color="grey-darken-3"></v-icon>

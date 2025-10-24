@@ -42,6 +42,7 @@
                 'weapon_sticker_1' => $weapon['weapon_sticker_1'],
                 'weapon_sticker_2' => $weapon['weapon_sticker_2'],
                 'weapon_sticker_3' => $weapon['weapon_sticker_3'],
+                'weapon_sticker_4' => $weapon['weapon_sticker_4'],
                 'weapon_keychain' => $weapon['weapon_keychain'],
             ];
         }
@@ -176,6 +177,7 @@
       if (!isset($_POST["2"]["sticker1"]))     exit;
       if (!isset($_POST["2"]["sticker2"]))     exit;
       if (!isset($_POST["2"]["sticker3"]))     exit;
+      if (!isset($_POST["2"]["sticker4"]))     exit;
       if (!isset($_POST["2"]["keychain"]))     exit;
       if (!isset($_POST["3"]))                 exit;
       if (!isset($_POST["3"]["defIndex"]))     exit;
@@ -188,6 +190,7 @@
       if (!isset($_POST["3"]["sticker1"]))     exit;
       if (!isset($_POST["3"]["sticker2"]))     exit;
       if (!isset($_POST["3"]["sticker3"]))     exit;
+      if (!isset($_POST["3"]["sticker4"]))     exit;
       if (!isset($_POST["3"]["keychain"]))     exit;
 
       if ($_POST["2"]["nametag"] == "")  $_POST["2"]["nametag"] = null;
@@ -196,7 +199,7 @@
       $db->query("INSERT INTO `wp_player_skins`
                 VALUES (
                   :steamid, :team, :defIndex, :paint, :wear, :seed, :nametag, :stattrack, 0, 
-                  :sticker0, :sticker1, :sticker2, :sticker3, '0;0;0;0;0;0;0',
+                  :sticker0, :sticker1, :sticker2, :sticker3, :sticker4,
                   :keychain
                 )
                 ON DUPLICATE KEY UPDATE 
@@ -206,6 +209,7 @@
                 `weapon_sticker_1` = :sticker1,
                 `weapon_sticker_2` = :sticker2,
                 `weapon_sticker_3` = :sticker3,
+                `weapon_sticker_4` = :sticker4,
                 `weapon_keychain` = :keychain
                 ",
                 [
@@ -221,6 +225,7 @@
                   "sticker1" => $_POST["2"]["sticker1"],
                   "sticker2" => $_POST["2"]["sticker2"],
                   "sticker3" => $_POST["2"]["sticker3"],
+                  "sticker4" => $_POST["2"]["sticker4"],
                   "keychain" => $_POST["2"]["keychain"],
                 ]
               );
@@ -229,7 +234,7 @@
       $db->query("INSERT INTO `wp_player_skins`
                 VALUES (
                   :steamid, :team, :defIndex, :paint, :wear, :seed, :nametag, :stattrack, 0, 
-                  :sticker0, :sticker1, :sticker2, :sticker3, '0;0;0;0;0;0;0',
+                  :sticker0, :sticker1, :sticker2, :sticker3, :sticker4,
                   :keychain
                 )
                 ON DUPLICATE KEY UPDATE 
@@ -239,6 +244,7 @@
                 `weapon_sticker_1` = :sticker1,
                 `weapon_sticker_2` = :sticker2,
                 `weapon_sticker_3` = :sticker3,
+                `weapon_sticker_4` = :sticker4,
                 `weapon_keychain` = :keychain
                 ",
                 [
@@ -254,6 +260,7 @@
                   "sticker1" => $_POST["3"]["sticker1"],
                   "sticker2" => $_POST["3"]["sticker2"],
                   "sticker3" => $_POST["3"]["sticker3"],
+                  "sticker4" => $_POST["3"]["sticker4"],
                   "keychain" => $_POST["3"]["keychain"],
                 ]
               );
