@@ -11,9 +11,7 @@ $steamauth['domainname'] = STEAM_DOMAIN_NAME; // The main URL of your website di
 $steamauth['logoutpage'] = STEAM_LOGOUT_PAGE; // Page to redirect to after a successfull logout (from the directory the SteamAuth-folder is located in) - NO slash at the beginning!
 $steamauth['loginpage'] = STEAM_LOGIN_PAGE; // Page to redirect to after a successfull login (from the directory the SteamAuth-folder is located in) - NO slash at the beginning!
 
-$protocol = "https://";
-
-$steamauth['domainname'] = $protocol . $steamauth['domainname'];
+$steamauth['domainname'] = $steamauth['domainname'];
 $steamauth['loginpage'] = $steamauth['domainname'] . "/" . $steamauth['loginpage'];
 $steamauth['logoutpage'] = $steamauth['domainname'] . "/" . $steamauth['logoutpage'];
 
