@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} ^/api$
+RewriteRule ^(.*)$ https://your-domain.com/api/ [L,R=301]

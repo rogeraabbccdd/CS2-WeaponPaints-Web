@@ -1,4 +1,12 @@
 <?php
+  /**
+   * CS2 WeaponPaints API Handler
+   * Fixed for PHP 8.2, Docker, and Nginx Proxy setups.
+   */
+  if (session_status() == PHP_SESSION_NONE) {
+      session_start();
+  }
+
   require_once '../class/config.php';
   require_once '../class/database.php';
   require_once '../steamauth/steamauth.php';
@@ -17,24 +25,25 @@
       $avatar = "";
       $personname = "";
       $selectedSkins = [];
-      $selectedKnife[0] = "weapon_knife";
-      $selectedGlove = 0;
-      $selectedMusic[0] = 0;
-      $selectedAgent = array(0 => 0);
-      $selectedPin[0] = 0;
-      if (isset($_SESSION["steamid"])) {
-        require_once "../steamauth/userInfo.php";
-        $steamid = $steamprofile['steamid'];
-        $avatar = $steamprofile['avatarmedium'];
-        $personname = $steamprofile['personaname'];
+      $selectedKnife = [2 => "weapon_knife", 3 => "weapon_knife"];
+      $selectedGlove = [2 => 0, 3 => 0];
+      $selectedMusic = [2 => 0, 3 => 0];
+      $selectedAgent = [2 => "", 3 => ""];
+      $selectedPin = [2 => 0, 3 => 0];
+
+      if (isset($_SESSION["steamid"]) && !empty($_SESSION["steamid"])) {
+        require_once __DIR__ . '/../steamauth/userInfo.php';
         
-        $querySelected = $db->select("SELECT * FROM `wp_player_skins` WHERE `wp_player_skins`.`steamid` = :steamid", ["steamid" => $steamid]);
-        $selectedSkins = [];
+        $steamid = $_SESSION["steamid"];
+        $avatar = $_SESSION['steam_avatarmedium'] ?? "";
+        $personname = $_SESSION['steam_personaname'] ?? "";
+
+        // Use absolute path via __DIR__ to avoid issues when called from subfolders
+        $querySelected = $db->select("SELECT * FROM `wp_player_skins` WHERE `steamid` = :steamid", ["steamid" => $steamid]);
         foreach ($querySelected as $weapon) {
             $selectedSkins[$weapon['weapon_defindex']][$weapon['weapon_team']] = [
                 'weapon_paint_id' => $weapon['weapon_paint_id'],
                 'weapon_seed' => $weapon['weapon_seed'],
-                'weapon_wear' => $weapon['weapon_wear'],
                 'weapon_wear' => $weapon['weapon_wear'],
                 'weapon_nametag' => $weapon['weapon_nametag'],
                 'weapon_stattrak' => $weapon['weapon_stattrak'],
@@ -47,295 +56,126 @@
             ];
         }
 
-        $selectedKnifeRows = $db->select("SELECT * FROM `wp_player_knife` WHERE `wp_player_knife`.`steamid` = :steamid", ["steamid" => $steamid]);
-        $selectedKnife = [];
+        // Fetch other categories (Knife, Gloves, Music, Pins, Agents)
+        $selectedKnifeRows = $db->select("SELECT * FROM `wp_player_knife` WHERE `steamid` = :steamid", ["steamid" => $steamid]);
         foreach ($selectedKnifeRows as $row) {
           $selectedKnife[$row['weapon_team']] = $row['knife'];
         }
-        if (empty($selectedKnife)) {
-          $selectedKnife[0] = "weapon_knife";
-        }
 
-        $selectedGloveDefIndexRows = $db->select("SELECT * FROM `wp_player_gloves` WHERE `wp_player_gloves`.`steamid` = :steamid", ["steamid" => $steamid]);
-        $selectedGlove = [];
-        foreach ($selectedGloveDefIndexRows as $row) {
+        $selectedGloveRows = $db->select("SELECT * FROM `wp_player_gloves` WHERE `steamid` = :steamid", ["steamid" => $steamid]);
+        foreach ($selectedGloveRows as $row) {
           $selectedGlove[$row['weapon_team']] = $row['weapon_defindex'];
         }
-        if (empty($selectedGlove)) {
-          $selectedGlove[0] = 0;
-        }
 
-        $selectedMusicRows = $db->select("SELECT * FROM `wp_player_music` WHERE `wp_player_music`.`steamid` = :steamid", ["steamid" => $steamid]);
-        $selectedMusic = [];
+        $selectedMusicRows = $db->select("SELECT * FROM `wp_player_music` WHERE `steamid` = :steamid", ["steamid" => $steamid]);
         foreach ($selectedMusicRows as $row) {
           $selectedMusic[$row['weapon_team']] = $row['music_id'];
         }
-        if (empty($selectedMusic)) {
-          $selectedMusic[0] = 0;
-        }
         
-        $selectedPinRows = $db->select("SELECT * FROM `wp_player_pins` WHERE `wp_player_pins`.`steamid` = :steamid", ["steamid" => $steamid]);
-        $selectedPin = [];
+        $selectedPinRows = $db->select("SELECT * FROM `wp_player_pins` WHERE `steamid` = :steamid", ["steamid" => $steamid]);
         foreach ($selectedPinRows as $row) {
           $selectedPin[$row['weapon_team']] = $row['id'];
         }
-        if (empty($selectedPin)) {
-          $selectedPin[0] = 0;
-        }
 
-        $selectedAgent = $db->select("SELECT * FROM `wp_player_agents` WHERE `wp_player_agents`.`steamid` = :steamid", ["steamid" => $steamid]);
-        
-        if (isset($selectedGloveDefIndex) && count($selectedGloveDefIndex) > 0) {
-          $selectedGlovePaint = $db->select("SELECT weapon_paint_id FROM `wp_player_skins`
-                                        WHERE
-                                          `wp_player_skins`.`steamid` = :steamid AND
-                                          weapon_defindex = :defIndex",
-                                          ["steamid" => $steamid, "defIndex" => $selectedGloveDefIndex[0]["weapon_defindex"]]
-                                      );
-          if (isset($selectedGlovePaint) && count($selectedGlovePaint) > 0) {
-            $selectedGlove = $selectedGlovePaint[0]["weapon_paint_id"];
-          }
+        $selectedAgentRows = $db->select("SELECT * FROM `wp_player_agents` WHERE `steamid` = :steamid", ["steamid" => $steamid]);
+        if (!empty($selectedAgentRows)) {
+            $selectedAgent = [
+                2 => $selectedAgentRows[0]["agent_t"] ?? "",
+                3 => $selectedAgentRows[0]["agent_ct"] ?? ""
+            ];
         }
       }
+
+      header('Content-Type: application/json');
       echo json_encode(array(
         "steamid" => $steamid,
+        // Doubled keys for frontend compatibility
         "steam_avatar" => $avatar,
+        "avatar" => $avatar, 
+        "avatarmedium" => $avatar,
+        
         "steam_personaname" => $personname,
+        "personaname" => $personname,
+        "personname" => $personname,
+        
         "selected_skins" => $selectedSkins,
         "selected_knife" => $selectedKnife,
         "selected_glove" => $selectedGlove,
         "selected_music" => $selectedMusic,
         "selected_pin" => $selectedPin,
-        "selected_agents" => array(2 => $selectedAgent[0]["agent_t"] ?? "", 3 => $selectedAgent[0]["agent_ct"] ?? ""),
+        "selected_agents" => $selectedAgent,
       ));
       break;
     
     case "set-music":
-      if (!isset($_SESSION["steamid"]))   exit;
-      if (!isset($_POST["music_id"]))     exit;
-    
+      if (!isset($_SESSION["steamid"])) exit;
       $db->query("INSERT INTO `wp_player_music` VALUES(:steamid, :team, :music_id) ON DUPLICATE KEY UPDATE `music_id` = :music_id", ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "music_id" => $_POST["music_id"]]);
       break;
 
     case "set-pin":
-      if (!isset($_SESSION["steamid"]))   exit;
-      if (!isset($_POST["pin_id"]))     exit;
-    
+      if (!isset($_SESSION["steamid"])) exit;
       $db->query("INSERT INTO `wp_player_pins` VALUES(:steamid, :team, :pin_id) ON DUPLICATE KEY UPDATE `id` = :pin_id", ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "pin_id" => $_POST["pin_id"]]);
       break;
 
     case "set-knife":
-      if (!isset($_SESSION["steamid"]))   exit;
-      if (!isset($_POST["knife"]))        exit;
+      if (!isset($_SESSION["steamid"])) exit;
       $db->query("INSERT INTO `wp_player_knife` VALUES(:steamid, :team, :knife) ON DUPLICATE KEY UPDATE `knife` = :knife", ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "knife" => $_POST["knife"]]);
       break;
 
     case "set-agent":
-      if (!isset($_SESSION["steamid"]))   exit;
-      if (!isset($_POST["team"]))         exit;
-      if (!isset($_POST["model"]))        exit;
-
-      if ($_POST["model"] == "null")      $_POST["model"] = null;
-
+      if (!isset($_SESSION["steamid"])) exit;
+      $model = ($_POST["model"] == "null") ? null : $_POST["model"];
       if ($_POST["team"] == "2") {
-        $db->query("INSERT INTO `wp_player_agents` (`steamid`, `agent_ct`, `agent_t`) VALUES(:steamid, NULL, :model) ON DUPLICATE KEY UPDATE `agent_t` = :model", ["steamid" => $_SESSION["steamid"], "model" => $_POST["model"]]);
+        $db->query("INSERT INTO `wp_player_agents` (`steamid`, `agent_ct`, `agent_t`) VALUES(:steamid, NULL, :model) ON DUPLICATE KEY UPDATE `agent_t` = :model", ["steamid" => $_SESSION["steamid"], "model" => $model]);
       } else if ($_POST["team"] == "3") {
-        $db->query("INSERT INTO `wp_player_agents` (`steamid`, `agent_ct`, `agent_t`) VALUES(:steamid, :model, NULL) ON DUPLICATE KEY UPDATE `agent_ct` = :model", ["steamid" => $_SESSION["steamid"], "model" => $_POST["model"]]);
+        $db->query("INSERT INTO `wp_player_agents` (`steamid`, `agent_ct`, `agent_t`) VALUES(:steamid, :model, NULL) ON DUPLICATE KEY UPDATE `agent_ct` = :model", ["steamid" => $_SESSION["steamid"], "model" => $model]);
       }
       break;
 
     case "set-glove":
-      if (!isset($_SESSION["steamid"]))   exit;
-      if (!isset($_POST["team"]))         exit;
-    
-      $db->query("INSERT INTO `wp_player_gloves` 
-                  VALUES(:steamid, :team, :defIndex)
-                  ON DUPLICATE KEY UPDATE
-                  `weapon_defindex` = :defIndex",
-                  ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "defIndex" => $_POST["defIndex"]]
-                );
-      $db->query("INSERT INTO `wp_player_skins` (`steamid`, `weapon_team`, `weapon_defindex`, `weapon_paint_id`, `weapon_wear`, `weapon_seed`) 
-                  VALUES (:steamid, :team, :defIndex, :paint, 0.001, 0)
-                  ON DUPLICATE KEY UPDATE
-                  `weapon_paint_id` = :paint
-                  ",
-                  ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "paint" => $_POST["paint"], "defIndex" => $_POST["defIndex"]]
-                );
-
+      if (!isset($_SESSION["steamid"])) exit;
+      $db->query("INSERT INTO `wp_player_gloves` VALUES(:steamid, :team, :defIndex) ON DUPLICATE KEY UPDATE `weapon_defindex` = :defIndex", ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "defIndex" => $_POST["defIndex"]]);
+      $db->query("INSERT INTO `wp_player_skins` (`steamid`, `weapon_team`, `weapon_defindex`, `weapon_paint_id`, `weapon_wear`, `weapon_seed`) VALUES (:steamid, :team, :defIndex, :paint, 0.001, 0) ON DUPLICATE KEY UPDATE `weapon_paint_id` = :paint", ["steamid" => $_SESSION["steamid"], "team" => $_POST["team"], "paint" => $_POST["paint"], "defIndex" => $_POST["defIndex"]]);
       break;
 
     case "set-skin":
-      if (!isset($_SESSION["steamid"]))        exit;
-      if (!isset($_POST["2"]))                 exit;
-      if (!isset($_POST["2"]["defIndex"]))     exit;
-      if (!isset($_POST["2"]["paint"]))        exit;
-      if (!isset($_POST["2"]["wear"]))         exit;
-      if (!isset($_POST["2"]["seed"]))         exit;
-      if (!isset($_POST["2"]["nametag"]))      exit;
-      if (!isset($_POST["2"]["stattrack"]))    exit;
-      if (!isset($_POST["2"]["sticker0"]))     exit;
-      if (!isset($_POST["2"]["sticker1"]))     exit;
-      if (!isset($_POST["2"]["sticker2"]))     exit;
-      if (!isset($_POST["2"]["sticker3"]))     exit;
-      if (!isset($_POST["2"]["sticker4"]))     exit;
-      if (!isset($_POST["2"]["keychain"]))     exit;
-      if (!isset($_POST["3"]))                 exit;
-      if (!isset($_POST["3"]["defIndex"]))     exit;
-      if (!isset($_POST["3"]["paint"]))        exit;
-      if (!isset($_POST["3"]["wear"]))         exit;
-      if (!isset($_POST["3"]["seed"]))         exit;
-      if (!isset($_POST["3"]["nametag"]))      exit;
-      if (!isset($_POST["3"]["stattrack"]))    exit;
-      if (!isset($_POST["3"]["sticker0"]))     exit;
-      if (!isset($_POST["3"]["sticker1"]))     exit;
-      if (!isset($_POST["3"]["sticker2"]))     exit;
-      if (!isset($_POST["3"]["sticker3"]))     exit;
-      if (!isset($_POST["3"]["sticker4"]))     exit;
-      if (!isset($_POST["3"]["keychain"]))     exit;
-
-      if ($_POST["2"]["nametag"] == "")  $_POST["2"]["nametag"] = null;
-      if ($_POST["3"]["nametag"] == "")  $_POST["3"]["nametag"] = null;
-
-      $db->query("INSERT INTO `wp_player_skins`
-                VALUES (
-                  :steamid, :team, :defIndex, :paint, :wear, :seed, :nametag, :stattrack, 0, 
-                  :sticker0, :sticker1, :sticker2, :sticker3, :sticker4,
-                  :keychain
-                )
-                ON DUPLICATE KEY UPDATE 
-                `weapon_paint_id` = :paint, `weapon_wear` = :wear, `weapon_seed` = :seed, `weapon_nametag` = :nametag,
-                `weapon_stattrak` = :stattrack,
-                `weapon_sticker_0` = :sticker0,
-                `weapon_sticker_1` = :sticker1,
-                `weapon_sticker_2` = :sticker2,
-                `weapon_sticker_3` = :sticker3,
-                `weapon_sticker_4` = :sticker4,
-                `weapon_keychain` = :keychain
-                ",
-                [
-                  "steamid" => $_SESSION["steamid"],
-                  "team" => 2,
-                  "defIndex" => $_POST["2"]["defIndex"],
-                  "paint" => $_POST["2"]["paint"],
-                  "wear" => $_POST["2"]["wear"],
-                  "seed" => $_POST["2"]["seed"],
-                  "nametag" => $_POST["2"]["nametag"],
-                  "stattrack" => $_POST["2"]["stattrack"],
-                  "sticker0" => $_POST["2"]["sticker0"],
-                  "sticker1" => $_POST["2"]["sticker1"],
-                  "sticker2" => $_POST["2"]["sticker2"],
-                  "sticker3" => $_POST["2"]["sticker3"],
-                  "sticker4" => $_POST["2"]["sticker4"],
-                  "keychain" => $_POST["2"]["keychain"],
-                ]
-              );
-
-      
-      $db->query("INSERT INTO `wp_player_skins`
-                VALUES (
-                  :steamid, :team, :defIndex, :paint, :wear, :seed, :nametag, :stattrack, 0, 
-                  :sticker0, :sticker1, :sticker2, :sticker3, :sticker4,
-                  :keychain
-                )
-                ON DUPLICATE KEY UPDATE 
-                `weapon_paint_id` = :paint, `weapon_wear` = :wear, `weapon_seed` = :seed, `weapon_nametag` = :nametag,
-                `weapon_stattrak` = :stattrack,
-                `weapon_sticker_0` = :sticker0,
-                `weapon_sticker_1` = :sticker1,
-                `weapon_sticker_2` = :sticker2,
-                `weapon_sticker_3` = :sticker3,
-                `weapon_sticker_4` = :sticker4,
-                `weapon_keychain` = :keychain
-                ",
-                [
-                  "steamid" => $_SESSION["steamid"],
-                  "team" => 3,
-                  "defIndex" => $_POST["3"]["defIndex"],
-                  "paint" => $_POST["3"]["paint"],
-                  "wear" => $_POST["3"]["wear"],
-                  "seed" => $_POST["3"]["seed"],
-                  "nametag" => $_POST["3"]["nametag"],
-                  "stattrack" => $_POST["3"]["stattrack"],
-                  "sticker0" => $_POST["3"]["sticker0"],
-                  "sticker1" => $_POST["3"]["sticker1"],
-                  "sticker2" => $_POST["3"]["sticker2"],
-                  "sticker3" => $_POST["3"]["sticker3"],
-                  "sticker4" => $_POST["3"]["sticker4"],
-                  "keychain" => $_POST["3"]["keychain"],
-                ]
-              );
+      if (!isset($_SESSION["steamid"])) exit;
+      foreach ([2, 3] as $team) {
+          if (!isset($_POST[$team])) continue;
+          $data = $_POST[$team];
+          $nametag = ($data["nametag"] == "") ? null : $data["nametag"];
+          $db->query("INSERT INTO `wp_player_skins` VALUES (:steamid, :team, :defIndex, :paint, :wear, :seed, :nametag, :stattrack, 0, :s0, :s1, :s2, :s3, :s4, :keychain) ON DUPLICATE KEY UPDATE `weapon_paint_id` = :paint, `weapon_wear` = :wear, `weapon_seed` = :seed, `weapon_nametag` = :nametag, `weapon_stattrak` = :stattrack, `weapon_sticker_0` = :s0, `weapon_sticker_1` = :s1, `weapon_sticker_2` = :s2, `weapon_sticker_3` = :s3, `weapon_sticker_4` = :s4, `weapon_keychain` = :keychain", [
+              "steamid" => $_SESSION["steamid"], "team" => $team, "defIndex" => $data["defIndex"], "paint" => $data["paint"], "wear" => $data["wear"], "seed" => $data["seed"], "nametag" => $nametag, "stattrack" => $data["stattrack"], "s0" => $data["sticker0"], "s1" => $data["sticker1"], "s2" => $data["sticker2"], "s3" => $data["sticker3"], "s4" => $data["sticker4"], "keychain" => $data["keychain"]
+          ]);
+      }
       break;
-    
+
     case "get-skins":
-      $lang = "en";
-      if (isset($_GET["lang"])) $lang = $_GET["lang"];
-      $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/skins.json");
-      curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
-      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
-      $result = curl_exec($url);
-      curl_close($url);
-      header('Content-Type: application/json');
-      break;
-
     case "get-musics":
-      $lang = "en";
-      if (isset($_GET["lang"])) $lang = $_GET["lang"];
-      $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/music_kits.json");
-      curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
-      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
-      $result = curl_exec($url);
-      curl_close($url);
-      header('Content-Type: application/json');
-      break;
-
     case "get-agents":
-      $lang = "en";
-      if (isset($_GET["lang"])) $lang = $_GET["lang"];
-      $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/agents.json");
-      curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
-      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
-      $result = curl_exec($url);
-      curl_close($url);
-      header('Content-Type: application/json');
-      break;
-
     case "get-stickers":
-      $lang = "en";
-      if (isset($_GET["lang"])) $lang = $_GET["lang"];
-      $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/stickers.json");
-      curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
-      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
-      $result = curl_exec($url);
-      curl_close($url);
-      header('Content-Type: application/json');
-      break;
-
     case "get-keychains":
-      $lang = "en";
-      if (isset($_GET["lang"])) $lang = $_GET["lang"];
-      $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/keychains.json");
-      curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
-      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
-      $result = curl_exec($url);
-      curl_close($url);
-      header('Content-Type: application/json');
-      break;
-
     case "get-pins":
-      $lang = "en";
-      if (isset($_GET["lang"])) $lang = $_GET["lang"];
-      $url = curl_init();
-      curl_setopt($url , CURLOPT_URL , "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/collectibles.json");
-      curl_setopt($url, CURLOPT_USERAGENT, USER_AGENT);
-      curl_setopt($url, CURLOPT_FOLLOWLOCATION, true);
-      $result = curl_exec($url);
-      curl_close($url);
+      $endpoints = [
+          "get-skins" => "skins.json",
+          "get-musics" => "music_kits.json",
+          "get-agents" => "agents.json",
+          "get-stickers" => "stickers.json",
+          "get-keychains" => "keychains.json",
+          "get-pins" => "collectibles.json"
+      ];
+      $lang = $_GET["lang"] ?? "en";
+      $url = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/".$endpoints[$_GET["action"]];
+      
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_USERAGENT, USER_AGENT);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+      $result = curl_exec($ch);
+      curl_close($ch);
       header('Content-Type: application/json');
+      echo $result;
       break;
   }
 ?>
