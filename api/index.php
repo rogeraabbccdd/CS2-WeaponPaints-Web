@@ -165,7 +165,18 @@
           "get-pins" => "collectibles.json"
       ];
       $lang = $_GET["lang"] ?? "en";
-      $url = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/".$endpoints[$_GET["action"]];
+      $action = $_GET["action"];
+      $cache_file = __DIR__ . "/cache/" . $lang . "_" . $endpoints[$action];
+      $cache_time = 86400;  // 1 day
+
+      header('Content-Type: application/json');
+
+      if (file_exists($cache_file) && (time() - filemtime($cache_file) < $cache_time)) {
+          echo file_get_contents($cache_file);
+          break;
+      }
+
+      $url = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/".$endpoints[$action];
       
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $url);
@@ -173,9 +184,22 @@
       curl_setopt($ch, CURLOPT_USERAGENT, USER_AGENT);
       curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($ch);
+      $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
       curl_close($ch);
-      header('Content-Type: application/json');
-      echo $result;
+
+      if ($http_code == 200 && !empty($result)) {
+          if (!is_dir(__DIR__ . "/cache")) {
+              mkdir(__DIR__ . "/cache", 0777, true);
+          }
+          file_put_contents($cache_file, $result);
+          echo $result;
+      } else {
+          if (file_exists($cache_file)) {
+              echo file_get_contents($cache_file);
+          } else {
+              echo json_encode(["error" => "Failed to fetch data from API"]);
+          }
+      }
       break;
   }
 ?>
