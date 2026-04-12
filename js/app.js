@@ -5,6 +5,12 @@ import { WEAPONS, KNIVES, DEFINDEXES } from './const/weapons.js'
 import { TEAM_T, TEAM_CT, TEAM_DEFAULT, TEAM_NAME } from './const/teams.js'
 import store from './stores/index.js'
 import { useSessionStore } from './stores/session.js'
+import pageKnives from './pages/knives.js'
+import pageSkins from './pages/skins.js'
+import pageGloves from './pages/gloves.js'
+import pageAgents from './pages/agents.js'
+import pageMusics from './pages/musics.js'
+import pagePins from './pages/pins.js'
 
 const vuetify = createVuetify({
   theme: {
@@ -958,5 +964,11 @@ const app = createApp({
   }
 })
 app.use(vuetify)
+app.component('page-knives', pageKnives)
+app.component('page-skins', pageSkins)
+app.component('page-gloves', pageGloves)
+app.component('page-agents', pageAgents)
+app.component('page-musics', pageMusics)
+app.component('page-pins', pagePins)
 app.use(store)
 app.mount('#app')
