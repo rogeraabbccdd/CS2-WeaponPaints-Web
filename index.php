@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CS2 Weapon Paints</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.6.10/dist/vuetify.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@4.0.5/dist/vuetify.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=roboto:400,500,700" />
   <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
@@ -550,7 +551,7 @@
     </v-app>
   </div>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.12.5/dist/vuetify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@4.0.5/dist/vuetify.min.js"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js' integrity='sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==' crossorigin='anonymous'></script>
   <script src="./js/weapons.js"></script>
   <script src="./js/app.js?upd=202510241657"></script>
