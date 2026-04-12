@@ -1,7 +1,10 @@
-axios.defaults.withCredentials = true
+import axios from 'axios'
+import { createApp, ref, onMounted, computed, watch } from 'vue'
+import { createVuetify, useDisplay } from 'vuetify'
+import { WEAPONS, KNIVES, DEFINDEXES } from './const/weapons.js'
+import { TEAM_T, TEAM_CT, TEAM_DEFAULT, TEAM_NAME } from './const/teams.js'
 
-const { createApp, ref, onMounted, computed, watch } = Vue
-const { createVuetify, useDisplay } = Vuetify
+axios.defaults.withCredentials = true
 
 const vuetify = createVuetify({
   theme: {
@@ -11,15 +14,6 @@ const vuetify = createVuetify({
 
 const app = createApp({
   setup () {
-    // Consts
-    const TEAM_T = 2
-    const TEAM_CT = 3
-    const TEAM_DEFAULT = 0
-    const TEAM_NAME = {
-      [TEAM_T]: 'terrorists',
-      [TEAM_CT]: 'counter-terrorists'
-    }
-
     const lang = ref('en')
 
     const loaded = ref(false)

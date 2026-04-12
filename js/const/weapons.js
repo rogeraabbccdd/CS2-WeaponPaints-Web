@@ -1,4 +1,4 @@
-const WEAPONS = [
+export const WEAPONS = [
   {
     weapon_defindex: 1,
     weapon_name: "weapon_deagle",
@@ -281,7 +281,7 @@ const WEAPONS = [
   }
 ]
 
-const KNIVES = [
+export const KNIVES = [
   {
     weapon_defindex: 500,
     weapon_name: "weapon_bayonet",
@@ -444,7 +444,7 @@ const KNIVES = [
   },
 ]
 
-const DEFINDEXES = {
+export const DEFINDEXES = {
   weapon_deagle: 1,
   weapon_elite: 2,
   weapon_fiveseven: 3,
@@ -536,7 +536,7 @@ const DEFINDEXES = {
   studded_hydra_gloves: 5035
 }
 
-const WEARS = {
+export const WEARS = {
   0.00: 'Factory New',
   0.07: 'Minimal Wear',
   0.15: 'Field-Tested',
