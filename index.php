@@ -18,9 +18,9 @@
         <v-container class="d-flex align-center">
           <v-app-bar-title>CS2 Weapon Paints</v-app-bar-title>
           <v-spacer></v-spacer>
-          <template v-if="session.steamid">
+          <template v-if="session.user.steamid">
             <v-avatar>
-              <v-img :src="session.steam_avatar"></v-img>
+              <v-img :src="session.user.steam_avatar"></v-img>
             </v-avatar>
             <v-menu>
               <template v-slot:activator="{ props }">
@@ -39,7 +39,7 @@
         </v-container>
       </v-app-bar>
       <!-- Sidebar -->
-      <v-navigation-drawer v-if="session.steamid.length !== 0">
+      <v-navigation-drawer v-if="session.user.steamid.length !== 0">
         <v-list density="compact" nav v-model:selected="page">
           <v-list-item prepend-icon="mdi-knife-military" title="Knifes" value="knifes"></v-list-item>
           <v-list-item prepend-icon="mdi-palette" title="Skins" value="skins"></v-list-item>
@@ -56,7 +56,7 @@
           Loading...
         </h1>
       </v-main>
-      <v-main class="mt-5" v-else-if="session.steamid.length === 0">
+      <v-main class="mt-5" v-else-if="session.user.steamid.length === 0">
         <h1 class="text-center">Please login first.</h1>
       </v-main>
       <template v-else>

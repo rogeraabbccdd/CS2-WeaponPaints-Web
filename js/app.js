@@ -4,7 +4,7 @@ import { createVuetify, useDisplay } from 'vuetify'
 import { WEAPONS, KNIVES, DEFINDEXES } from './const/weapons.js'
 import { TEAM_T, TEAM_CT, TEAM_DEFAULT, TEAM_NAME } from './const/teams.js'
 import store from './stores/index.js'
-axios.defaults.withCredentials = true
+import { useSessionStore } from './stores/session.js'
 
 const vuetify = createVuetify({
   theme: {
@@ -18,6 +18,8 @@ const app = createApp({
 
     const loaded = ref(false)
     const { mobile } = useDisplay()
+
+    const session = useSessionStore()
 
     // Tab
     const page = ref(['skins'])
