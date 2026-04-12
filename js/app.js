@@ -3,7 +3,7 @@ import { createApp, ref, onMounted, computed, watch } from 'vue'
 import { createVuetify, useDisplay } from 'vuetify'
 import { WEAPONS, KNIVES, DEFINDEXES } from './const/weapons.js'
 import { TEAM_T, TEAM_CT, TEAM_DEFAULT, TEAM_NAME } from './const/teams.js'
-
+import store from './stores/index.js'
 axios.defaults.withCredentials = true
 
 const vuetify = createVuetify({
@@ -956,4 +956,5 @@ const app = createApp({
   }
 })
 app.use(vuetify)
+app.use(store)
 app.mount('#app')
