@@ -1,3 +1,6 @@
 .cursor-pointer {
   cursor: pointer;
 }
+.font-header {
+  font-family: var(--v-font-header);
+}

@@ -1,14 +1,18 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { TEAM_T, TEAM_CT, TEAM_DEFAULT } from "../const/teams.js";
 import api from "../utils/api.js";
 
 export const useSessionStore = defineStore("session", () => {
+  const loaded = ref(false)
+
   const user = ref({
     steamid: "",
     steam_avatar: "",
     steam_personaname: "",
   });
+
+  const loggedIn = computed(() => user.value.steamid.length !== 0);
 
   const loadout = ref({
     selected_skins: {},
@@ -72,6 +76,8 @@ export const useSessionStore = defineStore("session", () => {
         data.selected_pin[TEAM_CT] || data.selected_pin[TEAM_DEFAULT] || 0;
     } catch (error) {
       console.log(error);
+    } finally {
+      loaded.value = true
     }
   };
 
@@ -204,7 +210,9 @@ export const useSessionStore = defineStore("session", () => {
   }
 
   return {
+    loaded,
     user,
+    loggedIn,
     loadout,
     checkUser,
     setKnife,

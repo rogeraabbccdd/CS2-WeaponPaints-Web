@@ -31,130 +31,135 @@ const vuetify = createVuetify({
 const app = createApp({
   setup () {
     const lang = ref('en')
-    const loaded = ref(false)
+    const drawer = ref(false)
+    const loading = ref(false)
+
     const { mobile } = useDisplay()
 
     const session = useSessionStore()
 
     // Pages
-    const page = ref(['skins'])
+    const page = ref('skins')
 
     onMounted(async () => {
+      loading.value = true
+
       const query = new URLSearchParams(document.location.search).get('page')
-      if (['knifes', 'glove', 'skins', 'agents', 'musics', 'gloves', 'pins'].includes(query)) {
-        page.value[0] = query
+      if (['knives', 'skins', 'agents', 'musics', 'gloves', 'pins'].includes(query)) {
+        page.value = query
       }
 
       await session.checkUser()
 
-      loaded.value = true
+      loading.value = false
     })
 
-    watch(() => page.value[0], () => {
+    watch(page, (newVal) => {
       const url = new URL(location);
-      url.searchParams.set("page", page.value[0]);
+      url.searchParams.set("page", newVal);
       history.pushState({}, "", url);
     })
 
     return {
       lang,
-      loaded,
+      drawer,
+      loading,
       mobile,
       session,
-      page
+      page,
     }
   },
   template: /*html*/
     `
     <v-app>
       <!-- Navbar -->
-      <v-app-bar color="primary">
-        <v-container class="d-flex align-center">
-          <v-app-bar-title>CS2 Weapon Paints</v-app-bar-title>
-          <v-spacer></v-spacer>
-          <template v-if="session.user.steamid">
-            <v-avatar>
-              <v-img :src="session.user.steam_avatar"></v-img>
-            </v-avatar>
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-btn icon="mdi-dots-vertical" v-bind="props"></v-btn>
-              </template>
-              <v-list>
-                <v-list-item href="./logout.php">
-                  <v-list-item-title>Logout</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </template>
-          <template v-else>
-            <a href="./login.php"><img src='https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png'></a>
-          </template>
+      <v-app-bar flat v-if="session.loggedIn">
+        <v-container class="d-flex align-center justify-center" fluid>
+          <!-- Title -->
+          <div class="d-flex align-center" style="flex: 1 1 0;">
+            <v-app-bar-nav-icon v-if="mobile" color="primary" @click="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-app-bar-title class="text-primary font-header font-weight-bold">CS2 Weapon Paints</v-app-bar-title>
+          </div>
+          <!-- Desktop Pages Tab -->
+          <div v-if="!mobile" class="d-flex justify-center" style="flex: 2 1 0;">
+            <v-tabs v-model="page" color="primary" grow class="font-header font-weight-bold" slider-transition="grow">
+              <v-tab value="knives">Knives</v-tab>
+              <v-tab value="skins">Skins</v-tab>
+              <v-tab value="gloves">Gloves</v-tab>
+              <v-tab value="agents">Agents</v-tab>
+              <v-tab value="musics">Musics</v-tab>
+              <v-tab value="pins">Pins</v-tab>
+            </v-tabs>
+          </div>
+          <!-- Desktop Nav -->
+          <div class="d-flex align-center justify-end ga-1" style="flex: 1 1 0;">
+            <template v-if="session.loggedIn">
+              <span v-if="!mobile" class="mr-2 font-header text-caption">{{ session.user.steam_personaname }}</span>
+              <v-avatar size="32">
+                <v-img :src="session.user.steam_avatar"></v-img>
+              </v-avatar>
+              <!-- Desktop Logout Button -->
+              <v-menu>
+                <template v-slot:activator="{ props }">
+                  <v-btn icon="mdi-dots-vertical" v-bind="props" variant="text" size="small"></v-btn>
+                </template>
+                <v-list density="compact">
+                  <v-list-item href="./logout.php" prepend-icon="mdi-logout">
+                    <v-list-item-title>Logout</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </template>
+          </div>
         </v-container>
       </v-app-bar>
-      <!-- Sidebar -->
-      <v-navigation-drawer v-if="session.user.steamid.length !== 0">
-        <v-list density="compact" nav v-model:selected="page">
-          <v-list-item prepend-icon="mdi-knife-military" title="Knifes" value="knifes"></v-list-item>
+      <!-- Mobile Nav -->
+      <v-navigation-drawer v-if="mobile && session.loggedIn" v-model="drawer" class="font-header" temporary>
+        <v-list color="primary" density="compact" nav :selected="[page]" @update:selected="val => { if (val.length) { page = val[0]; drawer = false } }">
+          <v-list-item prepend-icon="mdi-knife-military" title="Knives" value="knives"></v-list-item>
           <v-list-item prepend-icon="mdi-palette" title="Skins" value="skins"></v-list-item>
           <v-list-item prepend-icon="mdi-boxing-glove" title="Gloves" value="gloves"></v-list-item>
           <v-list-item prepend-icon="mdi-account" title="Agents" value="agents"></v-list-item>
           <v-list-item prepend-icon="mdi-music" title="Musics" value="musics"></v-list-item>
           <v-list-item prepend-icon="mdi-police-badge" title="Pins" value="pins"></v-list-item>
         </v-list>
+        <v-divider></v-divider>
+        <v-list density="compact" nav>
+          <v-list-item prepend-icon="mdi-logout" title="Logout" href="./logout.php"></v-list-item>
+        </v-list>
       </v-navigation-drawer>
-      <v-main class="mt-5" v-if="!loaded">
-        <h1 class="text-center">
-          <v-progress-circular color="primary" :size="75" indeterminate class="my-5"></v-progress-circular>
-          <br>
-          Loading...
-        </h1>
-      </v-main>
-      <v-main class="mt-5" v-else-if="session.user.steamid.length === 0">
-        <h1 class="text-center">Please login first.</h1>
-      </v-main>
-      <template v-else>
-        <v-main class="mt-5">
-          <!-- Knifes Page -->
-          <page-knives v-if="page[0] === 'knifes'"></page-knives>
+
+      <v-main class="w-100">
+        <!-- Loading State -->
+        <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
+          <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
+          <h1 class="text-h5 font-header">Loading...</h1>
+        </div>
+
+        <!-- Login State -->
+        <div v-else-if="session.loaded && !session.loggedIn" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
+          <h1 class="text-h4 mb-6 font-header">Please login first.</h1>
+          <a href="./login.php">
+            <v-img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png" width="200"></v-img>
+          </a>
+        </div>
+
+        <!-- Main Content -->
+        <div v-else-if="session.loaded && session.loggedIn">
+          <!-- knives Page -->
+          <page-knives v-if="page === 'knives'"></page-knives>
           <!-- Skins Page -->
-          <page-skins v-if="page[0] === 'skins'"></page-skins>
+          <page-skins v-if="page === 'skins'"></page-skins>
           <!-- Gloves Page -->
-          <page-gloves v-if="page[0] === 'gloves'"></page-gloves>
+          <page-gloves v-if="page === 'gloves'"></page-gloves>
           <!-- Agents Page -->
-          <page-agents v-if="page[0] === 'agents'"></page-agents>
+          <page-agents v-if="page === 'agents'"></page-agents>
           <!-- Music Kits Page -->
-          <page-musics v-if="page[0] === 'musics'"></page-musics>
+          <page-musics v-if="page === 'musics'"></page-musics>
           <!-- Pins Page -->
-          <page-pins v-if="page[0] === 'pins'"></page-pins>
-        </v-main>
-        <v-bottom-navigation v-if="mobile" :model-value="page[0]" @update:model-value="v => page[0] = v">
-          <v-btn value="knifes">
-            <v-icon>mdi-knife-military</v-icon>
-            <span>Knifes</span>
-          </v-btn>
-          <v-btn value="skins">
-            <v-icon>mdi-palette</v-icon>
-            <span>Skins</span>
-          </v-btn>
-          <v-btn value="gloves">
-            <v-icon>mdi-boxing-glove</v-icon>
-            <span>Gloves</span>
-          </v-btn>
-          <v-btn value="agents">
-            <v-icon>mdi-account</v-icon>
-            <span>Agents</span>
-          </v-btn>
-          <v-btn value="musics">
-            <v-icon>mdi-music</v-icon>
-            <span>Musics</span>
-          </v-btn>
-          <v-btn value="pins">
-            <v-icon>mdi-police-badge</v-icon>
-            <span>Pins</span>
-          </v-btn>
-        </v-bottom-navigation>
-      </template>
+          <page-pins v-if="page === 'pins'"></page-pins>
+        </div>
+      </v-main>
     </v-app>
     `
 })
