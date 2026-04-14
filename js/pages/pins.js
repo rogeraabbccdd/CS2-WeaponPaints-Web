@@ -1,75 +1,154 @@
 import { ref, computed, onMounted } from 'vue'
 import { useSessionStore } from '../stores/session.js'
-import { TEAM_CT, TEAM_T, TEAM_NAME } from '../const/teams.js'
+import { TEAM_CT, TEAM_T } from '../const/teams.js'
 import { usePinsStore } from '../stores/pins.js'
+import CardPin from '../components/card-pin.js'
 
 export default {
+  components: { CardPin },
   setup () {
     const session = useSessionStore()
     const pins = usePinsStore()
 
-    const pinsSearchInput = ref('')
+    const loading = ref(true)
 
-    const pinsFiltered = computed(() => {
-      if (pins.loading)  return []
-      const search = pinsSearchInput.value.toUpperCase()
-      return pins.pins
-        .filter(pin => pin.name.toUpperCase().includes(search))
+    const search = ref({
+      page: 1,
+      input: '',
+      sort: 'rarity_desc',
+      itemsPerPage: -1,
     })
 
+    const activePin = ref(null)
+
+    const sortOptions = [
+      { title: 'Name (A-Z)', value: 'asc' },
+      { title: 'Name (Z-A)', value: 'desc' },
+      { title: 'Rarity (High-Low)', value: 'rarity_desc' },
+      { title: 'Rarity (Low-High)', value: 'rarity_asc' }
+    ]
+
+    // Reset to page 1 when search or sort changes
+    const onParamsUpdate = () => {
+      search.value.page = 1;
+    }
+
+    // Static default item
+    const NO_PIN_ITEM = {
+      id: 0,
+      name: 'Default',
+      image: './images/default.svg',
+      isDefault: true,
+      rarityWeight: -1,
+      rarity: { color: '#424242' }
+    }
+
+    // Prepare items for v-data-iterator
+    const items = computed(() => {
+      // Just spreading pre-calculated store data
+      return [NO_PIN_ITEM, ...pins.pins];
+    })
+
+    // Map sort order to v-data-iterator format
+    // Always keep isDefault: true at the top
+    const sortBy = computed(() => {
+      const priority = { key: 'isDefault', order: 'desc' };
+      switch (search.value.sort) {
+        case 'asc': return [priority, { key: 'name', order: 'asc' }];
+        case 'desc': return [priority, { key: 'name', order: 'desc' }];
+        case 'rarity_desc': return [priority, { key: 'rarityWeight', order: 'desc' }, { key: 'name', order: 'asc' }];
+        case 'rarity_asc': return [priority, { key: 'rarityWeight', order: 'asc' }, { key: 'name', order: 'asc' }];
+        default: return [priority];
+      }
+    });
+
+    const customFilter = (value, searchInput, item) => {
+      if (!searchInput) return true;
+      return item.raw.name.toUpperCase().includes(searchInput.toUpperCase());
+    };
+
+    const onActivePinUpdate = (id, value) => {
+      activePin.value = value ? id : null
+    }
+
     onMounted(async () => {
+      loading.value = true
       await pins.fetchData()
+      loading.value = false
     })
 
     return {
       TEAM_T,
       TEAM_CT,
       session,
-      pins,
-      pinsSearchInput,
-      pinsFiltered
+      loading,
+      search,
+      items,
+      sortBy,
+      customFilter,
+      activePin,
+      onActivePinUpdate,
+      onParamsUpdate,
+      sortOptions,
     }
   },
   template: /*html*/
     `
-    <v-container>
-      <v-text-field label="Search" v-model="pinsSearchInput"></v-text-field>
-      <v-row>
-        <v-col cols="6" md="3" lg="2">
-          <v-card class="cursor-pointer">
-            <v-menu activator="parent">
-              <v-list>
-                <v-list-item @click="session.setPin(0, TEAM_T)">T</v-list-item>
-                <v-list-item @click="session.setPin(0, TEAM_CT)">CT</v-list-item>
-              </v-list>
-            </v-menu>
-            <v-img src="./images/default.svg">
-              <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
-                <v-icon size="30" color="orange" v-if="session.loadout.selected_pin[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
-                <v-icon size="30" color="light-blue" v-if="session.loadout.selected_pin[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
-              </v-overlay>
-            </v-img>
-            <v-card-title>Default</v-card-title>
-          </v-card>
-        </v-col>
-        <v-col cols="6" md="3" lg="2" v-for="pin in pinsFiltered" :key="pin.id">
-          <v-card class="cursor-pointer">
-            <v-menu activator="parent">
-              <v-list>
-                <v-list-item @click="session.setPin(pin.id, TEAM_T)">T</v-list-item>
-                <v-list-item @click="session.setPin(pin.id, TEAM_CT)">CT</v-list-item>
-              </v-list>
-            </v-menu>
-            <v-img :src="pin.image">
-              <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
-                <v-icon size="30" color="orange" v-if="session.loadout.selected_pin[TEAM_T] == pin.id">mdi-check-circle-outline</v-icon>
-                <v-icon size="30" color="light-blue" v-if="session.loadout.selected_pin[TEAM_CT] == pin.id">mdi-check-circle-outline</v-icon>
-              </v-overlay>
-            </v-img>
-            <v-card-title>{{ pin.name }}</v-card-title>
-          </v-card>
-        </v-col>
-      </v-row>
+    <v-container fluid>
+      <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
+        <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
+        <h1 class="text-h5 font-header">Loading...</h1>
+      </div>
+
+      <v-data-iterator
+        v-else
+        :items="items"
+        :search="search.input"
+        :sort-by="sortBy"
+        :custom-filter="customFilter"
+        v-model:page="search.page"
+        :items-per-page="search.itemsPerPage"
+      >
+        <template v-slot:header>
+          <v-row class="mb-4">
+            <v-col cols="12" sm="8" md="9">
+              <v-text-field 
+                color="primary" 
+                variant="outlined" 
+                label="Search Pins..." 
+                v-model="search.input" 
+                @update:model-value="onParamsUpdate"
+                hide-details
+                clearable
+                prepend-inner-icon="mdi-magnify"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="4" md="3">
+              <v-select
+                v-model="search.sort"
+                :items="sortOptions"
+                label="Sort"
+                variant="outlined"
+                @update:model-value="onParamsUpdate"
+                hide-details
+                color="primary"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </template>
+
+        <template v-slot:default="{ items: displayedItems }">
+          <v-row>
+            <v-col cols="12" sm="6" md="4" lg="2" v-for="item in displayedItems" :key="item.raw.id">
+              <CardPin
+                :pin="item.raw"
+                :active="activePin === item.raw.id"
+                @update:active="onActivePinUpdate(item.raw.id, $event)"
+              />
+            </v-col>
+          </v-row>
+        </template>
+      </v-data-iterator>
     </v-container>
     `
 }
