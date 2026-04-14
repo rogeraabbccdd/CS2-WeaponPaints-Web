@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@4.0.5/dist/vuetify.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" />
   <link rel="stylesheet" href="https://fonts.bunny.net/css?family=roboto:400,500,700" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
   <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
 </head>

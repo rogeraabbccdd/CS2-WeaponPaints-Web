@@ -18,8 +18,13 @@ const vuetify = createVuetify({
         colors: {
           primary: '#00E5FF',
         },
+        variables: {
+          'overlay-opacity': 0.8,
+          'font-body': 'Inter',
+          'font-header': 'Space Grotesk'
+        }
       }
-      }
+    }
   }
 })
 
