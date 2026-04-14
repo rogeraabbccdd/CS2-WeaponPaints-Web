@@ -2,87 +2,157 @@ import { ref, computed, onMounted } from 'vue'
 import { useSessionStore } from '../stores/session.js'
 import { TEAM_CT, TEAM_T } from '../const/teams.js'
 import { useSkinsStore } from '../stores/skins.js'
-import { DEFINDEXES } from '../const/weapons.js'
+import CardGlove from '../components/card-glove.js'
 
 export default {
+  components: { CardGlove },
   setup () {
     const session = useSessionStore()
     const skins = useSkinsStore()
 
-    const glovesSearchInput = ref('')
+    const loading = ref(true)
 
-    const glovesFiltered = computed(() => {
-      if (skins.loading)  return []
-      const search = glovesSearchInput.value.toUpperCase()
-      return skins.gloves
-        .filter(glove => {
-          return glove.name.toUpperCase().includes(search)
-        })
-    })
+    const searchInput = ref('')
+    const activeGlove = ref(null)
+    const sortOrder = ref('asc')
+    const categoryFilter = ref(null)
+
+    const sortOptions = [
+      { title: 'Name (A-Z)', value: 'asc' },
+      { title: 'Name (Z-A)', value: 'desc' }
+    ]
+
+    const categoryOptions = [
+      { title: 'All Categories', value: null },
+      { title: 'Bloodhound Gloves', value: 'studded_bloodhound_gloves' },
+      { title: 'Broken Fang Gloves', value: 'studded_brokenfang_gloves' },
+      { title: 'Driver Gloves', value: 'slick_gloves' },
+      { title: 'Hand Wraps', value: 'leather_handwraps' },
+      { title: 'Hydra Gloves', value: 'studded_hydra_gloves' },
+      { title: 'Moto Gloves', value: 'motorcycle_gloves' },
+      { title: 'Specialist Gloves', value: 'specialist_gloves' },
+      { title: 'Sport Gloves', value: 'sporty_gloves' }
+    ]
+
+    // Prepare items for v-data-iterator with category filtering
+    const items = computed(() => {
+      const defaultGlove = {
+        name: 'Default',
+        image: './images/default.svg',
+        paint_index: 0,
+        id: 'default',
+        isDefault: true,
+        rarity: { color: '#424242' }
+      };
+
+      const baseGloves = skins.gloves
+        .filter(glove => !categoryFilter.value || (glove.weapon && glove.weapon.id === categoryFilter.value))
+
+      // Only show default if no category filter or searching (or always show at top)
+      return [defaultGlove, ...baseGloves];
+    });
+
+    const sortBy = computed(() => {
+      const priority = { key: 'isDefault', order: 'desc' };
+      return [priority, { key: 'name', order: sortOrder.value }];
+    });
+
+    const customFilter = (value, searchInput, item) => {
+      if (!searchInput) return true;
+      return item.raw.name.toUpperCase().includes(searchInput.toUpperCase());
+    };
+
+    const onActiveGloveUpdate = (id, value) => {
+      activeGlove.value = value ? id : null
+    }
 
     onMounted(async () => {
+      loading.value = true
       await skins.fetchData()
+      loading.value = false
     })
 
     return {
       TEAM_T,
       TEAM_CT,
-      DEFINDEXES,
       session,
-      glovesSearchInput,
-      glovesFiltered,
+      loading,
+      searchInput,
+      items,
+      sortBy,
+      customFilter,
+      activeGlove,
+      onActiveGloveUpdate,
+      sortOrder,
+      sortOptions,
+      categoryFilter,
+      categoryOptions,
     }
   },
   template: /*html*/
     `
-    <v-container>
-      <v-text-field label="Search" v-model="glovesSearchInput"></v-text-field>
-      <v-row>
-        <v-col cols="6" md="3" lg="2">
-          <v-card class="cursor-pointer">
-            <v-menu activator="parent">
-              <v-list>
-                <v-list-item @click="session.setGlove(0, 0, TEAM_T)">T</v-list-item>
-                <v-list-item @click="session.setGlove(0, 0, TEAM_CT)">CT</v-list-item>
-              </v-list>
-            </v-menu>
-            <v-img src="./images/default.svg">
-              <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
-                <v-icon size="30" color="orange" v-if="session.loadout.selected_glove[TEAM_T] == 0">mdi-check-circle-outline</v-icon>
-                <v-icon size="30" color="light-blue" v-if="session.loadout.selected_glove[TEAM_CT] == 0">mdi-check-circle-outline</v-icon>
-              </v-overlay>
-            </v-img>
-            <v-card-title>Default</v-card-title>
-          </v-card>
-        </v-col>
-        <v-col cols="6" md="3" lg="2" v-for="glove in glovesFiltered" :key="glove.paint_index">
-          <v-card @click="">
-            <v-menu activator="parent">
-              <v-list>
-                <v-list-item @click="session.setGlove(DEFINDEXES[glove.weapon.id], glove.paint_index, TEAM_T)">T</v-list-item>
-                <v-list-item @click="session.setGlove(DEFINDEXES[glove.weapon.id], glove.paint_index, TEAM_CT)">CT</v-list-item>
-              </v-list>
-            </v-menu>
-            <v-img :src="glove.image">
-              <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
-                <v-icon 
-                  size="30" color="orange"
-                  v-if="session.loadout.selected_glove[TEAM_T] == glove.weapon.weapon_id && session.loadout.selected_skins[glove.weapon.weapon_id][TEAM_T].weapon_paint_id == glove.paint_index"
-                >
-                  mdi-check-circle-outline
-                </v-icon>
-                <v-icon 
-                  size="30" color="light-blue"
-                  v-if="session.loadout.selected_glove[TEAM_CT] == glove.weapon.weapon_id && session.loadout.selected_skins[glove.weapon.weapon_id][TEAM_CT].weapon_paint_id == glove.paint_index"
-                >
-                  mdi-check-circle-outline
-                </v-icon>
-              </v-overlay>
-            </v-img>
-            <v-card-title>{{ glove.name }}</v-card-title>
-          </v-card>
-        </v-col>
-      </v-row>
+    <v-container fluid>
+      <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
+        <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
+        <h1 class="text-h5 font-header">Loading...</h1>
+      </div>
+
+      <v-data-iterator
+        v-else
+        :items="items"
+        :search="searchInput"
+        :sort-by="sortBy"
+        :custom-filter="customFilter"
+        :items-per-page="-1"
+      >
+        <template v-slot:header>
+          <v-row class="mb-4">
+            <v-col cols="12" md="6">
+              <v-text-field 
+                color="primary" 
+                variant="outlined" 
+                label="Search Gloves..." 
+                v-model="searchInput" 
+                hide-details
+                clearable
+                prepend-inner-icon="mdi-magnify"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+              <v-select
+                v-model="categoryFilter"
+                :items="categoryOptions"
+                label="Category"
+                variant="outlined"
+                hide-details
+                color="primary"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" sm="6" md="3">
+              <v-select
+                v-model="sortOrder"
+                :items="sortOptions"
+                label="Sort"
+                variant="outlined"
+                hide-details
+                color="primary"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </template>
+
+        <template v-slot:default="{ items: displayedItems }">
+          <v-row>
+            <v-col cols="12" sm="6" md="4" lg="2" v-for="item in displayedItems" :key="item.raw.paint_index || item.raw.id">
+              <CardGlove
+                :glove="item.raw"
+                :active="activeGlove === (item.raw.paint_index || item.raw.id)"
+                @update:active="onActiveGloveUpdate(item.raw.paint_index || item.raw.id, $event)"
+              />
+            </v-col>
+          </v-row>
+        </template>
+      </v-data-iterator>
     </v-container>
     `
 }
