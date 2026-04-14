@@ -3,7 +3,7 @@ import { useSessionStore } from "../stores/session.js";
 import { TEAM_CT, TEAM_T } from "../const/teams.js";
 import { useSkinsStore } from "../stores/skins.js";
 import { useStickersStore } from "../stores/stickers.js";
-import { useKeychainsStore } from "../stores/keychains.js";
+import { useKeychainsStore } from "../stores/keychains.js"
 import ModalSticker from "./modal-sticker.js";
 import ModalKeychain from "./modal-keychain.js";
 
@@ -33,106 +33,97 @@ export default {
       },
       search: {
         page: 1,
-        pages: 1,
         input: "",
         all: false,
+        sort: "rarity_desc",
         itemsPerPage: 24,
-        results: [],
+        defaultSkin: null,
       },
       form: {
-        [TEAM_T]: createDefaultForm(),
-        [TEAM_CT]: createDefaultForm(),
+        [TEAM_T]: {
+          paint: 0,
+          wear: 0.001,
+          seed: 0,
+          name: "",
+          stattrack: 0,
+          stickers0: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          stickers1: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          stickers2: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          stickers3: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          stickers4: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          keychain: { id: 0, seed: 0, image: "", x: 0, y: 0, z: 0 },
+        },
+        [TEAM_CT]: {
+          paint: 0,
+          wear: 0.001,
+          seed: 0,
+          name: "",
+          stattrack: 0,
+          stickers0: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          stickers1: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          stickers2: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          stickers3: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          stickers4: { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 },
+          keychain: { id: 0, seed: 0, image: "", x: 0, y: 0, z: 0 },
+        },
       },
     });
 
-    function createDefaultForm() {
-      return {
-        paint: 0,
-        wear: 0.001,
-        seed: 0,
-        name: "",
-        stattrack: 0,
-        stickers0: createDefaultSticker(),
-        stickers1: createDefaultSticker(),
-        stickers2: createDefaultSticker(),
-        stickers3: createDefaultSticker(),
-        stickers4: createDefaultSticker(),
-        keychain: { id: 0, seed: 0, image: "", x: 0, y: 0, z: 0 },
-      };
-    }
+    const skinSortOptions = [
+      { title: 'Name (A-Z)', value: 'asc' },
+      { title: 'Name (Z-A)', value: 'desc' },
+      { title: 'Rarity (High-Low)', value: 'rarity_desc' },
+      { title: 'Rarity (Low-High)', value: 'rarity_asc' }
+    ];
 
-    function createDefaultSticker() {
-      return { id: 0, wear: 0.001, image: "", x: 0, y: 0, scale: 1, rotate: 0 };
-    }
-
-    const onModalSkinSearch = () => {
-      modalSkin.value.search.page = 1;
-      modalSkin.value.search.results = skinsStore.skins.filter((skin) => {
-        if (
-          skin.weapon.weapon_id !== modalSkin.value.weapon_defindex &&
-          !modalSkin.value.search.all
-        )
-          return false;
-        else if (modalSkin.value.search.input === "") return true;
-        else
-          return skin.name
-            .toUpperCase()
-            .includes(modalSkin.value.search.input.toUpperCase());
+    // Filter items based on weapon and "All" toggle
+    const items = computed(() => {
+      const filtered = skinsStore.skins.filter(skin => {
+        if (modalSkin.value.search.all) return true;
+        return skin.weapon.weapon_id === modalSkin.value.weapon_defindex;
       });
-      const weapon = props.weapons.find(
-        (w) => w.weapon_defindex == modalSkin.value.weapon_defindex,
-      );
-      if (weapon) {
-        modalSkin.value.search.results.unshift({
-          id: "-1",
-          name: "Default",
-          weapon: { id: weapon.weapon_name, name: weapon.name },
-          rarity: { color: "#000" },
-          paint_index: "0",
-          image: weapon.image,
-        });
-      }
-      modalSkin.value.search.pages = Math.ceil(
-        modalSkin.value.search.results.length /
-          modalSkin.value.search.itemsPerPage,
-      );
-    };
 
-    const modalSkinSearchResultItems = computed(() => {
-      const start =
-        (modalSkin.value.search.page - 1) * modalSkin.value.search.itemsPerPage;
-      const end = start + modalSkin.value.search.itemsPerPage;
-      return modalSkin.value.search.results.slice(start, end);
+      if (modalSkin.value.search.defaultSkin) {
+        return [{ ...modalSkin.value.search.defaultSkin, isDefault: true, rarityWeight: -1 }, ...filtered];
+      }
+      return filtered;
     });
 
+    const sortBy = computed(() => {
+      const priority = { key: 'isDefault', order: 'desc' };
+      switch (modalSkin.value.search.sort) {
+        case 'asc': return [priority, { key: 'name', order: 'asc' }];
+        case 'desc': return [priority, { key: 'name', order: 'desc' }];
+        case 'rarity_desc': return [priority, { key: 'rarityWeight', order: 'desc' }, { key: 'name', order: 'asc' }];
+        case 'rarity_asc': return [priority, { key: 'rarityWeight', order: 'asc' }, { key: 'name', order: 'asc' }];
+        default: return [priority];
+      }
+    });
+
+    const customFilter = (value, searchInput, item) => {
+      if (!searchInput) return true;
+      return item.raw.name.toUpperCase().includes(searchInput.toUpperCase());
+    };
+
     const onModalSkinSelect = (skin) => {
-      modalSkin.value.form[tabSkinsTeam.value].paint = skin.paint_index;
+      modalSkin.value.form[tabSkinsTeam.value].paint = parseInt(skin.paint_index);
       modalSkin.value.skin[tabSkinsTeam.value].image = skin.image;
       modalSkin.value.skin[tabSkinsTeam.value].name = skin.name;
       modalSkin.value.skin[tabSkinsTeam.value].color = skin.rarity.color;
     };
 
     const validateWear = () => {
-      const value = parseFloat(modalSkin.value.form[tabSkinsTeam.value].wear);
-      if (
-        isNaN(value) ||
-        value <= 0.001 ||
-        value > 1 ||
-        modalSkin.value.form[tabSkinsTeam.value].paint == "0"
-      )
-        modalSkin.value.form[tabSkinsTeam.value].wear = 0.001;
+      let value = parseFloat(modalSkin.value.form[tabSkinsTeam.value].wear);
+      if (isNaN(value) || value < 0) value = 0.001;
+      if (value > 1) value = 1;
+      modalSkin.value.form[tabSkinsTeam.value].wear = value;
     };
 
     const validateSeed = () => {
-      const value = parseFloat(modalSkin.value.form[tabSkinsTeam.value].seed);
-      if (
-        isNaN(value) ||
-        value > 1000 ||
-        value < 0 ||
-        modalSkin.value.form[tabSkinsTeam.value].paint == "0"
-      )
-        modalSkin.value.form[tabSkinsTeam.value].seed = 0;
-      else modalSkin.value.form[tabSkinsTeam.value].seed = Math.round(value);
+      let value = parseInt(modalSkin.value.form[tabSkinsTeam.value].seed);
+      if (isNaN(value) || value < 0) value = 0;
+      if (value > 1000) value = 1000;
+      modalSkin.value.form[tabSkinsTeam.value].seed = value;
     };
 
     const init = () => {
@@ -144,8 +135,24 @@ export default {
         props.weapon.name.includes("Bayonet") ||
         props.weapon.name.includes("Karambit");
 
+      const weapon = props.weapons.find(
+        (w) => w.weapon_defindex == modalSkin.value.weapon_defindex,
+      );
+      if (weapon) {
+        modalSkin.value.search.defaultSkin = {
+          id: "-1",
+          name: "Default",
+          weapon: { id: weapon.weapon_name, name: weapon.name },
+          rarity: { color: "#424242", id: "rarity_default" },
+          paint_index: "0",
+          image: weapon.image,
+        };
+      } else {
+        modalSkin.value.search.defaultSkin = null;
+      }
+
       [TEAM_T, TEAM_CT].forEach((team) => {
-        const selected = session.user.selected_skins?.[defIndex]?.[team];
+        const selected = session.loadout.selected_skins?.[defIndex]?.[team];
         modalSkin.value.form[team].paint = parseInt(
           selected?.weapon_paint_id || "0",
         );
@@ -193,20 +200,19 @@ export default {
           const result = skinsStore.skins.find(
             (s) => s.paint_index == modalSkin.value.form[team].paint,
           );
-          modalSkin.value.skin[team].image = result.image;
-          modalSkin.value.skin[team].name = result.name;
-          modalSkin.value.skin[team].color = result.rarity.color;
+          modalSkin.value.skin[team].image = result?.image || props.weapon.image;
+          modalSkin.value.skin[team].name = result?.name || "Default";
+          modalSkin.value.skin[team].color = result?.rarity?.color || "#424242";
         } else {
           modalSkin.value.skin[team].image = props.weapon.image;
           modalSkin.value.skin[team].name = "Default";
-          modalSkin.value.skin[team].color = "#000";
+          modalSkin.value.skin[team].color = "#424242";
         }
       });
 
       modalSkin.value.search.page = 1;
       modalSkin.value.search.input = "";
       tabSkinsTeam.value = TEAM_T;
-      onModalSkinSearch();
     };
 
     watch(
@@ -256,8 +262,9 @@ export default {
       TEAM_CT,
       tabSkinsTeam,
       modalSkin,
-      onModalSkinSearch,
-      modalSkinSearchResultItems,
+      items,
+      sortBy,
+      customFilter,
       onModalSkinSelect,
       validateWear,
       validateSeed,
@@ -269,80 +276,228 @@ export default {
       onKeychainSave,
       save,
       session,
+      skinSortOptions
     };
   },
   template: /*html*/
     `
-    <v-dialog fullscreen :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)" persistent>
-      <v-card>
-        <v-toolbar color="secondary">
-          <v-toolbar-title>{{ modalSkin.weapon_name }}</v-toolbar-title>
-          <v-spacer></v-spacer>
+    <v-dialog fullscreen :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)" transition="dialog-bottom-transition">
+      <v-card color="background">
+        <v-toolbar color="surface" elevation="1">
           <v-btn icon="mdi-close" @click="$emit('update:modelValue', false)"></v-btn>
-        </v-toolbar>
-        <v-card-text>
-          <v-tabs v-model="tabSkinsTeam" fixed-tabs class="mb-5" :color="tabSkinsTeam == TEAM_T ? 'orange' : 'light-blue'">
-            <v-tab :value="TEAM_T">T</v-tab>
-            <v-tab :value="TEAM_CT">CT</v-tab>
-          </v-tabs>
-          <v-row>
-            <v-col cols="12" md="6" align-self="center">
-              <v-img :src="modalSkin.skin[tabSkinsTeam].image" height="150"></v-img>
-              <p class="text-center">{{ modalSkin.skin[tabSkinsTeam].name }}</p>
-              <v-row class="my-1" v-if="!modalSkin.isKnife">
-                <v-col v-for="i in 5" :key="i-1">
-                  <v-card class="text-center" variant="text" @click="openStickerModal(i-1)">
-                    <v-img v-if="modalSkin.form[tabSkinsTeam]['stickers' + (i-1)].image" :src="modalSkin.form[tabSkinsTeam]['stickers' + (i-1)].image" height="50"></v-img>
-                    <v-icon v-else size="50" icon="mdi-sticker-plus-outline" color="grey-darken-3"></v-icon>
-                  </v-card>
-                </v-col>
-                <v-col>
-                  <v-card class="text-center" variant="text" @click="openKeychainModal">
-                    <v-img v-if="modalSkin.form[tabSkinsTeam].keychain.image" :src="modalSkin.form[tabSkinsTeam].keychain.image" height="50"></v-img>
-                    <v-icon v-else size="50" icon="mdi-key-chain" color="grey-darken-3"></v-icon>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col cols="12" md="6" align-self="center">
-              <v-text-field label="Wear" v-model="modalSkin.form[tabSkinsTeam].wear" @change="validateWear" hint="0.001 ~ 1.0"></v-text-field>
-              <v-text-field label="Seed" v-model="modalSkin.form[tabSkinsTeam].seed" @change="validateSeed" hint="0 ~ 1000"></v-text-field>
-              <v-text-field label="Name Tag" v-model="modalSkin.form[tabSkinsTeam].name"></v-text-field>
-              <v-checkbox label="StatTrack" :true-value="1" :false-value="0" v-model="modalSkin.form[tabSkinsTeam].stattrack" hide-details></v-checkbox>
-            </v-col>
-          </v-row>
-          <v-divider class="my-3"></v-divider>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field label="Search" v-model="modalSkin.search.input" @update:model-value="onModalSkinSearch">
-                <template #append>
-                  <v-checkbox label="All Weapons" v-model="modalSkin.search.all" hide-details @input="onModalSkinSearch"></v-checkbox>
-                </template>
-              </v-text-field>
-            </v-col>
-            <v-col cols="6" md="3" lg="2" xl="1" v-for="skin in modalSkinSearchResultItems" :key="skin.id">
-              <v-card @click="onModalSkinSelect(skin)" variant="text" v-tooltip:top="skin.name">
-                <v-overlay :model-value="true" :scrim="false" contained class="justify-end" persistent>
-                  <v-icon size="25" color="orange" v-if="modalSkin.form[TEAM_T].paint == skin.paint_index">mdi-check-circle-outline</v-icon>
-                  <v-icon size="25" color="light-blue" v-if="modalSkin.form[TEAM_CT].paint == skin.paint_index">mdi-check-circle-outline</v-icon>
-                </v-overlay>
-                <v-img :src="skin.image" height="90"></v-img>
-              </v-card>
-            </v-col>
-            <v-col cols="12">
-              <v-pagination 
-                v-model="modalSkin.search.page"
-                :length="modalSkin.search.pages"
-                :total-visible="7"
-              ></v-pagination>
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions>
+          <v-toolbar-title class="text-primary font-weight-bold">{{ modalSkin.weapon_name }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn text="Close" variant="plain" @click="$emit('update:modelValue', false)"></v-btn>
-          <v-btn color="primary" text="Save" variant="tonal" @click="save"></v-btn>
-        </v-card-actions>
+          <v-btn color="primary" variant="flat" class="px-6" @click="save">Save Changes</v-btn>
+        </v-toolbar>
+
+        <v-card-text class="pa-0">
+          <v-container fluid>
+            <!-- Team Toggle -->
+            <v-row justify="center" class="mb-6">
+              <v-col cols="12" sm="10" md="8" lg="6">
+                <v-btn-toggle
+                  v-model="tabSkinsTeam"
+                  mandatory
+                  :color="tabSkinsTeam == TEAM_T ? 'orange' : 'light-blue'"
+                  variant="outlined"
+                  class="border rounded d-flex w-100"
+                  style="height: 56px;"
+                >
+                  <v-btn :value="TEAM_T" class="flex-grow-1" height="56">
+                    <v-icon start color="orange">mdi-account-group</v-icon>
+                    Terrorists
+                  </v-btn>
+                  <v-btn :value="TEAM_CT" class="flex-grow-1" height="56">
+                    <v-icon start color="light-blue">mdi-shield-account</v-icon>
+                    Counter-Terrorists
+                  </v-btn>
+                </v-btn-toggle>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <!-- Left: Preview -->
+              <v-col cols="12" md="6">
+                <v-card border flat class="pa-4 bg-surface rounded-lg h-100">
+                  <div class="card-accent-line mb-4" :style="{ background: modalSkin.skin[tabSkinsTeam].color }"></div>
+                  <div class="text-overline mb-2">Selected Skin</div>
+                  <v-img :src="modalSkin.skin[tabSkinsTeam].image" height="200" contain rounded class="mb-2"></v-img>
+                  <div class="text-h6 text-center font-weight-medium">
+                    {{ modalSkin.skin[tabSkinsTeam].name }}
+                  </div>
+                </v-card>
+              </v-col>
+
+              <!-- Right: Attributes Form -->
+              <v-col cols="12" md="6">
+                <v-card border flat class="pa-6 bg-surface rounded-lg h-100 d-flex flex-column justify-center">
+                  <div class="text-overline mb-4">Weapon Attributes</div>
+                  <v-row density="comfortable">
+                    <v-col cols="12" sm="6" class="pb-2">
+                      <v-text-field 
+                        label="Wear Value" v-model.number="modalSkin.form[tabSkinsTeam].wear" 
+                        variant="outlined" density="compact"
+                        type="number" :step="0.001" :min="0" :max="1"
+                        @update:model-value="validateWear" prepend-inner-icon="mdi-texture" hide-details class="mb-1"
+                      ></v-text-field>
+                      <v-slider v-model="modalSkin.form[tabSkinsTeam].wear" min="0.001" max="1" step="0.001" color="primary" hide-details density="compact"></v-slider>
+                    </v-col>
+                    <v-col cols="12" sm="6" class="pb-2">
+                      <v-text-field 
+                        label="Seed" v-model.number="modalSkin.form[tabSkinsTeam].seed" 
+                        variant="outlined" density="compact" type="number" min="0" max="1000"
+                        @update:model-value="validateSeed" prepend-inner-icon="mdi-fingerprint" hide-details class="mb-1"
+                      ></v-text-field>
+                      <v-slider v-model="modalSkin.form[tabSkinsTeam].seed" min="0" max="1000" step="1" color="primary" hide-details density="compact"></v-slider>
+                    </v-col>
+                    <v-col cols="12" class="py-1">
+                      <v-text-field 
+                        label="Custom Name Tag" v-model="modalSkin.form[tabSkinsTeam].name" 
+                        variant="outlined" density="compact" prepend-inner-icon="mdi-tag-outline" hide-details
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-switch
+                        v-model="modalSkin.form[tabSkinsTeam].stattrack" :true-value="1" :false-value="0"
+                        color="orange-darken-2" hide-details inset density="compact"
+                      >
+                        <template #label>
+                          <span class="text-subtitle-2 ml-2" :class="modalSkin.form[tabSkinsTeam].stattrack ? 'text-orange-darken-2 font-weight-bold' : ''">
+                            StatTrak™ Enabled
+                          </span>
+                        </template>
+                      </v-switch>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-col>
+            </v-row>
+
+            <!-- Middle: Stickers & Keychain (Independent Row) -->
+            <v-row v-if="!modalSkin.isKnife" class="GA-2 ga-2 justify-center mt-4">
+              <v-col cols="12">
+                <v-card border flat class="pa-4 bg-surface rounded-lg">
+                  <div class="text-overline mb-2 text-center">Stickers & Keychain Configuration</div>
+                  <v-row class="ga-2 justify-center ma-0">
+                    <v-col v-for="i in 5" :key="i-1" cols="auto" class="pa-1">
+                      <v-card 
+                        width="80" height="80" border flat 
+                        class="d-flex align-center justify-center cursor-pointer hover-opacity bg-grey-darken-4"
+                        @click="openStickerModal(i-1)"
+                      >
+                        <v-img 
+                          v-if="modalSkin.form[tabSkinsTeam]['stickers' + (i-1)].image" 
+                          :src="modalSkin.form[tabSkinsTeam]['stickers' + (i-1)].image" 
+                          class="w-100 h-100"
+                          contain
+                        ></v-img>
+                        <v-icon v-else icon="mdi-sticker-plus-outline" color="grey-darken-2" size="32"></v-icon>
+                        <v-tooltip activator="parent" location="top">Sticker Slot {{ i }}</v-tooltip>
+                      </v-card>
+                    </v-col>
+                    <v-col cols="auto" class="pa-1">
+                      <v-card 
+                        width="80" height="80" border flat 
+                        class="d-flex align-center justify-center cursor-pointer hover-opacity bg-grey-darken-4"
+                        @click="openKeychainModal"
+                      >
+                        <v-img 
+                          v-if="modalSkin.form[tabSkinsTeam].keychain.image" 
+                          :src="modalSkin.form[tabSkinsTeam].keychain.image" 
+                          class="w-100 h-100"
+                          contain
+                        ></v-img>
+                        <v-icon v-else icon="mdi-key-chain" color="grey-darken-2" size="32"></v-icon>
+                        <v-tooltip activator="parent" location="top">Keychain</v-tooltip>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-col>
+            </v-row>
+
+            <v-divider class="my-8"></v-divider>
+
+            <v-data-iterator
+              :items="items"
+              :search="modalSkin.search.input"
+              :sort-by="sortBy"
+              :custom-filter="customFilter"
+              :items-per-page="modalSkin.search.itemsPerPage"
+              v-model:page="modalSkin.search.page"
+            >
+              <template v-slot:header>
+                <v-row align="center" class="mb-4">
+                  <v-col cols="12" md="6">
+                    <v-text-field 
+                      label="Search Skins..." 
+                      v-model="modalSkin.search.input" 
+                      variant="outlined"
+                      density="comfortable"
+                      prepend-inner-icon="mdi-magnify"
+                      hide-details
+                      clearable
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" md="6" class="d-flex align-center ga-4">
+                    <v-select
+                      v-model="modalSkin.search.sort"
+                      :items="skinSortOptions"
+                      label="Sort"
+                      variant="outlined"
+                      density="comfortable"
+                      hide-details
+                      class="flex-grow-1"
+                    ></v-select>
+                    <v-checkbox 
+                      label="All Weapons" 
+                      v-model="modalSkin.search.all" 
+                      hide-details 
+                      density="compact"
+                    ></v-checkbox>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-slot:default="{ items: displayedItems }">
+                <v-row>
+                  <v-col cols="6" sm="4" md="3" lg="2" v-for="item in displayedItems" :key="item.raw.id">
+                    <v-card 
+                      border flat 
+                      class="cursor-pointer position-relative overflow-hidden skin-card"
+                      @click="onModalSkinSelect(item.raw)"
+                    >
+                      <div class="card-accent-line" :style="{ background: item.raw.rarity.color }"></div>
+                      <v-img :src="item.raw.image" height="100" contain>
+                        <div class="position-absolute right-0 top-0 pa-1" style="z-index: 1">
+                          <v-icon size="24" color="orange" v-if="modalSkin.form[TEAM_T].paint == item.raw.paint_index">mdi-check-circle</v-icon>
+                          <v-icon size="24" color="light-blue" v-if="modalSkin.form[TEAM_CT].paint == item.raw.paint_index">mdi-check-circle</v-icon>
+                        </div>
+                      </v-img>
+                      <v-card-text class="pa-2 text-caption font-weight-medium text-truncate">
+                        {{ item.raw.name }}
+                      </v-card-text>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-slot:footer="{ pageCount }">
+                <v-row v-if="pageCount > 1" justify="center" class="mt-6">
+                  <v-col cols="12" sm="8" md="6">
+                    <v-pagination 
+                      v-model="modalSkin.search.page"
+                      :length="pageCount"
+                      :total-visible="5"
+                      rounded="circle"
+                      density="comfortable"
+                    ></v-pagination>
+                  </v-col>
+                </v-row>
+              </template>
+            </v-data-iterator>
+          </v-container>
+        </v-card-text>
       </v-card>
 
       <ModalSticker v-model="stickerModal.open" :slot="stickerModal.slot" :initial-data="stickerModal.initialData" @save="onStickerSave" />

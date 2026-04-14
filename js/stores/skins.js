@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import api from '../utils/api.js'
+import { RARITY_SKIN } from '../const/rarity.js'
 
 export const useSkinsStore = defineStore('skins', () => {
   const skins = ref([])
@@ -15,7 +16,11 @@ export const useSkinsStore = defineStore('skins', () => {
       const { data } = await api.get(`./api?action=get-skins&lang=en`)
       const tempSkins = []
       const tempGloves = []
+      
       for (const skin of data) {
+        // Pre-calculate common metadata for performance
+        skin.rarityWeight = RARITY_SKIN[skin.rarity?.id] || 0
+        
         if (skin.category.id === 'sfui_invpanel_filter_gloves') {
           if (skin.paint_index != "0") {
             skin.name = skin.name.replace('★', '').trim()

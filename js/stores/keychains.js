@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import api from '../utils/api.js'
+import { RARITY_KEYCHAIN } from '../const/rarity.js'
 
 export const useKeychainsStore = defineStore('keychains', () => {
   const keychains = ref([])
@@ -13,8 +14,13 @@ export const useKeychainsStore = defineStore('keychains', () => {
     try {
       const { data } = await api.get(`./api?action=get-keychains&lang=en`)
       keychains.value = data.map(keychain => {
+        // 資料清洗
         keychain.name = keychain.name.replace('Charm | ', '')
         keychain.id = keychain.id.replace('keychain-', '')
+        
+        // 預先計算排序權重，提升效能
+        keychain.rarityWeight = RARITY_KEYCHAIN[keychain.rarity?.id] || 0
+        
         return keychain
       })
     } catch (error) {

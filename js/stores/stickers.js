@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import api from '../utils/api.js'
+import { RARITY_STICKER } from '../const/rarity.js'
 
 export const useStickersStore = defineStore('stickers', () => {
   const stickers = ref([])
@@ -13,8 +14,13 @@ export const useStickersStore = defineStore('stickers', () => {
     try {
       const { data } = await api.get(`./api?action=get-stickers&lang=en`)
       stickers.value = data.map(sticker => {
+        // Data cleaning
         sticker.name = sticker.name.replace('Sticker | ', '')
         sticker.id = sticker.id.replace('sticker-', '')
+        
+        // Performance: Pre-calculate sorting weight
+        sticker.rarityWeight = RARITY_STICKER[sticker.rarity?.id] || 0
+        
         return sticker
       })
     } catch (error) {

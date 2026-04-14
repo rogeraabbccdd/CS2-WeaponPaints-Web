@@ -204,8 +204,6 @@ export const useSessionStore = defineStore("session", () => {
       }
     } catch (error) {
       console.log(error)
-    } finally {
-      modalSkin.open = false
     }
   }
 
