@@ -12,11 +12,13 @@ export const useMusicsStore = defineStore('musics', () => {
     loading.value = true
     try {
       const { data } = await api.get(`./api?action=get-musics&lang=en`)
-      musics.value = data.map(music => {
-        music.name = music.name.replace('Music Kit | ', '').trim()
-        music.id = music.id.replace('music_kit-', '')
-        return music
-      })
+      musics.value = data
+        .filter(music => !music.id.endsWith('_st'))
+        .map(music => {
+          music.name = music.name.replace('Music Kit | ', '').trim()
+          music.id = music.id.replace('music_kit-', '')
+          return music
+        })
     } catch (error) {
       console.error(error)
     } finally {
