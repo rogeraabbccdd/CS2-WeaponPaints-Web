@@ -2,67 +2,120 @@ import { ref, computed } from 'vue'
 import { KNIVES } from '../const/weapons.js'
 import { useSessionStore } from '../stores/session.js'
 import { TEAM_CT, TEAM_T } from '../const/teams.js'
+import CardKnife from '../components/card-knife.js'
 
 export default {
+  components: { CardKnife },
   setup () {
     const session = useSessionStore()
 
-    const knifeSearchInput = ref('')
+    const searchInput = ref('')
+    const activeKnife = ref(null)
+    const sortOrder = ref('asc')
 
-    const KNIVESFiltered = computed(() => {
-      const search = knifeSearchInput.value.toUpperCase()
-      return KNIVES.filter(knife => knife.name.toUpperCase().includes(search))
-    })
+    const sortOptions = [
+      { title: 'Name (A-Z)', value: 'asc' },
+      { title: 'Name (Z-A)', value: 'desc' }
+    ]
+
+    // Prepare items for v-data-iterator
+    const items = computed(() => {
+      const defaultItem = {
+        name: 'Default',
+        image: './images/default.svg',
+        weapon_name: 'weapon_knife',
+        isDefault: true,
+        rarityColor: '#424242'
+      };
+
+      const baseKnives = KNIVES.map(k => ({
+        ...k,
+        isDefault: false,
+        rarityColor: '#eb4b4b'
+      }));
+
+      return [defaultItem, ...baseKnives];
+    });
+
+    // Map sort order to v-data-iterator format
+    // Always keep isDefault: true at the top
+    const sortBy = computed(() => {
+      const priority = { key: 'isDefault', order: 'desc' };
+      return [priority, { key: 'name', order: sortOrder.value }];
+    });
+
+    const customFilter = (value, searchInput, item) => {
+      if (!searchInput) return true;
+      return item.raw.name.toUpperCase().includes(searchInput.toUpperCase());
+    };
+
+    const onActiveKnifeUpdate = (weapon_name, value) => {
+      activeKnife.value = value ? weapon_name : null
+    }
 
     return {
       TEAM_T,
       TEAM_CT,
-      KNIVES,
       session,
-      knifeSearchInput,
-      KNIVESFiltered,
+      searchInput,
+      items,
+      sortBy,
+      customFilter,
+      activeKnife,
+      onActiveKnifeUpdate,
+      sortOrder,
+      sortOptions,
     }
   },
   template: /*html*/
     `
-    <v-container>
-      <v-text-field label="Search" v-model="knifeSearchInput"></v-text-field>
-      <v-row>
-        <v-col cols="6" md="3" lg="2">
-          <v-card class="cursor-pointer">
-            <v-menu activator="parent">
-              <v-list>
-                <v-list-item @click="session.setKnife('weapon_knife', TEAM_T)">T</v-list-item>
-                <v-list-item @click="session.setKnife('weapon_knife', TEAM_CT)">CT</v-list-item>
-              </v-list>
-            </v-menu>
-            <v-img src="./images/default.svg">
-              <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
-                <v-icon size="30" color="orange" v-if="session.loadout.selected_knife[TEAM_T] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
-                <v-icon size="30" color="light-blue" v-if="session.loadout.selected_knife[TEAM_CT] == 'weapon_knife'">mdi-check-circle-outline</v-icon>
-              </v-overlay>
-            </v-img>
-            <v-card-title>Default</v-card-title>
-          </v-card>
-        </v-col>
-        <v-col cols="6" md="3" lg="2" v-for="knife in KNIVESFiltered" :key="knife.weapon_name">
-          <v-card class="cursor-pointer">
-            <v-menu activator="parent">
-              <v-list>
-                <v-list-item @click="session.setKnife(knife.weapon_name, TEAM_T)">T</v-list-item>
-                <v-list-item @click="session.setKnife(knife.weapon_name, TEAM_CT)">CT</v-list-item>
-              </v-list>
-            </v-menu>
-            <v-img :src="knife.image">
-              <v-overlay :model-value="true" :scrim="false" contained class="justify-end">
-                <v-icon size="30" color="orange" v-if="session.loadout.selected_knife[TEAM_T] == knife.weapon_name">mdi-check-circle-outline</v-icon>
-                <v-icon size="30" color="light-blue" v-if="session.loadout.selected_knife[TEAM_CT] == knife.weapon_name">mdi-check-circle-outline</v-icon>
-              </v-overlay>
-            </v-img>
-            <v-card-title>{{ knife.name }}</v-card-title>
-          </v-card>
-        </v-col>
-      </v-row>
+    <v-container fluid>
+      <v-data-iterator
+        :items="items"
+        :search="searchInput"
+        :sort-by="sortBy"
+        :custom-filter="customFilter"
+        :items-per-page="-1"
+      >
+        <template v-slot:header>
+          <v-row class="mb-4">
+            <v-col cols="12" sm="8" md="9">
+              <v-text-field 
+                color="primary" 
+                variant="outlined" 
+                label="Search Knives..." 
+                v-model="searchInput" 
+                hide-details
+                clearable
+                prepend-inner-icon="mdi-magnify"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="4" md="3">
+              <v-select
+                v-model="sortOrder"
+                :items="sortOptions"
+                label="Sort"
+                variant="outlined"
+                hide-details
+                color="primary"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </template>
+
+        <template v-slot:default="{ items: displayedItems }">
+          <v-row>
+            <v-col cols="12" sm="6" md="4" lg="2" v-for="item in displayedItems" :key="item.raw.weapon_name">
+              <CardKnife
+                :knife="item.raw"
+                :color="item.raw.rarityColor"
+                :active="activeKnife === item.raw.weapon_name"
+                @update:active="onActiveKnifeUpdate(item.raw.weapon_name, $event)"
+              />
+            </v-col>
+          </v-row>
+        </template>
+      </v-data-iterator>
     </v-container>
     `
 }
