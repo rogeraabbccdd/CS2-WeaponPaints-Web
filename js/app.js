@@ -11,7 +11,15 @@ import pagePins from './pages/pins.js'
 
 const vuetify = createVuetify({
   theme: {
-    defaultTheme: 'dark'
+    defaultTheme: 'custom',
+    themes: {
+      custom: {
+        dark: true,
+        colors: {
+          primary: '#00E5FF',
+        },
+      }
+      }
   }
 })
 
