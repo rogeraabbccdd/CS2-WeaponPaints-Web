@@ -23,3 +23,8 @@ const i18n = createI18n({
 })
 
 export default i18n
+
+export const languages = [
+  { title: 'English', value: 'en' },
+  { title: '繁體中文', value: 'zh-TW' }
+]

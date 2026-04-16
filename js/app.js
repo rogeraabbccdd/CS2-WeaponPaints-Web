@@ -3,6 +3,7 @@ import { createVuetify, useDisplay } from 'vuetify'
 import { useI18n } from 'vue-i18n'
 import store from './stores/index.js'
 import i18n from './locales/index.js'
+import { languages } from './locales/index.js'
 import { useSessionStore } from './stores/session.js'
 import { useAgentsStore } from './stores/agents.js'
 import { useKeychainsStore } from './stores/keychains.js'
@@ -73,11 +74,6 @@ const app = createApp({
       url.searchParams.set("page", newVal);
       history.pushState({}, "", url);
     })
-
-    const languages = [
-      { title: 'English', value: 'en' },
-      { title: '繁體中文', value: 'zh-TW' }
-    ]
 
     const setLanguage = (lang) => {
       // Change Locale
