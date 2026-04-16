@@ -22,6 +22,10 @@ define('STEAM_API_KEY', 'YOUR_STEAM_WEB_API_KEY_HERE');
 // IMPORTANT: Do not include a trailing slash at the end.
 define('STEAM_DOMAIN_NAME', 'https://your-domain.com');
 
+// --- API URL ---
+// IMPORTANT: Do not include a trailing slash at the end.
+define('API_URL', 'https://raw.githubusercontent.com/rogeraabbccdd/CSGO-API/main/public/api');
+
 // Redirection pages after login/logout
 define('STEAM_LOGIN_PAGE', 'index.php');
 define('STEAM_LOGOUT_PAGE', 'index.php');

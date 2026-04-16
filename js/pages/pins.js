@@ -1,4 +1,5 @@
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/session.js'
 import { TEAM_CT, TEAM_T } from '../const/teams.js'
 import { usePinsStore } from '../stores/pins.js'
@@ -7,6 +8,7 @@ import CardPin from '../components/card-pin.js'
 export default {
   components: { CardPin },
   setup () {
+    const { t } = useI18n()
     const session = useSessionStore()
     const pins = usePinsStore()
 
@@ -21,12 +23,12 @@ export default {
 
     const activePin = ref(null)
 
-    const sortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' },
-      { title: 'Rarity (High-Low)', value: 'rarity_desc' },
-      { title: 'Rarity (Low-High)', value: 'rarity_asc' }
-    ]
+    const sortOptions = computed(() => [
+      { title: t('page.pins.sort.name_asc'), value: 'asc' },
+      { title: t('page.pins.sort.name_desc'), value: 'desc' },
+      { title: t('page.pins.sort.rarity_desc'), value: 'rarity_desc' },
+      { title: t('page.pins.sort.rarity_asc'), value: 'rarity_asc' }
+    ])
 
     // Reset to page 1 when search or sort changes
     const onParamsUpdate = () => {
@@ -36,7 +38,7 @@ export default {
     // Static default item
     const NO_PIN_ITEM = {
       id: 0,
-      name: 'Default',
+      name: t('page.pins.default'),
       image: './images/default.svg',
       isDefault: true,
       rarityWeight: -1,
@@ -45,8 +47,9 @@ export default {
 
     // Prepare items for v-data-iterator
     const items = computed(() => {
+      const defaultItem = { ...NO_PIN_ITEM, name: t('page.pins.default') }
       // Just spreading pre-calculated store data
-      return [NO_PIN_ITEM, ...pins.pins];
+      return [defaultItem, ...pins.pins];
     })
 
     // Map sort order to v-data-iterator format
@@ -80,6 +83,7 @@ export default {
     return {
       TEAM_T,
       TEAM_CT,
+      t,
       session,
       loading,
       search,
@@ -97,7 +101,7 @@ export default {
     <v-container fluid>
       <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
         <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
-        <h1 class="text-h5 font-header">Loading...</h1>
+        <h1 class="text-h5 font-header">{{ t('loading.text') }}</h1>
       </div>
 
       <v-data-iterator
@@ -115,7 +119,7 @@ export default {
               <v-text-field 
                 color="primary" 
                 variant="outlined" 
-                label="Search Pins..." 
+                :label="t('page.pins.search.label')" 
                 v-model="search.input" 
                 @update:model-value="onParamsUpdate"
                 hide-details
@@ -127,7 +131,7 @@ export default {
               <v-select
                 v-model="search.sort"
                 :items="sortOptions"
-                label="Sort"
+                :label="t('page.pins.sort.label')"
                 variant="outlined"
                 @update:model-value="onParamsUpdate"
                 hide-details

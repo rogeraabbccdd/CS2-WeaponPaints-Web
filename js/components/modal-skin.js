@@ -1,4 +1,5 @@
 import { ref, computed, watch } from "vue";
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from "../stores/session.js";
 import { TEAM_CT, TEAM_T } from "../const/teams.js";
 import { useSkinsStore } from "../stores/skins.js";
@@ -16,6 +17,7 @@ export default {
   },
   emits: ["update:modelValue"],
   setup(props, { emit }) {
+    const { t } = useI18n()
     const session = useSessionStore();
     const skinsStore = useSkinsStore();
     const stickersStore = useStickersStore();
@@ -69,12 +71,12 @@ export default {
       },
     });
 
-    const skinSortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' },
-      { title: 'Rarity (High-Low)', value: 'rarity_desc' },
-      { title: 'Rarity (Low-High)', value: 'rarity_asc' }
-    ];
+    const skinSortOptions = computed(() =>[
+      { title: t('modal_skin.sort.name_asc'), value: 'asc' },
+      { title: t('modal_skin.sort.name_desc'), value: 'desc' },
+      { title: t('modal_skin.sort.rarity_asc'), value: 'rarity_asc' },
+      { title: t('modal_skin.sort.rarity_desc'), value: 'rarity_desc' },
+    ]);
 
     // Filter items based on weapon and "All" toggle
     const items = computed(() => {
@@ -275,6 +277,7 @@ export default {
       openKeychainModal,
       onKeychainSave,
       save,
+      t,
       session,
       skinSortOptions
     };
@@ -287,7 +290,7 @@ export default {
           <v-btn icon="mdi-close" @click="$emit('update:modelValue', false)"></v-btn>
           <v-toolbar-title class="text-primary font-weight-bold">{{ modalSkin.weapon_name }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn color="primary" variant="flat" class="px-6" @click="save">Save Changes</v-btn>
+          <v-btn color="primary" variant="flat" class="px-6" @click="save">{{ t('modal_skin.save') }}</v-btn>
         </v-toolbar>
 
         <v-card-text class="pa-0">
@@ -303,13 +306,13 @@ export default {
                   class="border rounded d-flex w-100"
                   style="height: 56px;"
                 >
-                  <v-btn :value="TEAM_T" class="flex-grow-1" height="56">
+                  <v-btn :value="TEAM_T" class="flex-grow-1 w-50" height="56">
                     <v-icon start color="orange">mdi-account-group</v-icon>
-                    Terrorists
+                    {{ t('team.t') }}
                   </v-btn>
-                  <v-btn :value="TEAM_CT" class="flex-grow-1" height="56">
+                  <v-btn :value="TEAM_CT" class="flex-grow-1 w-50" height="56">
                     <v-icon start color="light-blue">mdi-shield-account</v-icon>
-                    Counter-Terrorists
+                    {{ t('team.ct') }}
                   </v-btn>
                 </v-btn-toggle>
               </v-col>
@@ -320,7 +323,7 @@ export default {
               <v-col cols="12" md="6">
                 <v-card border flat class="pa-4 bg-surface rounded-lg h-100">
                   <div class="card-accent-line mb-4" :style="{ background: modalSkin.skin[tabSkinsTeam].color }"></div>
-                  <div class="text-overline mb-2">Selected Skin</div>
+                  <div class="text-overline mb-2">{{ t('modal_skin.preview.title') }}</div>
                   <v-img :src="modalSkin.skin[tabSkinsTeam].image" height="200" contain rounded class="mb-2"></v-img>
                   <div class="text-h6 text-center font-weight-medium">
                     {{ modalSkin.skin[tabSkinsTeam].name }}
@@ -331,11 +334,11 @@ export default {
               <!-- Right: Attributes Form -->
               <v-col cols="12" md="6">
                 <v-card border flat class="pa-6 bg-surface rounded-lg h-100 d-flex flex-column justify-center">
-                  <div class="text-overline mb-4">Weapon Attributes</div>
+                  <div class="text-overline mb-4">{{ t('modal_skin.attributes.title') }}</div>
                   <v-row density="comfortable">
                     <v-col cols="12" sm="6" class="pb-2">
                       <v-text-field 
-                        label="Wear Value" v-model.number="modalSkin.form[tabSkinsTeam].wear" 
+                        :label="t('modal_skin.attributes.wear')" v-model.number="modalSkin.form[tabSkinsTeam].wear" 
                         variant="outlined" density="compact"
                         type="number" :step="0.001" :min="0" :max="1"
                         @update:model-value="validateWear" prepend-inner-icon="mdi-texture" hide-details class="mb-1"
@@ -344,7 +347,7 @@ export default {
                     </v-col>
                     <v-col cols="12" sm="6" class="pb-2">
                       <v-text-field 
-                        label="Seed" v-model.number="modalSkin.form[tabSkinsTeam].seed" 
+                        :label="t('modal_skin.attributes.seed')" v-model.number="modalSkin.form[tabSkinsTeam].seed" 
                         variant="outlined" density="compact" type="number" min="0" max="1000"
                         @update:model-value="validateSeed" prepend-inner-icon="mdi-fingerprint" hide-details class="mb-1"
                       ></v-text-field>
@@ -352,7 +355,7 @@ export default {
                     </v-col>
                     <v-col cols="12" class="py-1">
                       <v-text-field 
-                        label="Custom Name Tag" v-model="modalSkin.form[tabSkinsTeam].name" 
+                        :label="t('modal_skin.attributes.nametag')" v-model="modalSkin.form[tabSkinsTeam].name" 
                         variant="outlined" density="compact" prepend-inner-icon="mdi-tag-outline" hide-details
                       ></v-text-field>
                     </v-col>
@@ -363,7 +366,7 @@ export default {
                       >
                         <template #label>
                           <span class="text-subtitle-2 ml-2" :class="modalSkin.form[tabSkinsTeam].stattrack ? 'text-orange-darken-2 font-weight-bold' : ''">
-                            StatTrak™ Enabled
+                            {{ t('modal_skin.attributes.stattrack') }}
                           </span>
                         </template>
                       </v-switch>
@@ -377,7 +380,7 @@ export default {
             <v-row v-if="!modalSkin.isKnife" class="GA-2 ga-2 justify-center mt-4">
               <v-col cols="12">
                 <v-card border flat class="pa-4 bg-surface rounded-lg">
-                  <div class="text-overline mb-2 text-center">Stickers & Keychain Configuration</div>
+                  <div class="text-overline mb-2 text-center">{{ t('modal_skin.stickers.title') }}</div>
                   <v-row class="ga-2 justify-center ma-0">
                     <v-col v-for="i in 5" :key="i-1" cols="auto" class="pa-1">
                       <v-card 
@@ -392,7 +395,7 @@ export default {
                           contain
                         ></v-img>
                         <v-icon v-else icon="mdi-sticker-plus-outline" color="grey-darken-2" size="32"></v-icon>
-                        <v-tooltip activator="parent" location="top">Sticker Slot {{ i }}</v-tooltip>
+                        <v-tooltip activator="parent" location="top">{{ t('modal_skin.stickers.slot', { slot: i }) }}</v-tooltip>
                       </v-card>
                     </v-col>
                     <v-col cols="auto" class="pa-1">
@@ -408,7 +411,7 @@ export default {
                           contain
                         ></v-img>
                         <v-icon v-else icon="mdi-key-chain" color="grey-darken-2" size="32"></v-icon>
-                        <v-tooltip activator="parent" location="top">Keychain</v-tooltip>
+                        <v-tooltip activator="parent" location="top">{{ t('modal_skin.stickers.keychain') }}</v-tooltip>
                       </v-card>
                     </v-col>
                   </v-row>
@@ -430,7 +433,7 @@ export default {
                 <v-row align="center" class="mb-4">
                   <v-col cols="12" md="6">
                     <v-text-field 
-                      label="Search Skins..." 
+                      :label="t('modal_skin.search.label')" 
                       v-model="modalSkin.search.input" 
                       variant="outlined"
                       density="comfortable"
@@ -443,14 +446,14 @@ export default {
                     <v-select
                       v-model="modalSkin.search.sort"
                       :items="skinSortOptions"
-                      label="Sort"
+                      :label="t('modal_skin.sort.label')"
                       variant="outlined"
                       density="comfortable"
                       hide-details
                       class="flex-grow-1"
                     ></v-select>
                     <v-checkbox 
-                      label="All Weapons" 
+                      :label="t('modal_skin.all_weapons')" 
                       v-model="modalSkin.search.all" 
                       hide-details 
                       density="compact"

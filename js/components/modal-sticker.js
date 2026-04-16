@@ -1,4 +1,5 @@
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useStickersStore } from "../stores/stickers.js";
 
 export default {
@@ -9,14 +10,15 @@ export default {
   },
   emits: ["update:modelValue", "save"],
   setup(props, { emit }) {
+    const { t } = useI18n();
     const stickersStore = useStickersStore();
 
-    const sortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' },
-      { title: 'Rarity (High-Low)', value: 'rarity_desc' },
-      { title: 'Rarity (Low-High)', value: 'rarity_asc' }
-    ];
+    const sortOptions = computed(() => [
+      { title: t('modal_skin.sort.name_asc'), value: 'asc' },
+      { title: t('modal_skin.sort.name_desc'), value: 'desc' },
+      { title: t('modal_skin.sort.rarity_desc'), value: 'rarity_desc' },
+      { title: t('modal_skin.sort.rarity_asc'), value: 'rarity_asc' }
+    ]);
 
     const search = ref({
       page: 1,
@@ -43,7 +45,7 @@ export default {
     // Static default item
     const NO_STICKER_ITEM = {
       id: "0",
-      name: "No Sticker",
+      name: t('modal_sticker.none'),
       image: "./images/no-sticker.svg",
       rarity: { id: "rarity_default", color: "#424242" },
       rarityWeight: -1,
@@ -52,8 +54,9 @@ export default {
 
     // Prepare items for v-data-iterator
     const items = computed(() => {
+      const defaultItem = { ...NO_STICKER_ITEM, name: t('modal_sticker.none') }
       // Very efficient: just spreading pre-calculated store data
-      return [NO_STICKER_ITEM, ...stickersStore.stickers];
+      return [defaultItem, ...stickersStore.stickers];
     });
 
     // Map the internal sort state to Vuetify's sortBy format
@@ -112,7 +115,7 @@ export default {
             }
           } else {
             sticker.value.image = "./images/no-sticker.svg";
-            sticker.value.name = "No Sticker";
+            sticker.value.name = t('modal_sticker.none');
             sticker.value.color = "#424242";
           }
           search.value.input = "";
@@ -131,6 +134,7 @@ export default {
     };
 
     return {
+      t,
       search,
       form,
       sticker,
@@ -150,9 +154,9 @@ export default {
       <v-card color="background">
         <v-toolbar color="surface" elevation="1">
           <v-btn icon="mdi-close" @click="close"></v-btn>
-          <v-toolbar-title class="text-primary font-weight-bold">Edit Sticker Slot {{ slot + 1 }}</v-toolbar-title>
+          <v-toolbar-title class="text-primary font-weight-bold">{{ t('modal_sticker.title', { slot: slot + 1 }) }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn color="primary" variant="flat" class="px-6" @click="save">Apply Sticker</v-btn>
+          <v-btn color="primary" variant="flat" class="px-6" @click="save">{{ t('modal_sticker.apply') }}</v-btn>
         </v-toolbar>
 
         <v-card-text class="pa-0">
@@ -162,7 +166,7 @@ export default {
               <v-col cols="12" md="6">
                 <v-card border flat class="pa-4 bg-surface rounded-lg h-100 d-flex flex-column align-center justify-center">
                   <div class="card-accent-line mb-4" :style="{ background: sticker.color }"></div>
-                  <div class="text-overline mb-2 w-100">Selected Sticker</div>
+                  <div class="text-overline mb-2 w-100">{{ t('modal_sticker.preview') }}</div>
                   <v-img :src="sticker.image" height="180" contain rounded class="mb-4 w-100"></v-img>
                   <div class="text-h6 text-center font-weight-medium">
                     {{ sticker.name }}
@@ -173,11 +177,11 @@ export default {
               <!-- Right: Attributes Form -->
               <v-col cols="12" md="6">
                 <v-card border flat class="pa-6 bg-surface rounded-lg h-100 d-flex flex-column justify-center">
-                  <div class="text-overline mb-4">Sticker Attributes</div>
+                  <div class="text-overline mb-4">{{ t('modal_sticker.attributes') }}</div>
                   <v-row density="comfortable">
                     <v-col cols="12" class="pb-4">
                       <v-text-field 
-                        label="Wear Value" v-model.number="form.wear" 
+                        :label="t('modal_sticker.wear')" v-model.number="form.wear" 
                         variant="outlined" density="compact" type="number" :step="0.001" :min="0.001" :max="1"
                         @update:model-value="validateWear" prepend-inner-icon="mdi-texture" hide-details class="mb-1"
                       ></v-text-field>
@@ -185,21 +189,21 @@ export default {
                     </v-col>
                     
                     <v-col cols="6" class="py-1">
-                      <v-text-field label="X Offset" v-model="form.x" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-x-arrow" hide-details></v-text-field>
+                      <v-text-field :label="t('modal_sticker.x')" v-model="form.x" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-x-arrow" hide-details></v-text-field>
                     </v-col>
                     <v-col cols="6" class="py-1">
-                      <v-text-field label="Y Offset" v-model="form.y" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-y-arrow" hide-details></v-text-field>
+                      <v-text-field :label="t('modal_sticker.y')" v-model="form.y" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-y-arrow" hide-details></v-text-field>
                     </v-col>
                     <v-col cols="6" class="py-1">
-                      <v-text-field label="Scale" v-model="form.scale" variant="outlined" density="compact" prepend-inner-icon="mdi-arrow-expand-all" hide-details></v-text-field>
+                      <v-text-field :label="t('modal_sticker.scale')" v-model="form.scale" variant="outlined" density="compact" prepend-inner-icon="mdi-arrow-expand-all" hide-details></v-text-field>
                     </v-col>
                     <v-col cols="6" class="py-1">
-                      <v-text-field label="Rotation" v-model="form.rotate" variant="outlined" density="compact" prepend-inner-icon="mdi-rotate-right" hide-details></v-text-field>
+                      <v-text-field :label="t('modal_sticker.rotate')" v-model="form.rotate" variant="outlined" density="compact" prepend-inner-icon="mdi-rotate-right" hide-details></v-text-field>
                     </v-col>
 
                     <v-col cols="12" class="mt-4">
                       <v-btn block variant="outlined" color="primary" prepend-icon="mdi-open-in-new" href="https://cs2inspects.com/sticker-customizer" target="_blank">
-                        Open External Customizer
+                        {{ t('modal_sticker.external') }}
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -221,7 +225,7 @@ export default {
                 <v-row align="center" class="mb-4">
                   <v-col cols="12" md="8">
                     <v-text-field 
-                      placeholder="Search for stickers..." 
+                      :placeholder="t('modal_sticker.search')" 
                       v-model="search.input" 
                       variant="outlined"
                       density="comfortable"
@@ -234,7 +238,7 @@ export default {
                     <v-select
                       v-model="search.sort"
                       :items="sortOptions"
-                      label="Sort By"
+                      :label="t('modal_sticker.sort')"
                       variant="outlined"
                       density="comfortable"
                       hide-details

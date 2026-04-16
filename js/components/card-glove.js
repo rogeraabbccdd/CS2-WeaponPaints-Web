@@ -1,3 +1,5 @@
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/session.js'
 import { TEAM_CT, TEAM_T } from '../const/teams.js'
 import { DEFINDEXES } from '../const/weapons.js'
@@ -9,6 +11,7 @@ export default {
   },
   emits: ['update:active'],
   setup (props, { emit }) {
+    const { t } = useI18n()
     const session = useSessionStore()
 
     const onOverlayUpdate = (value) => {
@@ -21,7 +24,7 @@ export default {
       session.setGlove(defindex, paintIndex, team)
     }
 
-    const isSelected = (team) => {
+    const checkSelected = (team) => {
       if (!props.glove.weapon) {
         return session.loadout.selected_glove[team] == 0
       }
@@ -31,9 +34,15 @@ export default {
              session.loadout.selected_skins[weaponId][team].weapon_paint_id == props.glove.paint_index
     }
 
+    const isSelected = computed(() => ({
+      t: checkSelected(TEAM_T),
+      ct: checkSelected(TEAM_CT)
+    }))
+
     return {
       TEAM_T,
       TEAM_CT,
+      t,
       session,
       onOverlayUpdate,
       setGlove,
@@ -53,16 +62,28 @@ export default {
         content-class="w-100 h-100 d-flex align-center pa-10 backdrop-blur"
       >
         <div class="d-flex flex-column ga-2 w-100 px-4">
-          <v-btn variant="outlined" block color="orange" @click="setGlove(TEAM_T)">T</v-btn>
-          <v-btn variant="outlined" block color="light-blue" @click="setGlove(TEAM_CT)">CT</v-btn>
+          <v-btn 
+            :variant="isSelected.t ? 'flat' : 'outlined'"
+            block color="orange"
+            @click="setGlove(TEAM_T)"
+          >
+            {{ t('team.t') }}
+          </v-btn>
+          <v-btn
+            :variant="isSelected.ct ? 'flat' : 'outlined'"
+            block color="light-blue"
+            @click="setGlove(TEAM_CT)"
+          >
+            {{ t('team.ct') }}
+          </v-btn>
         </div>
       </v-overlay>
       <!-- Image -->
       <v-img :src="glove.image" aspect-ratio="1.33" cover>
         <!-- Selected -->
         <div class="position-absolute right-0 pa-1">
-          <v-icon size="30" color="orange" v-if="isSelected(TEAM_T)">mdi-check-circle</v-icon>
-          <v-icon size="30" color="light-blue" v-if="isSelected(TEAM_CT)">mdi-check-circle</v-icon>
+          <v-icon size="30" color="orange" v-if="isSelected.t">mdi-check-circle</v-icon>
+          <v-icon size="30" color="light-blue" v-if="isSelected.ct">mdi-check-circle</v-icon>
         </div>
       </v-img>
       <!-- Text -->

@@ -1,12 +1,15 @@
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/session.js'
-import { TEAM_CT, TEAM_T, TEAM_NAME } from '../const/teams.js'
+import { TEAM_CT, TEAM_T } from '../const/teams.js'
 import { useAgentsStore } from '../stores/agents.js'
 import CardAgent from '../components/card-agent.js'
 
 export default {
   components: { CardAgent },
-  setup () {
+  expose: ['load'],
+  setup (props, { expose }) {
+    const { t } = useI18n()
     const session = useSessionStore()
     const agents = useAgentsStore()
 
@@ -18,16 +21,16 @@ export default {
     const activeAgentId = ref(null)
     const sortOrder = ref('rarity_desc')
 
-    const sortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' },
-      { title: 'Rarity (High-Low)', value: 'rarity_desc' },
-      { title: 'Rarity (Low-High)', value: 'rarity_asc' }
-    ]
+    const sortOptions = computed(() => [
+      { title: t('page.agents.sort.name_asc'), value: 'asc' },
+      { title: t('page.agents.sort.name_desc'), value: 'desc' },
+      { title: t('page.agents.sort.rarity_desc'), value: 'rarity_desc' },
+      { title: t('page.agents.sort.rarity_asc'), value: 'rarity_asc' }
+    ])
 
     // Static default item
     const NO_AGENT_ITEM = {
-      name: 'Default',
+      name: t('page.agents.default'),
       image: './images/default.svg',
       model_player: 'default',
       isDefault: true,
@@ -37,8 +40,9 @@ export default {
 
     // Prepare items for v-data-iterator filtered by team
     const items = computed(() => {
-      if (tabAgentsTeam.value === TEAM_T) return [NO_AGENT_ITEM, ...agents.agentsT]
-      else return [NO_AGENT_ITEM, ...agents.agentsCT]
+      const defaultItem = { ...NO_AGENT_ITEM, name: t('page.agents.default') }
+      if (tabAgentsTeam.value === TEAM_T) return [defaultItem, ...agents.agentsT]
+      else return [defaultItem, ...agents.agentsCT]
     })
 
     // Map the internal sort state to Vuetify's sortBy format
@@ -71,6 +75,7 @@ export default {
     return {
       TEAM_T,
       TEAM_CT,
+      t,
       session,
       loading,
       tabAgentsTeam,
@@ -89,7 +94,7 @@ export default {
     <v-container fluid>
       <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
         <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
-        <h1 class="text-h5 font-header">Loading...</h1>
+        <h1 class="text-h5 font-header">{{ t('loading.text') }}</h1>
       </div>
 
       <template v-else>
@@ -104,13 +109,13 @@ export default {
               class="border rounded d-flex w-100"
               style="height: 56px;"
             >
-              <v-btn :value="TEAM_T" class="flex-grow-1" height="56">
+              <v-btn :value="TEAM_T" class="flex-grow-1 w-50" height="56">
                 <v-icon start color="orange">mdi-account-group</v-icon>
-                Terrorists
+                {{ t('team.t') }}
               </v-btn>
-              <v-btn :value="TEAM_CT" class="flex-grow-1" height="56">
+              <v-btn :value="TEAM_CT" class="flex-grow-1 w-50" height="56">
                 <v-icon start color="light-blue">mdi-shield-account</v-icon>
-                Counter-Terrorists
+                {{ t('team.ct') }}
               </v-btn>
             </v-btn-toggle>
           </v-col>
@@ -129,7 +134,7 @@ export default {
                 <v-text-field 
                   color="primary" 
                   variant="outlined" 
-                  label="Search Agents..." 
+                  :label="t('page.agents.search.label')" 
                   v-model="searchInput" 
                   hide-details
                   clearable
@@ -140,7 +145,7 @@ export default {
                 <v-select
                   v-model="sortOrder"
                   :items="sortOptions"
-                  label="Sort"
+                  :label="t('page.agents.sort.label')"
                   variant="outlined"
                   hide-details
                   color="primary"

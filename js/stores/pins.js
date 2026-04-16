@@ -1,9 +1,11 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useI18n } from 'vue-i18n'
 import api from '../utils/api.js'
 import { RARITY_PIN } from '../const/rarity.js'
 
 export const usePinsStore = defineStore('pins', () => {
+  const { locale } = useI18n()
   const pins = ref([])
   const loading = ref(false)
   const loaded = ref(false)
@@ -12,7 +14,7 @@ export const usePinsStore = defineStore('pins', () => {
     if (loading.value || loaded.value)  return
     loading.value = true
     try {
-      const { data } = await api.get(`./api?action=get-pins&lang=en`)
+      const { data } = await api.get(`./api?action=get-pins&lang=${locale.value}`)
       pins.value = data
         .filter(pin => !['Operation Pass', 'Tournament Pass'].includes(pin.type))
         .map(pin => {

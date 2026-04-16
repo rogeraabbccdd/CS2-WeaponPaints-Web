@@ -1,4 +1,5 @@
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useKeychainsStore } from "../stores/keychains.js";
 import { RARITY_KEYCHAIN } from '../const/rarity.js'
 
@@ -9,14 +10,15 @@ export default {
   },
   emits: ["update:modelValue", "save"],
   setup(props, { emit }) {
+    const { t } = useI18n();
     const keychainsStore = useKeychainsStore();
 
-    const sortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' },
-      { title: 'Rarity (High-Low)', value: 'rarity_desc' },
-      { title: 'Rarity (Low-High)', value: 'rarity_asc' }
-    ];
+    const sortOptions = computed(() => [
+      { title: t('modal_skin.sort.name_asc'), value: 'asc' },
+      { title: t('modal_skin.sort.name_desc'), value: 'desc' },
+      { title: t('modal_skin.sort.rarity_desc'), value: 'rarity_desc' },
+      { title: t('modal_skin.sort.rarity_asc'), value: 'rarity_asc' }
+    ]);
 
     const search = ref({
       page: 1,
@@ -42,7 +44,7 @@ export default {
     // Static default item
     const NO_KEYCHAIN_ITEM = {
       id: "0",
-      name: "No Keychain",
+      name: t('modal_keychain.none'),
       image: "./images/no-keychain.svg",
       rarity: { id: "rarity_default", color: "#424242" },
       rarityWeight: -1,
@@ -51,8 +53,9 @@ export default {
 
     // Prepare items for v-data-iterator
     const items = computed(() => {
+      const defaultItem = { ...NO_KEYCHAIN_ITEM, name: t('modal_keychain.none') }
       // Very efficient: just spreading pre-calculated store data
-      return [NO_KEYCHAIN_ITEM, ...keychainsStore.keychains];
+      return [defaultItem, ...keychainsStore.keychains];
     });
 
     // Map the internal sort state to Vuetify's sortBy format
@@ -110,7 +113,7 @@ export default {
             }
           } else {
             keychain.value.image = "./images/no-keychain.svg";
-            keychain.value.name = "No Keychain";
+            keychain.value.name = t('modal_keychain.none');
             keychain.value.color = "#424242";
           }
           search.value.input = "";
@@ -129,6 +132,7 @@ export default {
     };
 
     return {
+      t,
       search,
       form,
       keychain,
@@ -148,9 +152,9 @@ export default {
       <v-card color="background">
         <v-toolbar color="surface" elevation="1">
           <v-btn icon="mdi-close" @click="close"></v-btn>
-          <v-toolbar-title class="text-primary font-weight-bold">Edit Keychain</v-toolbar-title>
+          <v-toolbar-title class="text-primary font-weight-bold">{{ t('modal_keychain.title') }}</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn color="primary" variant="flat" class="px-6" @click="save">Apply Keychain</v-btn>
+          <v-btn color="primary" variant="flat" class="px-6" @click="save">{{ t('modal_keychain.apply') }}</v-btn>
         </v-toolbar>
 
         <v-card-text class="pa-0">
@@ -160,7 +164,7 @@ export default {
               <v-col cols="12" md="6">
                 <v-card border flat class="pa-4 bg-surface rounded-lg h-100 d-flex flex-column align-center justify-center">
                   <div class="card-accent-line mb-4" :style="{ background: keychain.color }"></div>
-                  <div class="text-overline mb-2 w-100">Selected Keychain</div>
+                  <div class="text-overline mb-2 w-100">{{ t('modal_keychain.preview') }}</div>
                   <v-img :src="keychain.image" height="180" contain rounded class="mb-4 w-100"></v-img>
                   <div class="text-h6 text-center font-weight-medium">
                     {{ keychain.name }}
@@ -171,12 +175,12 @@ export default {
               <!-- Right: Attributes Form -->
               <v-col cols="12" md="6">
                 <v-card border flat class="pa-6 bg-surface rounded-lg h-100 d-flex flex-column justify-center">
-                  <div class="text-overline mb-4">Keychain Attributes</div>
+                  <div class="text-overline mb-4">{{ t('modal_keychain.attributes') }}</div>
                   <v-row density="comfortable">
                     <v-col cols="12" class="pb-4">
                       <v-text-field
                         color="primary"
-                        label="Seed" v-model.number="form.seed" 
+                        :label="t('modal_keychain.seed')" v-model.number="form.seed" 
                         variant="outlined" density="compact" type="number" min="0" max="1000"
                         @update:model-value="validateSeed" prepend-inner-icon="mdi-fingerprint" hide-details class="mb-1"
                       ></v-text-field>
@@ -184,18 +188,18 @@ export default {
                     </v-col>
                     
                     <v-col cols="4" class="py-1">
-                      <v-text-field color="primary" label="X Offset" v-model="form.x" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-x-arrow" hide-details></v-text-field>
+                      <v-text-field color="primary" :label="t('modal_keychain.x')" v-model="form.x" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-x-arrow" hide-details></v-text-field>
                     </v-col>
                     <v-col cols="4" class="py-1">
-                      <v-text-field color="primary" label="Y Offset" v-model="form.y" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-y-arrow" hide-details></v-text-field>
+                      <v-text-field color="primary" :label="t('modal_keychain.y')" v-model="form.y" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-y-arrow" hide-details></v-text-field>
                     </v-col>
                     <v-col cols="4" class="py-1">
-                      <v-text-field color="primary" label="Z Offset" v-model="form.z" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-z-arrow" hide-details></v-text-field>
+                      <v-text-field color="primary" :label="t('modal_keychain.z')" v-model="form.z" variant="outlined" density="compact" prepend-inner-icon="mdi-axis-z-arrow" hide-details></v-text-field>
                     </v-col>
 
                     <v-col cols="12" class="mt-4">
                       <v-btn block variant="outlined" color="primary" prepend-icon="mdi-open-in-new" href="https://cs2inspects.com/sticker-customizer" target="_blank">
-                        Open External Customizer
+                        {{ t('modal_keychain.external') }}
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -217,7 +221,7 @@ export default {
                 <v-row align="center" class="mb-4">
                   <v-col cols="12" md="8">
                     <v-text-field 
-                      placeholder="Search for keychains..." 
+                      :placeholder="t('modal_keychain.search')" 
                       v-model="search.input" 
                       variant="outlined"
                       density="comfortable"
@@ -230,7 +234,7 @@ export default {
                     <v-select
                       v-model="search.sort"
                       :items="sortOptions"
-                      label="Sort By"
+                      :label="t('modal_keychain.sort')"
                       variant="outlined"
                       density="comfortable"
                       hide-details

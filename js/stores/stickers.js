@@ -1,9 +1,11 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useI18n } from 'vue-i18n'
 import api from '../utils/api.js'
 import { RARITY_STICKER } from '../const/rarity.js'
 
 export const useStickersStore = defineStore('stickers', () => {
+  const { locale } = useI18n()
   const stickers = ref([])
   const loading = ref(false)
   const loaded = ref(false)
@@ -12,7 +14,7 @@ export const useStickersStore = defineStore('stickers', () => {
     if (loading.value || loaded.value)  return
     loading.value = true
     try {
-      const { data } = await api.get(`./api?action=get-stickers&lang=en`)
+      const { data } = await api.get(`./api?action=get-stickers&lang=${locale.value}`)
       stickers.value = data.map(sticker => {
         // Data cleaning
         sticker.name = sticker.name.replace('Sticker | ', '')

@@ -324,7 +324,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_bayonet.png",
     name: "Bayonet",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 503,
@@ -333,7 +336,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_css.png",
     name: "Classic Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 505,
@@ -342,7 +348,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_flip.png",
     name: "Flip Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 506,
@@ -351,7 +360,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_gut.png",
     name: "Gut Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 507,
@@ -360,7 +372,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_karambit.png",
     name: "Karambit",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 508,
@@ -369,7 +384,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_m9_bayonet.png",
     name: "M9 Bayonet",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 509,
@@ -378,7 +396,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_tactical.png",
     name: "Huntsman Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 512,
@@ -387,7 +408,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_falchion.png",
     name: "Falchion Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 514,
@@ -396,7 +420,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_survival_bowie.png",
     name: "Bowie Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 515,
@@ -405,7 +432,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_butterfly.png",
     name: "Butterfly Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 516,
@@ -414,7 +444,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_push.png",
     name: "Shadow Daggers",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 517,
@@ -423,7 +456,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_cord.png",
     name: "Paracord Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 518,
@@ -432,7 +468,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_canis.png",
     name: "Survival Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 519,
@@ -441,7 +480,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_ursus.png",
     name: "Ursus Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 520,
@@ -450,7 +492,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_gypsy_jackknife.png",
     name: "Navaja Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 521,
@@ -459,7 +504,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_outdoor.png",
     name: "Nomad Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 522,
@@ -468,7 +516,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_stiletto.png",
     name: "Stiletto Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 523,
@@ -477,7 +528,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_widowmaker.png",
     name: "Talon Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 525,
@@ -486,7 +540,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_skeleton.png",
     name: "Skeleton Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 526,
@@ -495,7 +552,10 @@ export const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_kukri.png",
     name: "Kukri Knife",
-    category: 'knife'
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
 ]
 

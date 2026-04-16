@@ -1,3 +1,5 @@
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/session.js'
 
 export default {
@@ -8,28 +10,24 @@ export default {
   },
   emits: ['update:active'],
   setup (props, { emit }) {
+    const { t } = useI18n()
     const session = useSessionStore()
 
     const onOverlayUpdate = (value) => {
       emit('update:active', value)
     }
 
-    const isSelected = () => {
+    const isSelected = computed(() => {
       const selected = session.loadout.selected_agents[props.team]
       const model = props.agent.model_player === 'null' ? '' : props.agent.model_player
       return selected === model
-    }
-
-    const selectAgent = () => {
-      session.setAgent(props.agent.model_player, props.team)
-      emit('update:active', false)
-    }
+    })
 
     return {
+      t,
       session,
       onOverlayUpdate,
       isSelected,
-      selectAgent
     }
   },
   template: /*html*/
@@ -45,14 +43,20 @@ export default {
         content-class="w-100 h-100 d-flex align-center pa-10 backdrop-blur"
       >
         <div class="d-flex flex-column ga-2 w-100 px-4">
-          <v-btn variant="outlined" block color="green" @click.stop="selectAgent">Equip</v-btn>
+          <v-btn
+            :variant="isSelected ? 'flat' : 'outlined'"
+            block color="green"
+            @click="session.setAgent(agent.model_player, team)"
+          >
+            {{ t('page.agents.equip') }}
+          </v-btn>
         </div>
       </v-overlay>
       <!-- Image -->
       <v-img :src="agent.image" aspect-ratio="1.33" cover>
         <!-- Selected -->
         <div class="position-absolute right-0 pa-1">
-          <v-icon size="30" :color="team == 2 ? 'orange' : 'light-blue'" v-if="isSelected()">mdi-check-circle</v-icon>
+          <v-icon size="30" :color="team == 2 ? 'orange' : 'light-blue'" v-if="isSelected">mdi-check-circle</v-icon>
         </div>
       </v-img>
       <!-- Text -->

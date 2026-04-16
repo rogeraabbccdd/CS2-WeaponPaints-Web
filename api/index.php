@@ -176,7 +176,7 @@
           break;
       }
 
-      $url = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/".$lang."/".$endpoints[$action];
+      $url = API_URL."/".$lang."/".$endpoints[$action];
       
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $url);

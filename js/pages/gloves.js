@@ -1,4 +1,5 @@
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/session.js'
 import { TEAM_CT, TEAM_T } from '../const/teams.js'
 import { useSkinsStore } from '../stores/skins.js'
@@ -7,6 +8,7 @@ import CardGlove from '../components/card-glove.js'
 export default {
   components: { CardGlove },
   setup () {
+    const { t } = useI18n()
     const session = useSessionStore()
     const skins = useSkinsStore()
 
@@ -17,27 +19,27 @@ export default {
     const sortOrder = ref('asc')
     const categoryFilter = ref(null)
 
-    const sortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' }
-    ]
+    const sortOptions = computed(() => [
+      { title: t('page.gloves.sort.asc'), value: 'asc' },
+      { title: t('page.gloves.sort.desc'), value: 'desc' }
+    ])
 
-    const categoryOptions = [
-      { title: 'All Categories', value: null },
-      { title: 'Bloodhound Gloves', value: 'studded_bloodhound_gloves' },
-      { title: 'Broken Fang Gloves', value: 'studded_brokenfang_gloves' },
-      { title: 'Driver Gloves', value: 'slick_gloves' },
-      { title: 'Hand Wraps', value: 'leather_handwraps' },
-      { title: 'Hydra Gloves', value: 'studded_hydra_gloves' },
-      { title: 'Moto Gloves', value: 'motorcycle_gloves' },
-      { title: 'Specialist Gloves', value: 'specialist_gloves' },
-      { title: 'Sport Gloves', value: 'sporty_gloves' }
-    ]
+    const categoryOptions = computed(() => [
+      { title: t('page.gloves.category.all'), value: null },
+      { title: t('page.gloves.category.bloodhound'), value: 'studded_bloodhound_gloves' },
+      { title: t('page.gloves.category.brokenfang'), value: 'studded_brokenfang_gloves' },
+      { title: t('page.gloves.category.driver'), value: 'slick_gloves' },
+      { title: t('page.gloves.category.handwraps'), value: 'leather_handwraps' },
+      { title: t('page.gloves.category.hydra'), value: 'studded_hydra_gloves' },
+      { title: t('page.gloves.category.moto'), value: 'motorcycle_gloves' },
+      { title: t('page.gloves.category.specialist'), value: 'specialist_gloves' },
+      { title: t('page.gloves.category.sport'), value: 'sporty_gloves' }
+    ])
 
     // Prepare items for v-data-iterator with category filtering
     const items = computed(() => {
       const defaultGlove = {
-        name: 'Default',
+        name: t('page.gloves.default'),
         image: './images/default.svg',
         paint_index: 0,
         id: 'default',
@@ -87,6 +89,7 @@ export default {
       sortOptions,
       categoryFilter,
       categoryOptions,
+      t
     }
   },
   template: /*html*/
@@ -94,7 +97,7 @@ export default {
     <v-container fluid>
       <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
         <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
-        <h1 class="text-h5 font-header">Loading...</h1>
+        <h1 class="text-h5 font-header">{{ t('loading.text') }}</h1>
       </div>
 
       <v-data-iterator
@@ -111,7 +114,7 @@ export default {
               <v-text-field 
                 color="primary" 
                 variant="outlined" 
-                label="Search Gloves..." 
+                :label="t('page.gloves.search.label')" 
                 v-model="searchInput" 
                 hide-details
                 clearable
@@ -122,7 +125,7 @@ export default {
               <v-select
                 v-model="categoryFilter"
                 :items="categoryOptions"
-                label="Category"
+                :label="t('page.gloves.category.label')"
                 variant="outlined"
                 hide-details
                 color="primary"
@@ -132,7 +135,7 @@ export default {
               <v-select
                 v-model="sortOrder"
                 :items="sortOptions"
-                label="Sort"
+                :label="t('page.gloves.sort.label')"
                 variant="outlined"
                 hide-details
                 color="primary"

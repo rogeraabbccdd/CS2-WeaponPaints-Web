@@ -1,4 +1,5 @@
 import { ref, computed, onMounted } from "vue";
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from "../stores/session.js";
 import { useSkinsStore } from "../stores/skins.js";
 import { useStickersStore } from "../stores/stickers.js";
@@ -12,6 +13,7 @@ import CardWeapon from "../components/card-weapon.js";
 export default {
   components: { ModalSkin, ModalSticker, ModalKeychain, CardWeapon },
   setup() {
+    const { t } = useI18n()
     const session = useSessionStore();
     const skins = useSkinsStore();
     const stickers = useStickersStore();
@@ -24,35 +26,42 @@ export default {
     const sortOrder = ref("asc");
     const categoryFilter = ref(null);
 
-    const sortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' }
-    ];
+    const sortOptions = computed(() => [
+      { title: t('page.skins.sort.name_asc'), value: 'asc' },
+      { title: t('page.skins.sort.name_desc'), value: 'desc' }
+    ])
 
-    const categoryOptions = [
-      { title: 'All Categories', value: null },
-      { title: 'Pistols', value: 'pistol' },
-      { title: 'SMGs', value: 'smg' },
-      { title: 'Rifles', value: 'rifle' },
-      { title: 'Shotguns', value: 'shotgun' },
-      { title: 'Machineguns', value: 'machinegun' },
-      { title: 'Knives', value: 'knife' },
-      { title: 'Zeus', value: 'zeus' }
-    ];
+    const categoryOptions = computed(() => [
+      { title: t('weapon.category.all'), value: null },
+      { title: t('weapon.category.pistol'), value: 'pistol' },
+      { title: t('weapon.category.smg'), value: 'smg' },
+      { title: t('weapon.category.rifle'), value: 'rifle' },
+      { title: t('weapon.category.shotgun'), value: 'shotgun' },
+      { title: t('weapon.category.machinegun'), value: 'machinegun' },
+      { title: t('weapon.category.knife'), value: 'knife' },
+      { title: t('weapon.category.zeus'), value: 'zeus' }
+    ]);
 
     // Filter by category first, then let v-data-iterator handle search and sort
     const items = computed(() => {
-      if (!categoryFilter.value) return weapons;
-      return weapons.filter(weapon => weapon.category === categoryFilter.value);
+      let filtered = weapons;
+      if (categoryFilter.value) {
+        filtered = weapons.filter(weapon => weapon.category === categoryFilter.value);
+      }
+      
+      return filtered.map(weapon => ({
+        ...weapon,
+        translatedName: t(`weapon.name.${weapon.weapon_name}`)
+      }));
     });
 
     const sortBy = computed(() => {
-      return [{ key: 'name', order: sortOrder.value }];
+      return [{ key: 'translatedName', order: sortOrder.value }];
     });
 
     const customFilter = (value, searchInput, item) => {
       if (!searchInput) return true;
-      return item.raw.name.toUpperCase().includes(searchInput.toUpperCase());
+      return item.raw.translatedName.toUpperCase().includes(searchInput.toUpperCase());
     };
 
     const modalSkinOpen = ref(false);
@@ -65,14 +74,13 @@ export default {
 
     onMounted(async () => {
       loading.value = true
-      await skins.fetchData()
-      await stickers.fetchData()
-      await keychains.fetchData()
+      await Promise.allSettled([skins.fetchData(), stickers.fetchData(), keychains.fetchData()])
       loading.value = false
     });
 
     return {
       weapons,
+      t,
       session,
       loading,
       searchInput,
@@ -93,7 +101,7 @@ export default {
     <v-container fluid>
       <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
         <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
-        <h1 class="text-h5 font-header">Loading...</h1>
+        <h1 class="text-h5 font-header">{{ t('loading.text') }}</h1>
       </div>
 
       <v-data-iterator
@@ -110,7 +118,7 @@ export default {
               <v-text-field 
                 color="primary" 
                 variant="outlined" 
-                label="Search Weapons..." 
+                :label="t('page.skins.search.label')"
                 v-model="searchInput" 
                 hide-details
                 clearable
@@ -121,7 +129,7 @@ export default {
               <v-select
                 v-model="categoryFilter"
                 :items="categoryOptions"
-                label="Category"
+                :label="t('page.skins.category.label')"
                 variant="outlined"
                 hide-details
                 color="primary"
@@ -131,7 +139,7 @@ export default {
               <v-select
                 v-model="sortOrder"
                 :items="sortOptions"
-                label="Sort"
+                :label="t('page.skins.sort.label')"
                 variant="outlined"
                 hide-details
                 color="primary"

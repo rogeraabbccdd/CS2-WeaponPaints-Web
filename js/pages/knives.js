@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { KNIVES } from '../const/weapons.js'
 import { useSessionStore } from '../stores/session.js'
 import { TEAM_CT, TEAM_T } from '../const/teams.js'
@@ -7,31 +8,34 @@ import CardKnife from '../components/card-knife.js'
 export default {
   components: { CardKnife },
   setup () {
+    const { t } = useI18n()
     const session = useSessionStore()
 
     const searchInput = ref('')
     const activeKnife = ref(null)
     const sortOrder = ref('asc')
 
-    const sortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' }
-    ]
+    const sortOptions = computed(() => [
+      { title: t('page.knives.sort.name_asc'), value: 'asc' },
+      { title: t('page.knives.sort.name_desc'), value: 'desc' }
+    ])
 
     // Prepare items for v-data-iterator
     const items = computed(() => {
       const defaultItem = {
-        name: 'Default',
         image: './images/default.svg',
         weapon_name: 'weapon_knife',
         isDefault: true,
-        rarityColor: '#424242'
+        rarity: {
+          color: '#424242',
+        },
+        translatedName: t('weapon.name.weapon_knife')
       };
 
       const baseKnives = KNIVES.map(k => ({
         ...k,
         isDefault: false,
-        rarityColor: '#eb4b4b'
+        translatedName: t(`weapon.name.${k.weapon_name}`)
       }));
 
       return [defaultItem, ...baseKnives];
@@ -41,12 +45,12 @@ export default {
     // Always keep isDefault: true at the top
     const sortBy = computed(() => {
       const priority = { key: 'isDefault', order: 'desc' };
-      return [priority, { key: 'name', order: sortOrder.value }];
+      return [priority, { key: 'translatedName', order: sortOrder.value }];
     });
 
     const customFilter = (value, searchInput, item) => {
       if (!searchInput) return true;
-      return item.raw.name.toUpperCase().includes(searchInput.toUpperCase());
+      return item.raw.translatedName.toUpperCase().includes(searchInput.toUpperCase());
     };
 
     const onActiveKnifeUpdate = (weapon_name, value) => {
@@ -56,6 +60,7 @@ export default {
     return {
       TEAM_T,
       TEAM_CT,
+      t,
       session,
       searchInput,
       items,
@@ -83,7 +88,7 @@ export default {
               <v-text-field 
                 color="primary" 
                 variant="outlined" 
-                label="Search Knives..." 
+                :label="t('page.knives.search.label')"
                 v-model="searchInput" 
                 hide-details
                 clearable
@@ -94,7 +99,7 @@ export default {
               <v-select
                 v-model="sortOrder"
                 :items="sortOptions"
-                label="Sort"
+                :label="t('page.knives.sort.label')"
                 variant="outlined"
                 hide-details
                 color="primary"
@@ -108,7 +113,7 @@ export default {
             <v-col cols="12" sm="6" md="4" lg="2" v-for="item in displayedItems" :key="item.raw.weapon_name">
               <CardKnife
                 :knife="item.raw"
-                :color="item.raw.rarityColor"
+                :color="item.raw.rarity.color"
                 :active="activeKnife === item.raw.weapon_name"
                 @update:active="onActiveKnifeUpdate(item.raw.weapon_name, $event)"
               />

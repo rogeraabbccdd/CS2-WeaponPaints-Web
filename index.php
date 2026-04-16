@@ -21,7 +21,7 @@
       "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js",
       "@vue/devtools-api": "https://unpkg.com/@vue/devtools-api@8.1.1/dist/vue-devtools-api.esm-browser.js",
       "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@4.0.5/dist/vuetify.esm.js",
-      "vue-i18n":  "https://unpkg.com/vue-i18n@11/dist/vue-i18n.esm-browser.js",
+      "vue-i18n": "https://unpkg.com/vue-i18n@11/dist/vue-i18n.esm-browser.js",
       "axios": "https://cdn.jsdelivr.net/npm/axios@1.15.0/+esm",
       "pinia": "https://unpkg.com/pinia@3.0.4/dist/pinia.esm-browser.js"
     }

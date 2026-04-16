@@ -1,4 +1,5 @@
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '../stores/session.js'
 import { TEAM_CT, TEAM_T } from '../const/teams.js'
 import { useMusicsStore } from '../stores/musics.js'
@@ -7,6 +8,7 @@ import CardMusic from '../components/card-music.js'
 export default {
   components: { CardMusic },
   setup () {
+    const { t } = useI18n()
     const session = useSessionStore()
     const musics = useMusicsStore()
 
@@ -16,15 +18,15 @@ export default {
     const activeMusic = ref(null)
     const sortOrder = ref('asc')
 
-    const sortOptions = [
-      { title: 'Name (A-Z)', value: 'asc' },
-      { title: 'Name (Z-A)', value: 'desc' }
-    ]
+    const sortOptions = computed(() => [
+      { title: t('page.musics.sort.name_asc'), value: 'asc' },
+      { title: t('page.musics.sort.name_desc'), value: 'desc' }
+    ])
 
     // Static default item
     const NO_MUSIC_ITEM = {
       id: 0,
-      name: 'Default',
+      name: t('page.musics.default'),
       image: './images/default.svg',
       isDefault: true,
       rarity: { color: '#424242' }
@@ -32,9 +34,10 @@ export default {
 
     // Prepare items for v-data-iterator
     const items = computed(() => {
+      const defaultItem = { ...NO_MUSIC_ITEM, name: t('page.musics.default') }
       if (musics.loading) return []
       
-      return [NO_MUSIC_ITEM, ...musics.musics]
+      return [defaultItem, ...musics.musics]
     })
 
     // Map sort order to v-data-iterator format
@@ -62,6 +65,7 @@ export default {
     return {
       TEAM_T,
       TEAM_CT,
+      t,
       session,
       loading,
       searchInput,
@@ -79,7 +83,7 @@ export default {
     <v-container fluid>
       <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
         <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
-        <h1 class="text-h5 font-header">Loading...</h1>
+        <h1 class="text-h5 font-header">{{ $t('loading.text') }}</h1>
       </div>
 
       <v-data-iterator
@@ -96,7 +100,7 @@ export default {
               <v-text-field 
                 color="primary" 
                 variant="outlined" 
-                label="Search Music Kits..." 
+                :label="$t('page.musics.search.label')" 
                 v-model="searchInput" 
                 hide-details
                 clearable
@@ -107,7 +111,7 @@ export default {
               <v-select
                 v-model="sortOrder"
                 :items="sortOptions"
-                label="Sort"
+                :label="$t('page.musics.sort.label')"
                 variant="outlined"
                 hide-details
                 color="primary"
