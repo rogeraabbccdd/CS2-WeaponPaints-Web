@@ -8,8 +8,3 @@ services:
     volumes:
       - .:/var/www/html
       - ./vhost.conf:/etc/apache2/sites-available/000-default.conf
-    environment:
-      - DB_HOST=127.0.0.1
-      - DB_NAME=database_name
-      - DB_USER=database_user
-      - DB_PASS=database_password
