@@ -14,7 +14,7 @@ export const useKeychainsStore = defineStore('keychains', () => {
     if (loading.value || loaded.value)  return
     loading.value = true
     try {
-      const { data } = await api.get(`./api?action=get-keychains&lang=${locale.value}`)
+      const { data } = await api.get(`./api/?action=get-keychains&lang=${locale.value}`)
       keychains.value = data.map(keychain => {
         // Data cleaning
         keychain.name = keychain.name.replace('Charm | ', '')

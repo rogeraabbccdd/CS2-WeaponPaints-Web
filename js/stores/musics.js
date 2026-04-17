@@ -13,7 +13,7 @@ export const useMusicsStore = defineStore('musics', () => {
     if (loading.value || loaded.value)  return
     loading.value = true
     try {
-      const { data } = await api.get(`./api?action=get-musics&lang=${locale.value}`)
+      const { data } = await api.get(`./api/?action=get-musics&lang=${locale.value}`)
       musics.value = data
         .filter(music => !music.id.endsWith('_st'))
         .map(music => {

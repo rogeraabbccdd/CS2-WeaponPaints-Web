@@ -40,7 +40,7 @@ export const useSessionStore = defineStore("session", () => {
 
   const checkUser = async () => {
     try {
-      const { data } = await api.get("./api?action=check");
+      const { data } = await api.get("./api/?action=check");
       user.value.steamid = data.steamid;
       user.value.steam_avatar = data.steam_avatar;
       user.value.steam_personaname = data.steam_personaname;

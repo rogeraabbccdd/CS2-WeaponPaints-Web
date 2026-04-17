@@ -15,7 +15,7 @@ export const useAgentsStore = defineStore('agents', () => {
     if (loading.value || loaded.value)  return
     loading.value = true
     try {
-      const { data } = await api.get(`./api?action=get-agents&lang=${locale.value}`)
+      const { data } = await api.get(`./api/?action=get-agents&lang=${locale.value}`)
       const tempT = []
       const tempCT = []
       for (const agent of data) {

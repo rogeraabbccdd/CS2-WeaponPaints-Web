@@ -14,7 +14,7 @@ export const usePinsStore = defineStore('pins', () => {
     if (loading.value || loaded.value)  return
     loading.value = true
     try {
-      const { data } = await api.get(`./api?action=get-pins&lang=${locale.value}`)
+      const { data } = await api.get(`./api/?action=get-pins&lang=${locale.value}`)
       pins.value = data
         .filter(pin => !['Operation Pass', 'Tournament Pass'].includes(pin.type))
         .map(pin => {
