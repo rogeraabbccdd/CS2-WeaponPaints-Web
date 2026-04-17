@@ -6,7 +6,7 @@
  */
 
 // --- Database Configuration ---
-// If you are using the provided Docker setup, DB_HOST is usually '172.18.0.1' or the service name.
+// If you are using the provided Docker setup, DB_HOST is usually '172.18.0.1', 'host.docker.internal' or the service name.
 define('DB_HOST', '127.0.0.1');
 define('DB_PORT', '3306');
 define('DB_NAME', 'database_name');
@@ -23,6 +23,9 @@ define('STEAM_API_KEY', 'YOUR_STEAM_WEB_API_KEY_HERE');
 define('STEAM_DOMAIN_NAME', 'https://your-domain.com');
 
 // --- API URL ---
+// Base URL for the CSGO API.
+// The original ByMykel/CSGO-API only supports 'en' and 'zh-CN'.
+// My fork adds support for 'zh-TW'.
 // IMPORTANT: Do not include a trailing slash at the end.
 define('API_URL', 'https://raw.githubusercontent.com/rogeraabbccdd/CSGO-API/main/public/api');
 
