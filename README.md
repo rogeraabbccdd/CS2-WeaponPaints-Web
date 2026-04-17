@@ -13,7 +13,9 @@ A simple web interface for the [cs2-WeaponPaints](https://github.com/Nereziel/cs
 
 ## Screenshots
 ![](./screenshots/agent.png)  
+
 ![](./screenshots/music.png)  
+
 ![](./screenshots/skin.png)
 
 ## Installation
