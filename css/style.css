@@ -1,3 +1,21 @@
-.cursor-pointer {
-  cursor: pointer;
+.card-accent-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  z-index: 1;
+  height: 100%;
+}
+
+.font-header {
+  font-family: var(--v-font-header);
+}
+
+.v-img {
+  background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+}
+
+.backdrop-blur {
+  backdrop-filter: blur(5px);
 }

@@ -1,4 +1,4 @@
-const WEAPONS = [
+export const WEAPONS = [
   {
     weapon_defindex: 1,
     weapon_name: "weapon_deagle",
@@ -6,6 +6,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_deagle.png",
     name: "Desert Eagle",
+    category: 'pistol'
   },
   {
     weapon_defindex: 2,
@@ -14,6 +15,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_elite.png",
     name: "Dual Berettas",
+    category: 'pistol'
   },
   {
     weapon_defindex: 3,
@@ -22,6 +24,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_fiveseven.png",
     name: "Five-SeveN",
+    category: 'pistol'
   },
   {
     weapon_defindex: 4,
@@ -30,6 +33,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_glock.png",
     name: "Glock-18",
+    category: 'pistol'
   },
   {
     weapon_defindex: 7,
@@ -38,6 +42,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_ak47.png",
     name: "AK-47",
+    category: 'rifle'
   },
   {
     weapon_defindex: 8,
@@ -46,6 +51,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_aug.png",
     name: "AUG",
+    category: 'rifle'
   },
   {
     weapon_defindex: 9,
@@ -54,6 +60,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_awp.png",
     name: "AWP",
+    category: 'rifle'
   },
   {
     weapon_defindex: 10,
@@ -62,6 +69,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_famas.png",
     name: "FAMAS",
+    category: 'rifle'
   },
   {
     weapon_defindex: 11,
@@ -70,6 +78,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_g3sg1.png",
     name: "G3SG1",
+    category: 'rifle'
   },
   {
     weapon_defindex: 13,
@@ -78,6 +87,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_galilar.png",
     name: "Galil AR",
+    category: 'rifle'
   },
   {
     weapon_defindex: 14,
@@ -86,6 +96,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_m249.png",
     name: "M249",
+    category: 'machinegun'
   },
   {
     weapon_defindex: 16,
@@ -94,6 +105,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_m4a1.png",
     name: "M4A4",
+    category: 'rifle'
   },
   {
     weapon_defindex: 17,
@@ -102,6 +114,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_mac10.png",
     name: "MAC-10",
+    category: 'smg'
   },
   {
     weapon_defindex: 19,
@@ -110,6 +123,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_p90.png",
     name: "P90",
+    category: 'smg'
   },
   {
     weapon_defindex: 23,
@@ -118,6 +132,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_mp5sd.png",
     name: "MP5-SD",
+    category: 'smg'
   },
   {
     weapon_defindex: 24,
@@ -126,6 +141,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_ump45.png",
     name: "UMP-45",
+    category: 'smg'
   },
   {
     weapon_defindex: 25,
@@ -134,6 +150,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_xm1014.png",
     name: "XM1014",
+    category: 'shotgun'
   },
   {
     weapon_defindex: 26,
@@ -142,6 +159,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_bizon.png",
     name: "PP-Bizon",
+    category: 'smg'
   },
   {
     weapon_defindex: 27,
@@ -150,6 +168,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_mag7.png",
     name: "MAG-7",
+    category: 'shotgun'
   },
   {
     weapon_defindex: 28,
@@ -158,6 +177,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_negev.png",
     name: "Negev",
+    category: 'machinegun'
   },
   {
     weapon_defindex: 29,
@@ -166,6 +186,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_sawedoff.png",
     name: "Sawed-Off",
+    category: 'shotgun'
   },
   {
     weapon_defindex: 30,
@@ -174,6 +195,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_tec9.png",
     name: "Tec-9",
+    category: 'pistol'
   },
   {
     weapon_defindex: 31,
@@ -182,6 +204,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_taser.png",
     name: "Zeus x27",
+    category: 'zeus'
   },
   {
     weapon_defindex: 32,
@@ -190,6 +213,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_hkp2000.png",
     name: "P2000",
+    category: 'pistol'
   },
   {
     weapon_defindex: 33,
@@ -198,6 +222,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_mp7.png",
     name: "MP7",
+    category: 'smg'
   },
   {
     weapon_defindex: 34,
@@ -206,6 +231,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_mp9.png",
     name: "MP9",
+    category: 'smg'
   },
   {
     weapon_defindex: 35,
@@ -214,6 +240,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_nova.png",
     name: "Nova",
+    category: 'Shotgun'
   },
   {
     weapon_defindex: 36,
@@ -222,6 +249,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_p250.png",
     name: "P250",
+    category: 'pistol'
   },
   {
     weapon_defindex: 38,
@@ -230,6 +258,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_scar20.png",
     name: "SCAR-20",
+    category: 'rifle'
   },
   {
     weapon_defindex: 39,
@@ -238,6 +267,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_sg556.png",
     name: "SG 553",
+    category: 'rifle'
   },
   {
     weapon_defindex: 40,
@@ -246,6 +276,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_ssg08.png",
     name: "SSG 08",
+    category: 'rifle'
   },
   {
     weapon_defindex: 60,
@@ -254,6 +285,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_m4a1_silencer.png",
     name: "M4A1-S",
+    category: 'rifle'
   },
   {
     weapon_defindex: 61,
@@ -262,6 +294,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_usp_silencer.png",
     name: "USP-S",
+    category: 'pistol'
   },
   {
     weapon_defindex: 63,
@@ -270,6 +303,7 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_cz75a.png",
     name: "CZ75-Auto",
+    category: 'pistol'
   },
   {
     weapon_defindex: 64,
@@ -278,10 +312,11 @@ const WEAPONS = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_revolver.png",
     name: "R8 Revolver",
+    category: 'pistol'
   }
 ]
 
-const KNIVES = [
+export const KNIVES = [
   {
     weapon_defindex: 500,
     weapon_name: "weapon_bayonet",
@@ -289,6 +324,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_bayonet.png",
     name: "Bayonet",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 503,
@@ -297,6 +336,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_css.png",
     name: "Classic Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 505,
@@ -305,6 +348,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_flip.png",
     name: "Flip Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 506,
@@ -313,6 +360,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_gut.png",
     name: "Gut Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 507,
@@ -321,6 +372,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_karambit.png",
     name: "Karambit",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 508,
@@ -329,6 +384,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_m9_bayonet.png",
     name: "M9 Bayonet",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 509,
@@ -337,6 +396,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_tactical.png",
     name: "Huntsman Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 512,
@@ -345,6 +408,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_falchion.png",
     name: "Falchion Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 514,
@@ -353,6 +420,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_survival_bowie.png",
     name: "Bowie Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 515,
@@ -361,6 +432,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_butterfly.png",
     name: "Butterfly Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 516,
@@ -369,6 +444,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_push.png",
     name: "Shadow Daggers",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 517,
@@ -377,6 +456,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_cord.png",
     name: "Paracord Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 518,
@@ -385,6 +468,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_canis.png",
     name: "Survival Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 519,
@@ -393,6 +480,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_ursus.png",
     name: "Ursus Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 520,
@@ -401,6 +492,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_gypsy_jackknife.png",
     name: "Navaja Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 521,
@@ -409,6 +504,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_outdoor.png",
     name: "Nomad Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 522,
@@ -417,6 +516,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_stiletto.png",
     name: "Stiletto Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 523,
@@ -425,6 +528,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_widowmaker.png",
     name: "Talon Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 525,
@@ -433,6 +540,10 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_skeleton.png",
     name: "Skeleton Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
   {
     weapon_defindex: 526,
@@ -441,10 +552,14 @@ const KNIVES = [
     image:
       "https://raw.githubusercontent.com/Nereziel/cs2-WeaponPaints/main/website/img/skins/weapon_knife_kukri.png",
     name: "Kukri Knife",
+    category: 'knife',
+    rarity: {
+      color: '#eb4b4b'
+    }
   },
 ]
 
-const DEFINDEXES = {
+export const DEFINDEXES = {
   weapon_deagle: 1,
   weapon_elite: 2,
   weapon_fiveseven: 3,
@@ -536,7 +651,7 @@ const DEFINDEXES = {
   studded_hydra_gloves: 5035
 }
 
-const WEARS = {
+export const WEARS = {
   0.00: 'Factory New',
   0.07: 'Minimal Wear',
   0.15: 'Field-Tested',
