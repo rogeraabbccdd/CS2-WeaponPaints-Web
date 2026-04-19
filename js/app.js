@@ -106,7 +106,6 @@ const app = createApp({
   template: /*html*/
     `
     <v-app>
-      <!-- ... (Navbar 內容保持不變) ... -->
       <v-app-bar flat>
         <v-container class="d-flex align-center justify-center" fluid>
           <!-- Title -->
@@ -138,7 +137,7 @@ const app = createApp({
                 </v-list-item>
               </v-list>
             </v-menu>
-
+            <!-- User Menu -->
             <template v-if="session.loggedIn">
               <span v-if="!mobile" class="mr-2 font-header text-caption">{{ session.user.steam_personaname }}</span>
               <v-avatar size="32">
@@ -149,9 +148,9 @@ const app = createApp({
           </div>
         </v-container>
       </v-app-bar>
-
-      <!-- ... (Mobile Nav 內容保持不變) ... -->
+      <!-- Mobile Nav -->
       <v-navigation-drawer v-if="mobile" v-model="drawer" class="font-header" temporary>
+        <!-- Mobile Pages -->
         <v-list v-if="session.loggedIn" color="primary" density="compact" nav :selected="[page]" @update:selected="val => { if (val.length) { page = val[0]; drawer = false } }">
           <v-list-item prepend-icon="mdi-knife-military" :title="t('nav.knives')" value="knives"></v-list-item>
           <v-list-item prepend-icon="mdi-palette" :title="t('nav.skins')" value="skins"></v-list-item>
@@ -161,6 +160,7 @@ const app = createApp({
           <v-list-item prepend-icon="mdi-police-badge" :title="t('nav.pins')" value="pins"></v-list-item>
         </v-list>
         <v-divider v-if="session.loggedIn"></v-divider>
+        <!-- Mobile Language Menu -->
         <v-list density="compact" nav>
           <v-list-group value="languages">
             <template v-slot:activator="{ props }">
@@ -173,21 +173,20 @@ const app = createApp({
       </v-navigation-drawer>
 
       <v-main class="w-100">
-        <!-- ... (其他狀態) ... -->
+        <!-- Loading User Session -->
         <div v-if="loading" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
           <v-progress-circular color="primary" :size="75" width="7" indeterminate class="mb-4"></v-progress-circular>
           <h1 class="text-h5 font-header">{{ t('loading.text') }}</h1>
         </div>
-
+        <!-- Login -->
         <div v-else-if="session.loaded && !session.loggedIn" class="fill-height d-flex flex-column align-center justify-center" style="min-height: 80vh;">
           <h1 class="text-h4 mb-6 font-header">{{ t('login.prompt') }}</h1>
           <a href="./login.php">
             <v-img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_01.png" width="200"></v-img>
           </a>
         </div>
-
+        <!-- Pages -->
         <div v-else-if="session.loaded && session.loggedIn">
-          <!-- 加入 :key="locale" 語系改變時自動重新掛載並讀取資料 -->
           <page-knives v-if="page === 'knives'" :key="locale"></page-knives>
           <page-skins v-if="page === 'skins'" :key="locale"></page-skins>
           <page-gloves v-if="page === 'gloves'" :key="locale"></page-gloves>
