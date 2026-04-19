@@ -18,7 +18,7 @@ export default {
     const tabAgentsTeam = ref(TEAM_T)
 
     const searchInput = ref('')
-    const activeAgentId = ref(null)
+    const activeAgentId = ref(undefined)
     const sortOrder = ref('rarity_desc')
 
     const sortOptions = computed(() => [
@@ -32,7 +32,7 @@ export default {
     const NO_AGENT_ITEM = {
       name: t('page.agents.default'),
       image: './images/default.svg',
-      model_player: 'default',
+      model_player: null,
       isDefault: true,
       rarityWeight: -1,
       rarity: { color: '#424242', id: 'rarity_default' }
@@ -63,7 +63,7 @@ export default {
     }
 
     const onActiveAgentUpdate = (id, value) => {
-      activeAgentId.value = value ? id : null
+      activeAgentId.value = value ? id : undefined
     }
 
     onMounted(async () => {

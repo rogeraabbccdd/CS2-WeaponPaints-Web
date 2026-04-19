@@ -127,7 +127,7 @@ export const useSessionStore = defineStore("session", () => {
   const setAgent = async (model, team) => {
     try {
       await api.post("./api/?action=set-agent", { model, team });
-      const newValue = model == "null" ? "" : model;
+      const newValue = model === null ? "" : model;
       loadout.value.selected_agents[team] = newValue;
     } catch (error) {
       console.log(error);

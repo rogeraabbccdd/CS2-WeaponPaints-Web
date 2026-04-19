@@ -19,7 +19,7 @@ export default {
 
     const isSelected = computed(() => {
       const selected = session.loadout.selected_agents[props.team]
-      const model = props.agent.model_player === 'null' ? '' : props.agent.model_player
+      const model = props.agent.model_player === null ? '' : props.agent.model_player
       return selected === model
     })
 
