@@ -185,7 +185,6 @@
       curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
       $result = curl_exec($ch);
       $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-      curl_close($ch);
 
       if ($http_code == 200 && !empty($result)) {
           if (!is_dir(__DIR__ . "/cache")) {
