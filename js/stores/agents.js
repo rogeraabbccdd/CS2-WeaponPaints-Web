@@ -20,7 +20,7 @@ export const useAgentsStore = defineStore('agents', () => {
       const tempCT = []
       for (const agent of data) {
         // Data sanitization
-        agent.model_player = agent.model_player.replace('characters/models/', '').replace('.vmdl', '')
+        agent.model_player = agent.model_player.replace('agents/models/', '').replace('.vmdl', '')
         // Performance: Pre-calculate sorting weight
         agent.rarityWeight = RARITY_AGENT[agent.rarity?.id] || 0
 
